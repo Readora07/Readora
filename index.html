@@ -1,0 +1,3004 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Readora - Online Book Store</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Montserrat:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #4a6fa5;
+            --secondary: #166088;
+            --accent: #4fc3a1;
+            --accent-dark: #3a9378;
+            --light: #f8f9fa;
+            --dark: #2d3436;
+            --darker: #1e2224;
+            --danger: #dc3545;
+            --success: #28a745;
+            --warning: #ffc107;
+            --gray: #8a8a8a;
+            --light-gray: #e0e0e0;
+        }
+
+        body {
+            background-color: #f5f7f9;
+            color: var(--dark);
+            line-height: 1.6;
+            font-family: 'Montserrat', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        h1, h2, h3, h4, h5 {
+            font-family: 'Merriweather', serif;
+            font-weight: 700;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(to right, var(--darker), var(--dark));
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+       .logo { font-size: 1.8rem; font-weight: 700; display: flex; align-items: center; text-decoration: none; color: white;}
+        .logo i { margin-right: 10px; color: var(--accent); font-size: 2.2rem; }
+
+
+        nav {
+            display: flex;
+            align-items: center;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 20px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 15px;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        nav ul li a:hover,
+        nav ul li a.active {
+            background: rgba(255, 255, 255, 0.15);
+            color: var(--accent);
+        }
+
+        .header-right-icons {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .cart-icon {
+            position: relative;
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -12px;
+            background: var(--danger);
+            color: white;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+
+        /* Mobile Menu Toggle */
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            justify-content: space-around;
+            width: 30px;
+            height: 25px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            z-index: 1001;
+        }
+
+        .menu-toggle span {
+            width: 100%;
+            height: 3px;
+            background-color: white;
+            border-radius: 5px;
+            transition: all 0.3s linear;
+        }
+        
+        /* Dropdown Styles */
+        nav ul li.dropdown {
+            position: relative;
+        }
+
+        nav ul li.dropdown .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: var(--darker);
+            list-style: none;
+            padding: 10px 0;
+            margin: 0;
+            border-radius: 4px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            min-width: 160px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            z-index: 1001;
+        }
+
+        nav ul li.dropdown:hover .dropdown-menu {
+            display: block;
+            opacity: 1;
+            visibility: visible;
+        }
+
+        nav ul li.dropdown .dropdown-menu li {
+            margin: 0;
+        }
+
+        nav ul li.dropdown .dropdown-menu li a {
+            padding: 10px 20px;
+            display: block;
+            width: 100%;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        nav ul li.dropdown .dropdown-menu li a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--accent);
+        }
+
+        nav ul li a .fa-caret-down {
+            margin-left: 5px;
+            font-size: 0.8em;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            background: linear-gradient(rgba(45, 52, 54, 0.7), rgba(45, 52, 54, 0.7)), url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%D%D&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: white;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            z-index: 2;
+            margin-top: 60px;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        /* Back to top button */
+        .back-to-top {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: all 0.3s;
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            z-index: 99;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .back-to-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            padding: 2rem 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            position: relative;
+        }
+
+        .section-title:after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: var(--accent);
+            margin: 15px auto;
+            border-radius: 2px;
+        }
+
+        /* Category Navigation */
+        .categories {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 1.5rem;
+        }
+
+        .category-btn {
+            padding: 10px 20px;
+            background: white;
+            border: 2px solid var(--light-gray);
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .category-btn:hover,
+        .category-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Category Separator Styles */
+        .category-separator {
+            border: none;
+            height: 2px;
+            background-color: var(--accent);
+            width: 100px;
+            margin: 2rem auto;
+            animation: line-anim 0.8s ease-out forwards;
+        }
+
+        @keyframes line-anim {
+            from {
+                width: 0;
+            }
+            to {
+                width: 100px;
+            }
+        }
+
+        /* Language subcategories */
+        .language-subcategories {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .language-btn {
+            padding: 8px 15px;
+            background: var(--light);
+            border: 1px solid var(--light-gray);
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .language-btn:hover,
+        .language-btn.active {
+            background: var(--secondary);
+            color: white;
+            border-color: var(--secondary);
+        }
+
+        .subcategories {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 2rem;
+        }
+
+        .subcategory-btn {
+            padding: 8px 15px;
+            background: var(--light);
+            border: 1px solid var(--light-gray);
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .subcategory-btn:hover,
+        .subcategory-btn.active {
+            background: var(--secondary);
+            color: white;
+            border-color: var(--secondary);
+        }
+
+        /* Books Grid - Amazon Style */
+        .books-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin: 30px 0 60px 0;
+        }
+
+        .book-card {
+            background: white;
+            border-radius: 8px;
+            overflow: visible; 
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            display: flex;
+            flex-direction: row;
+            align-items: center; /* MODIFIED: Vertically center all items */
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            cursor: pointer;
+            min-height: 180px; 
+        }
+
+        .book-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border-color: var(--primary);
+        }
+
+        .book-img {
+            width: 130px;
+            min-width: 130px;
+            height: 180px;
+            overflow: hidden;
+            position: relative;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            flex-shrink: 0;
+            border: 3px solid #8B7355;
+            padding: 3px;
+            margin-right: 20px; /* MODIFIED: Add margin */
+        }
+
+        .book-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .book-card:hover .book-img img {
+            transform: scale(1.05);
+        }
+
+        .book-hover-badge {
+            position: absolute;
+            bottom: 5px;
+            left: 5px;
+            background: var(--accent);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            z-index: 5;
+        }
+
+        .book-card:hover .book-hover-badge {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .book-info {
+            padding: 0; /* MODIFIED: Remove padding */
+            display: flex;
+            flex-direction: column;
+            flex-grow: 0; /* MODIFIED */
+            flex-shrink: 0; /* MODIFIED */
+            flex-basis: 250px; /* MODIFIED: Set a base width for the info column */
+            text-align: left;
+            justify-content: space-between; /* MODIFIED: Pushes actions to bottom */
+            height: 180px; /* MODIFIED: Match image height */
+        }
+        
+        /* START: Added Description Style */
+        .book-description-wrapper {
+            flex-grow: 1;
+            padding-left: 15px;
+            margin-left: 15px;
+            border-left: 1px solid #f0f0f0;
+            font-size: 13px;
+            color: #666;
+            line-height: 1.5;
+            display: flex;
+            align-items: center;
+        }
+        
+        .book-description {
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            text-overflow: ellipsis;
+            margin: 0;
+            font-weight: normal;
+            max-height: 2.8em;
+        }
+         /* END: Added Description Style */
+
+
+        .book-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: var(--dark);
+            display: -webkit-box;
+            display: box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .book-author {
+            color: var(--gray);
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .book-price {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .current-price {
+            font-size: 24px;
+            font-weight: 700;
+            color: #B12704;
+        }
+
+        .original-price {
+            text-decoration: line-through;
+            color: var(--gray);
+            font-size: 13px;
+            margin-left: 8px;
+        }
+
+        .discount {
+            color: #B12704;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .free-delivery {
+            font-size: 12px;
+            color: #007600;
+            font-weight: 600;
+            margin-top: 5px;
+            margin-bottom: 8px;
+        }
+
+        .book-format {
+            display: none;
+        }
+
+        .btn-add-cart {
+            background: #FFD814;
+            color: #0F1111;
+            border: 1px solid #FCD200;
+            border-radius: 8px;
+            padding: 8px 20px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-add-cart:hover {
+            background: #F7CA00;
+            transform: none;
+        }
+        
+        .btn-add-cart.added {
+            background: #90EE90;
+            border-color: #90EE90;
+            color: #0F1111;
+        }
+        
+        .btn-add-cart.added:hover {
+            background: #7FD87F;
+        }
+
+        .book-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px; 
+             padding-top: 0; 
+        }
+
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 40px;
+            flex-grow: 1;
+        }
+
+        .btn.added {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .btn i {
+            margin-right: 8px;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+        
+        .btn-instagram {
+            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+            color: white;
+            border: none;
+        }
+        .btn-instagram:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        
+        /* New WhatsApp Button Style */
+        .btn-whatsapp {
+            background: #25D366;
+            color: white;
+            border: none;
+        }
+        .btn-whatsapp:hover {
+            background: #128C7E;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        #see-more-btn {
+            margin: 30px auto 0;
+            display: block;
+        }
+
+        /* Search Section */
+        #search {
+            padding: 80px 0;
+            background: var(--light);
+        }
+
+        .search-box {
+            display: flex;
+            max-width: 600px;
+            margin: 0 auto 40px;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid var(--light-gray);
+            border-radius: 4px 0 0 4px;
+            font-size: 1rem;
+        }
+
+        .search-box button {
+            padding: 15px 25px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background: white;
+            margin: 50px auto;
+            border-radius: 12px;
+            max-width: 900px;
+            width: 90%;
+            animation: modalFade 0.4s;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @keyframes modalFade {
+            from {
+                opacity: 0;
+                transform: translateY(-60px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--light-gray);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--light);
+            flex-shrink: 0;
+        }
+
+        .close-modal, .close-cart-modal {
+            font-size: 28px;
+            cursor: pointer;
+            color: var(--gray);
+            transition: color 0.3s;
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            z-index: 10;
+        }
+
+        .close-modal:hover, .close-cart-modal:hover {
+            color: var(--dark);
+        }
+
+        .modal-body {
+            padding: 30px;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+
+        .book-details {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 40px;
+            text-align: left;
+        }
+
+        .book-details-img {
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            background: #f9f9f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 320px;
+            height: 480px;
+            border: 3px solid #8B7355;
+            padding: 5px;
+        }
+
+        .book-details-img img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
+        }
+
+        .book-details-info h2 {
+            margin-bottom: 10px;
+            font-size: 26px;
+            color: var(--dark);
+            line-height: 1.3;
+            text-align: center;
+        }
+
+        .book-details-author {
+            color: var(--gray);
+            margin-bottom: 15px;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .book-details-price {
+            font-size: 32px;
+            color: #B12704;
+            font-weight: 700;
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .book-details-meta {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        /* RESTORED: .book-details-desc style */
+        .book-details-desc {
+            line-height: 1.8;
+            color: var(--dark);
+            text-align: justify;
+        }
+
+
+        .book-details-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .btn-large {
+            padding: 15px 25px;
+            font-size: 16px;
+        }
+
+        /* Cart Modal Specific Styles */
+        #cart-modal .modal-content {
+            max-width: 800px;
+            max-height: 90vh;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 1px solid var(--light-gray);
+            padding: 15px 0;
+        }
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+        .cart-item-img {
+            width: 80px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        .cart-item-info {
+            flex-grow: 1;
+        }
+        .cart-item-info h4 {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        .cart-item-price {
+            font-weight: 600;
+            color: var(--secondary);
+        }
+        .cart-item-quantity {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .quantity-btn {
+            width: 30px;
+            height: 30px;
+            border: 1px solid var(--light-gray);
+            background: white;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+        .cart-item-remove {
+            color: var(--danger);
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+        .cart-empty-message {
+            text-align: center;
+            padding: 50px 0;
+            color: var(--gray);
+        }
+        .cart-footer {
+            padding: 20px 30px;
+            border-top: 1px solid var(--light-gray);
+            background: var(--light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        .cart-total {
+            font-size: 1.2rem;
+        }
+
+        .cart-checkout-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+
+        /* Footer */
+        footer { 
+            background: #2d3436; 
+            color: white; 
+            padding: 40px 0 20px; 
+        }
+        
+        .footer-content { 
+            display: grid; 
+            grid-template-columns: 2fr 1.5fr 1.5fr; 
+            gap: 80px; 
+            margin-bottom: 50px; 
+        }
+        
+        .footer-logo { 
+            font-size: 1.4rem; 
+            font-weight: 700; 
+            margin-bottom: 15px; 
+            display: flex; 
+            align-items: center; 
+        }
+        
+        .footer-logo i { 
+            margin-right: 10px; 
+            color: var(--accent); 
+            font-size: 1.6rem; 
+        }
+        
+        .footer-about p { 
+            margin-bottom: 25px; 
+            line-height: 1.6; 
+            color: rgba(255, 255, 255, 0.75); 
+            font-size: 13px; 
+        }
+        
+        .social-links { 
+            display: flex; 
+            gap: 10px; 
+            margin-top: 25px; 
+        }
+        
+        .social-link { 
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center; 
+            width: 32px; 
+            height: 32px; 
+            background: rgba(255, 255, 255, 0.15); 
+            border-radius: 4px; 
+            color: white; 
+            transition: all 0.3s; 
+            font-size: 13px; 
+        }
+        
+        .social-link:hover { 
+            background: var(--accent); 
+            transform: translateY(-2px); 
+        }
+        
+        .footer-heading { 
+            font-size: 1rem; 
+            margin-bottom: 18px; 
+            position: relative; 
+            padding-bottom: 10px; 
+            font-weight: 600; 
+        }
+        
+        .footer-heading:after { 
+            content: ''; 
+            position: absolute; 
+            left: 0; 
+            bottom: 0; 
+            width: 40px; 
+            height: 2px; 
+            background: var(--accent); 
+        }
+        
+        .footer-links ul { 
+            list-style: none; 
+        }
+        
+        .footer-links ul li { 
+            margin-bottom: 10px; 
+        }
+        .footer-links ul li a {
+            color: rgba(255, 255, 255, 0.7); 
+            text-decoration: none; 
+            transition: all 0.3s; 
+            font-size: 13px; 
+        }
+        .footer-links ul li a i {
+            margin-left: 6px;
+            font-size: 0.7rem;
+        }
+        .footer-links ul li.has-sub .sub-links {
+            list-style: none;
+            margin-top: 8px;
+            margin-left: 14px;
+        }
+        .footer-links ul li.has-sub .sub-links li {
+            margin-bottom: 8px;
+        }
+        .footer-links ul li.has-sub .sub-links li a {
+            font-size: 12.5px;
+            color: rgba(255, 255, 255, 0.65);
+        }
+        
+        .footer-links ul li a:hover { 
+            color: var(--accent); 
+            padding-left: 5px; 
+        }
+
+        .footer-comments form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .footer-comments input,
+        .footer-comments textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            font-size: 13px;
+            transition: border-color 0.3s ease, background 0.3s ease;
+        }
+        .footer-comments input::placeholder,
+        .footer-comments textarea::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        .footer-comments input:focus,
+        .footer-comments textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: rgba(255, 255, 255, 0.12);
+        }
+        .footer-comments textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        .footer-comments button {
+            align-self: flex-start;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            background: var(--accent);
+            color: #0b1221;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+        .footer-comments button:hover {
+            background: #fff;
+            transform: translateY(-2px);
+        }
+
+        /* NEW: Star Rating CSS */
+        .footer-comments .star-rating {
+            display: flex;
+            justify-content: flex-start;
+            gap: 5px;
+            margin-bottom: 12px;
+            font-size: 1.5rem;
+            color: var(--gray);
+            cursor: pointer;
+        }
+        .footer-comments .star-rating > .fa-star {
+            transition: color 0.2s;
+        }
+        .footer-comments .star-rating:hover .fa-star {
+            color: #ffdd6a;
+        }
+        .footer-comments .star-rating .fa-star:hover ~ .fa-star {
+            color: var(--gray);
+        }
+        .footer-comments .star-rating > .fa-star.selected {
+            color: var(--warning);
+        }
+        
+        .contact-info p { 
+            display: flex; 
+            align-items: flex-start; 
+            margin-bottom: 12px; 
+            color: rgba(255, 255, 255, 0.75); 
+            font-size: 13px; 
+        }
+        
+        .contact-info i { 
+            margin-right: 10px; 
+            color: var(--accent); 
+            margin-top: 2px; 
+            font-size: 14px; 
+        }
+        
+        .copyright { 
+            text-align: center; 
+            padding-top: 20px; 
+            border-top: 1px solid rgba(255, 255, 255, 0.1); 
+            color: rgba(255, 255, 255, 0.5); 
+            font-size: 13px; 
+        }
+        
+        /* Custom Alert Modal Styles */
+        .custom-alert {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.6);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .custom-alert-content {
+            background-color: #fff;
+            margin: auto;
+            padding: 25px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 400px;
+            border-radius: 10px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            animation: modalFade 0.3s;
+        }
+
+        .close-alert-btn {
+            color: #aaa;
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .book-details {
+                grid-template-columns: 1fr;
+            }
+
+            .book-details-img {
+                max-width: 300px;
+                margin: 0 auto;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                position: fixed;
+                top: 0;
+                right: -300px;
+                width: 300px;
+                height: 100vh;
+                background: var(--darker);
+                box-shadow: -5px 0 15px rgba(0,0,0,0.2);
+                transition: right 0.3s ease-in-out;
+                z-index: 1000;
+                padding-top: 80px;
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            nav.active {
+                right: 0;
+            }
+            
+            nav ul {
+                flex-direction: column;
+                padding: 0;
+                width: 100%;
+                text-align: center;
+            }
+
+            nav ul li {
+                margin: 0;
+                position: relative;
+            }
+            
+            nav ul li a {
+                display: block;
+                padding: 18px 20px;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            
+            nav ul li.dropdown .dropdown-menu {
+                display: block;
+                position: static;
+                background: var(--dark);
+                box-shadow: none;
+                padding: 0;
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.3s ease-in-out;
+            }
+
+             nav ul li.dropdown.open .dropdown-menu {
+                max-height: 500px; /* Adjust as needed */
+            }
+
+            nav ul li.dropdown .dropdown-menu li a {
+                padding: 15px 20px;
+                font-size: 0.9em;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            }
+            
+            .header-right-icons {
+                display: flex;
+            }
+
+            .menu-toggle {
+                display: flex;
+            }
+            
+            .menu-toggle.active span:nth-child(1) {
+                transform: rotate(45deg) translate(5px, 5px);
+            }
+            
+            .menu-toggle.active span:nth-child(2) {
+                opacity: 0;
+            }
+            
+            .menu-toggle.active span:nth-child(3) {
+                transform: rotate(-45deg) translate(7px, -6px);
+            }
+            
+            .book-details-actions {
+                flex-direction: column;
+            }
+            
+            .books-grid {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .back-to-top {
+                bottom: 20px;
+                left: 20px;
+            }
+            
+            /* Keep horizontal layout on mobile */
+            .book-card {
+                flex-direction: row;
+                align-items: center; /* Keep vertical alignment centered for mobile*/
+                padding: 10px;
+                min-height: 150px;
+            }
+
+            .book-img {
+                width: 100px;
+                min-width: 100px;
+                height: 140px;
+                 margin-right: 15px; /* Adjust margin for mobile */
+            }
+
+            .book-info {
+                padding: 0; /* Remove padding for mobile */
+                text-align: left;
+                 justify-content: center; /* Center content vertically */
+                 flex-grow: 1; /* MODIFIED */
+                 flex-basis: auto; /* MODIFIED */
+                 height: auto; /* MODIFIED */
+                 max-width: none; /* Allow info to take remaining space */
+            }
+
+            .book-title {
+                font-size: 15px;
+            }
+
+            .current-price {
+                font-size: 20px;
+            }
+
+            /* START: Mobile Description Adjustments */
+             .book-description-wrapper {
+                display: none; /* Hide description on mobile for better space usage */
+            }
+             /* END: Mobile Description Adjustments */
+
+
+            .book-actions {
+                flex-direction: column;
+                gap: 8px;
+                 margin-top: 8px; /* Reduce margin-top */
+                 padding-top: 0; /* Remove padding-top */
+            }
+
+            .btn-add-cart {
+                width: 100%;
+                padding: 6px 15px;
+                font-size: 12px;
+            }
+
+            .book-actions {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .book-actions .btn {
+                width: 100%;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 10px auto;
+                max-height: 95vh;
+            }
+            
+            .modal-header {
+                padding: 15px;
+            }
+            
+            .modal-header h2 {
+                font-size: 18px;
+            }
+            
+            .modal-body {
+                padding: 15px;
+            }
+            
+            .book-details {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .book-details-img {
+                width: 100%;
+                max-width: 250px;
+                height: 350px;
+                margin: 0 auto;
+                border: 3px solid #8B7355;
+                padding: 5px;
+            }
+            
+            .book-details-info h2 {
+                font-size: 20px;
+                text-align: center;
+                margin-bottom: 5px;
+            }
+            
+            .book-details-author {
+                font-size: 14px;
+                text-align: center;
+                margin-bottom: 8px;
+            }
+            
+            /* Publisher, Language, ISBN box */
+            .book-details-info > div { /* Target the div containing meta info */
+                margin: 8px 0;
+                padding: 10px;
+                background: #f9f9f9;
+                border-radius: 6px;
+            }
+            
+            .book-details-info > div p {
+                font-size: 13px;
+                margin-bottom: 4px;
+                line-height: 1.4;
+            }
+            
+            .book-details-info > div p:last-child {
+                margin-bottom: 0;
+            }
+            
+            .book-details-price {
+                font-size: 24px !important; /* Use !important cautiously */
+                justify-content: center;
+                margin: 8px 0 !important; /* Use !important cautiously */
+            }
+            
+            .book-details-price .original-price {
+                font-size: 16px !important; /* Use !important cautiously */
+            }
+            
+            .book-details-price .discount {
+                font-size: 14px !important; /* Use !important cautiously */
+            }
+            
+            /* RESTORED: .book-details-desc for mobile modal */
+            .book-details-desc {
+                font-size: 14px;
+                line-height: 1.6;
+                text-align: justify;
+                margin: 0;
+            }
+    
+            .cart-footer {
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+            }
+            .cart-checkout-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .cart-footer .btn-large {
+                padding: 12px 20px;
+                font-size: 14px;
+                width: 100%;
+            }
+
+            /* Footer mobile improvements */
+            .footer-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 40px;
+            }
+
+            .footer-heading:after {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+
+            .footer-logo, .contact-info p, .social-links {
+                justify-content: center;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .header-right-icons .menu-toggle {
+                display: none;
+            }
+             /* Ensure description doesn't show on very large screens if not desired */
+             /* .book-description { display: block; } */
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+             .categories {
+                display: flex;
+                flex-wrap: nowrap;
+                justify-content: space-between;
+                gap: 4px;
+                overflow-x: auto;
+            }
+             .subcategories, .language-subcategories {
+                gap: 8px;
+            }
+            
+            .category-btn, .subcategory-btn, .language-btn {
+                padding: 8px 16px;
+                font-size: 14px;
+            }
+            
+            .book-actions {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            #see-more-btn {
+                width: auto;
+                padding: 10px 30px;
+            }
+
+	     .books-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+    
+    .book-card {
+        margin-bottom: 0;
+    }
+
+            /* Footer mobile improvements */
+            .footer-logo {
+                 justify-content: center;
+            }
+
+            .footer-heading {
+                font-size: 1.1rem;
+            }
+
+            .contact-info p {
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease forwards;
+        }
+        
+        /* Section Scroll Target */
+        .section-target {
+            scroll-margin-top: 100px;
+        }
+
+        .no-books {
+            text-align: center;
+            grid-column: 1 / -1;
+            padding: 2rem;
+            font-size: 1.2rem;
+            color: var(--gray);
+        }
+
+        /* Colorful Block Loading Animation */
+        .loader {
+            width: 60px;
+            aspect-ratio: 1;
+            background:
+                linear-gradient(#f77825 0 0),
+                linear-gradient(#f77825 0 0),
+                linear-gradient(#f77825 0 0),
+                linear-gradient(#f77825 0 0),
+                linear-gradient(#60B99A 0 0),
+                linear-gradient(#60B99A 0 0),
+                linear-gradient(#554236 0 0),
+                linear-gradient(#554236 0 0);
+            background-size: 25% 25%, 25% 25%, 25% 25%, 25% 25%, 25% 50%, 25% 50%, 50% 25%, 50% 25%;
+            background-repeat: no-repeat;
+            animation: l20 1.5s infinite alternate;
+            display: inline-block;
+            margin-right: 15px;
+            vertical-align: middle;
+        }
+
+        @keyframes l20 {
+            0%, 10% {
+                background-position: 
+                    calc(1*100%/3) calc(1*100%/3), calc(2*100%/3) calc(1*100%/3), calc(1*100%/3) calc(2*100%/3), calc(2*100%/3) calc(2*100%/3),
+                    calc(1*100%/3) 50%, calc(2*100%/3) 50%, 50% calc(1*100%/3), 50% calc(2*100%/3);
+            }
+            33% {
+                background-position: 
+                    calc(0*100%/3) calc(0*100%/3), calc(3*100%/3) calc(0*100%/3), calc(0*100%/3) calc(3*100%/3), calc(3*100%/3) calc(3*100%/3),
+                    calc(1*100%/3) 50%, calc(2*100%/3) 50%, 50% calc(1*100%/3), 50% calc(2*100%/3);
+            }
+            66% {
+                background-position: 
+                    calc(0*100%/3) calc(0*100%/3), calc(3*100%/3) calc(0*100%/3), calc(0*100%/3) calc(3*100%/3), calc(3*100%/3) calc(3*100%/3),
+                    calc(0*100%/3) 50%, calc(3*100%/3) 50%, 50% calc(1*100%/3), 50% calc(2*100%/3);
+            }
+            90%, 100% {
+                background-position: 
+                    calc(0*100%/3) calc(0*100%/3), calc(3*100%/3) calc(0*100%/3), calc(0*100%/3) calc(3*100%/3), calc(3*100%/3) calc(3*100%/3),
+                    calc(0*100%/3) 50%, calc(3*100%/3) 50%, 50% calc(0*100%/3), 50% calc(3*100%/3);
+            }
+        }
+
+        /* Order Confirmation Modal Styles */
+        .order-confirm-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1001;
+            overflow-y: auto;
+        }
+
+        .order-confirm-content {
+            background: white;
+            margin: 50px auto;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            animation: modalFade 0.4s;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .order-confirm-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--light-gray);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--light);
+        }
+
+        .order-confirm-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .close-confirm-modal, .close-request-modal {
+            font-size: 28px;
+            cursor: pointer;
+            color: var(--gray);
+            transition: color 0.3s;
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            z-index: 10;
+        }
+
+        .close-confirm-modal:hover, .close-request-modal:hover {
+            color: var(--dark);
+        }
+
+        .order-confirm-body {
+            padding: 30px;
+        }
+        
+        .order-message {
+            background: #f9f9f9;
+            border-left: 4px solid var(--accent);
+            padding: 15px;
+            margin-top: 10px;
+            border-radius: 4px;
+            font-size: 14px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+        
+        .order-divider {
+            border: none;
+            height: 1px;
+            background: var(--light-gray);
+            margin: 20px 0;
+        }
+
+        .order-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .btn-copy-messenger {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+
+        .btn-copy-messenger:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        .btn-copy-messenger:disabled {
+            background-color: var(--gray);
+            cursor: not-allowed;
+        }
+        
+        @media (max-width: 768px) {
+            .order-confirm-content {
+                width: 95%;
+                margin: 20px auto;
+            }
+            
+            .order-confirm-body {
+                padding: 20px;
+            }
+            
+            .book-price {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 2px !important;
+            }
+            
+            .discount {
+                margin-left: 10 !important;
+                display: block;
+                margin-top: 2px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+           <a href="index.html" class="logo" style="font-family: Algerian; display:flex; align-items:center; gap:10px; height:60px;">
+    <img src="logo2.png" alt="Readora Logo" style="width:90px; height:90px; object-fit:contain; border-radius:50%;">
+    <span style="font-size:30px;">READORA</span>
+</a>
+
+            
+            <nav id="main-nav">
+                <ul>
+                    <li><a href="index.html#home" class="nav-link active">Home</a></li>
+                    <li><a href="about.html" class="nav-link">About</a></li>
+                     <li><a href="index.html#search" class="nav-link">Search</a></li>
+                    <li><a href="index.html#categories" class="nav-link">Categories</a></li>
+
+                    <li class="dropdown">
+                        <a  class="nav-link">Collections <i class="fas fa-caret-down"></i></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="newarrival.html">New Arrivals</a></li>
+                            <li><a href="bestselling.html">Bestselling</a></li>
+                        </ul>
+                    </li>
+                     <li class="dropdown">
+                        <a  class="nav-link">Explore <i class="fas fa-caret-down"></i></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="publications.html">Publications</a></li>
+                            <li><a href="authors.html">Authors</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="dropdown">
+                        <a href="#" class="nav-link" onclick="event.preventDefault()">Contact <i class="fas fa-caret-down"></i></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#footer" class="smooth-scroll">Contact Us</a></li>
+                            <li><a href="Review.html">Reviews</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="header-right-icons">
+                <div class="cart-icon" id="cart-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span id="cart-badge" class="cart-badge">0</span>
+                </div>
+                <button class="menu-toggle" id="menu-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero" id="home">
+        <div class="container hero-content">
+            <h1>Discover Your Next Favorite Book</h1>
+            <p>Explore our curated collection of bestsellers, classics, and hidden gems for every reader</p>
+        </div>
+    </section>
+
+    <section id="search" class="section-target">
+        <div class="container">
+            <h2 class="section-title">Search Books</h2>
+            <div class="search-box">
+                <input type="text" id="search-input" placeholder="Search by title, author...">
+                <button id="search-button"><i class="fas fa-search"></i> Search</button>
+            </div>
+            <div class="books-grid" id="search-results">
+                </div>
+        </div>
+    </section>
+
+    <section id="categories" class="section-target">
+        <div class="container">
+            <h2 class="section-title">Browse by Category</h2>
+            
+            <div class="categories">
+                <button class="category-btn active" data-type="all">All Books</button>
+                <button class="category-btn" data-type="new">New Books</button>
+                <button class="category-btn" data-type="old">Old Books</button>
+                <button class="category-btn" data-type="exercise">Exercise Copy</button>
+            </div>
+
+            <hr class="category-separator" id="separator-1">
+            
+            <div class="language-subcategories" id="language-nav">
+                
+                <button class="language-btn" data-language="Bengali">Bengali</button>
+                <button class="language-btn" data-language="English">English</button>
+            </div>
+            
+            <hr class="category-separator" id="separator-2">
+            
+            <div class="subcategories" id="subcategories-nav">
+              <button class="subcategory-btn active" data-category="all">All</button>
+              <button class="subcategory-btn" data-category="Fiction">Fiction</button>
+              <button class="subcategory-btn" data-category="Non-Fiction">Non-Fiction</button>
+              <button class="subcategory-btn" data-category="Science">Science</button>
+              <button class="subcategory-btn" data-category="Technology">Technology</button>
+              <button class="subcategory-btn" data-category="Biography">Biography</button>
+              
+              <button class="subcategory-btn" data-category="Historical">Historical</button>
+              <button class="subcategory-btn" data-category="Science Fiction">Science Fiction</button>
+              <button class="subcategory-btn" data-category="Mystery">Mystery</button>
+              <button class="subcategory-btn" data-category="Adventure">Adventure</button>
+              <button class="subcategory-btn" data-category="Horror">Horror</button>
+              <button class="subcategory-btn" data-category="Religious">Religious</button>
+              <button class="subcategory-btn" data-category="Fairy Tale">Fairy Tale</button>
+              <button class="subcategory-btn" data-category="Children’s Literature">Children’s Literature</button>
+             
+              <button class="subcategory-btn" data-category="Philosophy">Philosophy</button>
+              <button class="subcategory-btn" data-category="Technical / Educational">Technical / Educational</button>
+              <button class="subcategory-btn" data-category="Political">Political</button>
+              <button class="subcategory-btn" data-category="Romance">Romance</button>
+              <button class="subcategory-btn" data-category="Thriller">Thriller</button>
+              <button class="subcategory-btn" data-category="Motivational">Motivational</button>
+              <button class="subcategory-btn" data-category="Poetry">Poetry</button>
+              <button class="subcategory-btn" data-category="Short Story">Short Story</button>
+              <button class="subcategory-btn" data-category="Drama / Play">Drama / Play</button>
+             
+              <button class="subcategory-btn" data-category="Autobiography">Autobiography</button>
+              <button class="subcategory-btn" data-category="Travel Writing">Travel Writing</button>
+            </div>
+            
+            <div class="books-grid" id="category-books">
+                </div>
+            <div id="see-more-container"></div>
+        </div>
+    </section>
+
+    <div id="book-details-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2> Details</h2>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="book-details" id="book-details-content">
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="cart-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Your Shopping Cart</h2>
+                <span class="close-cart-modal">&times;</span>
+            </div>
+            <div class="modal-body" id="cart-items-container">
+                </div>
+            <div class="cart-footer">
+                <div class="cart-total">
+                    <strong>Total:</strong> <span id="cart-total-price">₹0</span>
+                </div>
+                 <div class="cart-checkout-buttons">
+                    <button id="checkout-btn" class="btn btn-primary btn-large">
+                        <i class="fab fa-facebook-messenger"></i> FB Chat to Order
+                    </button>
+                    <button id="checkout-insta-btn" class="btn btn-instagram btn-large">
+                        <i class="fab fa-instagram"></i> Insta Chat to Order
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="order-confirm-modal" class="order-confirm-modal">
+        <div class="order-confirm-content">
+            <div class="order-confirm-header">
+                <h2>Order Confirmation</h2>
+                <span class="close-confirm-modal">&times;</span>
+            </div>
+            <div class="order-confirm-body">
+                <p>Review your order details, copy the message, and paste it into the chat using the button below to confirm your order.</p>
+                <div class="order-message" id="order-message-text">
+                </div>
+                
+                <div class="order-actions">
+                    <button id="copy-and-redirect-btn" class="btn-copy-messenger">
+                         </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Removed the redundant request modal since WhatsApp link is direct -->
+    <!-- The old book-request-modal is no longer necessary as the search functionality now uses a direct WhatsApp link -->
+    <div id="custom-alert-modal" class="custom-alert">
+        <div class="custom-alert-content">
+            <span class="close-alert-btn">&times;</span>
+            <p id="custom-alert-message"></p>
+        </div>
+    </div>
+    
+    <footer id="footer" class="section-target">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-about">
+                    <div class="footer-logo">
+                    <a href="index.html" class="logo" style="font-family: Algerian; display:flex; align-items:center; gap:10px; height:60px;">
+    <img src="logo2.png" alt="Readora Logo" style="width:90px; height:90px; object-fit:contain; border-radius:50%;">
+    <span style="font-size:30px;">READORA</span>
+</a>
+
+                    </div>
+                    <p>Your one-stop destination for all books. We offer a wide selection of books across all genres at competitive prices.</p>
+                    <div class="social-links">
+                        <a href="https://www.facebook.com/share/17JzLNsUGm/" class="social-link facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://www.instagram.com/readorabookshop?igsh=MWxvZDk4cmswMGk1MA==" class="social-link instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="tel:+919163621264" class="social-link call"><i class="fas fa-phone"></i></a>
+                        <a href="mailto:readora07@gmail.com" class="social-link email"><i class="fas fa-envelope"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-comments">
+                    <h3 class="footer-heading">Share Your Comments</h3>
+                    <form class="comment-form">
+                        <input type="text" name="name" placeholder="Your Name" required>
+                        <input type="email" name="email" placeholder="Email Address" required>
+                        <div class="star-rating">
+                            <i class="fas fa-star" data-value="1"></i><i class="fas fa-star" data-value="2"></i><i class="fas fa-star" data-value="3"></i><i class="fas fa-star" data-value="4"></i><i class="fas fa-star" data-value="5"></i>
+                        </div>
+                        <input type="hidden" name="rating" id="rating-input" value="0">
+                        <textarea name="message" placeholder="Your Comment" required></textarea>
+                        <button type="submit">Send Comment</button>
+                    </form>
+                </div>
+                
+                <div class="contact-info">
+                    <h3 class="footer-heading">Contact Us</h3>
+                    <p><i class="fas fa-map-marker-alt"></i> Sajirhat,Madhyamgram,Kolkata-700130</p>
+                    <p><i class="fas fa-phone"></i> +91 9163621264</p>
+                    <p><i class="fas fa-envelope"></i>readora07@gmail.com</p>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2020 Readora. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+<script>
+    // --- START OF SCRIPT ---
+
+    // Global variable to hold book data fetched from Google Sheets.
+    let books = [];
+    
+    // Subcategory translations
+    const subcategoryTranslations = {
+        "all": { "English": "All", "Bengali": "সমস্ত" },
+        "Fiction": { "English": "Fiction", "Bengali": "উপন্যাস" },
+        "Non-Fiction": { "English": "Non-Fiction", "Bengali": "নন-ফিকশন" },
+        "Science": { "English": "Science", "Bengali": "বিজ্ঞান" },
+        "Technology": { "English": "Technology", "Bengali": "প্রযুক্তি" },
+        "Biography": { "English": "Biography", "Bengali": "জীবনী" },
+        "Historical": { "English": "Historical", "Bengali": "ইতিহাসভিত্তিক" },
+        "Science Fiction": { "English": "Science Fiction", "Bengali": "বিজ্ঞান কল্পকাহিনি" },
+        "Mystery": { "English": "Mystery", "Bengali": "রহস্যকাহিনি" },
+        "Adventure": { "English": "Adventure", "Bengali": "অ্যাডভেঞ্চার কাহিনি" },
+        "Horror": { "English": "Horror", "Bengali": "ভৌতিক সাহিত্য" },
+        "Religious": { "English": "Religious", "Bengali": "ধর্মীয় সাহিত্য" },
+        "Children’s Literature": { "English": "Children's Literature", "Bengali": "শিশু সাহিত্য" },
+        "Fairy Tale": { "English": "Fairy Tale", "Bengali": "রূপকথা" },
+        "Philosophy": { "English": "Philosophy", "Bengali": "দর্শন সাহিত্য" },
+        "Technical / Educational": { "English": "Technical / Educational", "Bengali": "প্রযুক্তি বিষয়ক বই" },
+        "Political": { "English": "Political", "Bengali": "রাজনৈতিক সাহিত্য" },
+        "Romance": { "English": "Romance", "Bengali": "ভালবাসার কাহিনি" },
+        "Thriller": { "English": "Thriller", "Bengali": "অপরাধ কাহিনি" },
+        "Motivational": { "English": "Motivational", "Bengali": "প্রেরণামূলক সাহিত্য" },
+        "Poetry": { "English": "Poetry", "Bengali": "কবিতা" },
+        "Short Story": { "English": "Short Story", "Bengali": "গল্প" },
+        "Drama / Play": { "English": "Drama / Play", "Bengali": "নাটক" },
+        "Autobiography": { "English": "Autobiography", "Bengali": "আত্মজীবনী" },
+        "Travel Writing": { "English": "Travel Writing", "Bengali": "ভ্রমণকাহিনি" }
+    };
+    
+    // **IMPORTANT**: PASTE YOUR NEW WEB APP URL HERE
+    const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbwu-oN51IojiKyGktagf6ruRsPPoOXl57NZpcuvy7HzYIgOm7Zd_LzFAWSm_ta9tUmc/exec';
+    
+    // FIXED: Using the functional Apps Script URL from authors.html for comments
+    const COMMENT_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzB8EpgD4l6bufe8xpFIWGkT8UnJ4PFYpdH3l1X8TJeYnDRK630cvKKN-a4FJ0pp_G2/exec';
+
+
+    // --- START: CACHING & FETCHING LOGIC ---
+    async function fetchBooksAndInitialize() {
+        const grid = document.getElementById('category-books');
+        let isInitiallyRendered = false;
+
+        // 1. Try to load from cache first for instant UI
+        try {
+            const cachedBooks = JSON.parse(localStorage.getItem('readoraBooks'));
+            if (cachedBooks && cachedBooks.length > 0) {
+                console.log("Loaded", cachedBooks.length, "books from cache for initial display.");
+                books = cachedBooks;
+                init(); // Initialize event listeners and render the page with cached data
+                isInitiallyRendered = true;
+            }
+        } catch(e) {
+            console.error("Could not parse cached books:", e);
+        }
+
+        // 2. If no cache, show loader
+        if (!isInitiallyRendered) {
+            grid.innerHTML = '<div class="no-books"><div class="loader"></div>Loading books...</div>';
+        }
+
+        // 3. Always fetch fresh data from the network
+        console.log("Attempting to fetch fresh data from:", GOOGLE_SHEET_URL);
+        try {
+            const response = await fetch(GOOGLE_SHEET_URL);
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`HTTP error! Status: ${response.status} - ${errorText}`);
+            }
+            
+            let data;
+            try {
+                 data = await response.json();
+            } catch (jsonError) {
+                 console.error("Failed to parse JSON:", jsonError);
+                 console.error("Raw response text:", await response.text());
+                 throw new Error("Received invalid data format from server.");
+            }
+
+            if (data.error) {
+                throw new Error(data.error);
+            }
+
+            const processedData = data.map(book => {
+                return { ...book, frontImg: book.frontImg || book['Front Img'] || book.img };
+            });
+            
+            // 4. Compare and update if necessary
+            const oldDataJSON = isInitiallyRendered ? localStorage.getItem('readoraBooks') : '[]';
+            const newDataJSON = JSON.stringify(processedData);
+
+            if (oldDataJSON !== newDataJSON) {
+                console.log("Fresh data received. Updating books and cache.");
+                books = processedData;
+                localStorage.setItem('readoraBooks', newDataJSON);
+                
+                if (isInitiallyRendered) {
+                    // Re-render with new data
+                    displayBooksByCategory();
+                } else {
+                    // First time render
+                    init();
+                }
+            } else {
+                console.log("Book data is already up-to-date.");
+                if (!isInitiallyRendered) {
+                    // If there was no cache, we still need to render the page now.
+                    init();
+                }
+            }
+        } catch (error) {
+            console.error('Failed to fetch or process fresh books:', error);
+            if (!isInitiallyRendered) {
+                // Only show error if we couldn't show anything to the user
+                grid.innerHTML = `<div class="no-books">Error loading books. Please check your connection. <br> <small>${error.message}</small></div>`;
+            }
+        }
+    }
+    // --- END: CACHING & FETCHING LOGIC ---
+
+    // Sample exercise copy data remains hard-coded
+    const exerciseCopies = [
+        { id: 'ex1', title: 'Classmate Notebook', img: 'https://images.meesho.com/images/products/112719835/hqino_512.webp?width=512', description: 'Durable notebook for everyday use.', price: 60, author: 'Classmate', publication: 'ITC' },
+        { id: 'ex2', title: 'Spiral Notebook', img: 'https://rukminim2.flixcart.com/image/850/1000/kfmv9u80/notebook/p/y/g/navneet-youva-soft-bound-long-notebook-17x27-single-line-original-imafwfz7z7hzzfyb.jpeg?q=20&crop=false', description: 'Spiral bound, easy to flip pages.', price: 80, author: 'Navneet', publication: 'Navneet' },
+        { id: 'ex3', title: 'Practical Copy', img: 'https://targetpublications.org/media/catalog/product/cache/1/image/700x700/9df78eab33525d08d6e5fb8d27136e95/t/a/target_s_eco-friendly_practical_notebook_for_students_2.jpg', description: 'Eco-friendly practical notebook.', price: 100, author: 'Target', publication: 'Target' },
+        { id: 'ex4', title: 'Graph Paper Book', img: 'https://laxmistationery.com/wp-content/uploads/2021/07/Classmate-Graph-Book-32-Pages-Pack-of-12.jpg', description: 'Perfect for math & geometry.', price: 50, author: 'Classmate', publication: 'ITC' }
+    ];
+
+    // DOM Elements
+    const searchInput = document.getElementById('search-input');
+    const searchButton = document.getElementById('search-button');
+    const categoryButtons = document.querySelectorAll('.category-btn');
+    const subcategoryButtons = document.querySelectorAll('.subcategory-btn');
+    const subcategoriesNav = document.getElementById('subcategories-nav');
+    const languageNav = document.getElementById('language-nav');
+    const categoryBooksGrid = document.getElementById('category-books');
+    const searchResultsGrid = document.getElementById('search-results');
+    const bookDetailsModal = document.getElementById('book-details-modal');
+    const bookDetailsContent = document.getElementById('book-details-content');
+    const closeModalBtns = document.querySelectorAll('.close-modal');
+    const navLinks = document.querySelectorAll('.nav-link');
+    const menuToggle = document.getElementById('menu-toggle');
+    const mainNav = document.getElementById('main-nav');
+    const seeMoreContainer = document.getElementById('see-more-container');
+    const backToTop = document.createElement('div');
+    backToTop.className = 'back-to-top';
+    backToTop.innerHTML = '<i class="fas fa-arrow-up"></i>';
+    document.body.appendChild(backToTop);
+
+    // Cart Elements
+    const cartIcon = document.getElementById('cart-icon');
+    const cartBadge = document.getElementById('cart-badge');
+    const cartModal = document.getElementById('cart-modal');
+    const closeCartModalBtn = cartModal.querySelector('.close-cart-modal');
+    const cartItemsContainer = document.getElementById('cart-items-container');
+    const cartTotalPriceEl = document.getElementById('cart-total-price');
+    const checkoutBtn = document.getElementById('checkout-btn');
+    const checkoutInstaBtn = document.getElementById('checkout-insta-btn');
+
+    // Custom Alert Modal Elements
+    const customAlertModal = document.getElementById('custom-alert-modal');
+    const customAlertMessage = document.getElementById('custom-alert-message');
+    const closeAlertBtn = document.querySelector('.close-alert-btn');
+
+    // App State
+    let cart = JSON.parse(localStorage.getItem('readoraCart')) || [];
+    let selectedCategory = 'all'; // English name from data-category
+    let selectedType = 'all';
+    let selectedLanguage = 'all'; // 'all', 'Bengali', 'English'
+
+    // Pagination state
+    const BOOKS_PER_PAGE = 8;
+    let visibleBookCount = BOOKS_PER_PAGE;
+    
+    // Function to update subcategory labels based on language
+    function updateSubcategoryLabels(language) {
+         // Default to English if 'all' languages are selected or if Bengali translation missing
+        const langKey = (language === 'Bengali') ? 'Bengali' : 'English';
+        subcategoryButtons.forEach(button => {
+            const categoryKey = button.getAttribute('data-category'); // English key
+             if (subcategoryTranslations[categoryKey] && subcategoryTranslations[categoryKey][langKey]) {
+                button.textContent = subcategoryTranslations[categoryKey][langKey];
+            } else {
+                // Fallback to English if translation is missing
+                button.textContent = subcategoryTranslations[categoryKey]?.English || categoryKey;
+            }
+        });
+    }
+
+    function init() {
+        // Set default language button state
+        updateSubcategoryLabels(selectedLanguage);
+        displayBooksByCategory();
+        setupEventListeners();
+        updateCartBadge();
+    }
+
+    // NEW: Function to update star display
+    function updateStars(rating) {
+        const stars = document.querySelectorAll('.star-rating .fa-star');
+        stars.forEach(star => {
+            star.classList.toggle('selected', star.dataset.value <= rating);
+        });
+    }
+
+    function setupEventListeners() {
+        // Mobile menu toggle
+        menuToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            menuToggle.classList.toggle('active');
+            mainNav.classList.toggle('active');
+            
+            // Close all dropdowns when toggling mobile menu
+            if (!mainNav.classList.contains('active')) {
+                document.querySelectorAll('.dropdown').forEach(dropdown => {
+                    dropdown.classList.remove('open');
+                });
+            }
+        });
+
+        // Handle dropdown toggle for all dropdowns including contact
+        document.querySelectorAll('.dropdown > a').forEach(dropdownToggle => {
+            // Remove any existing click event listeners to prevent duplicates
+            const newToggle = dropdownToggle.cloneNode(true);
+            dropdownToggle.parentNode.replaceChild(newToggle, dropdownToggle);
+            
+            newToggle.addEventListener('click', function(e) {
+                // Prevent default for all dropdown toggles
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const dropdown = this.parentElement;
+                const isOpen = dropdown.classList.contains('open');
+                
+                // Close all other dropdowns
+                document.querySelectorAll('.dropdown').forEach(d => {
+                    if (d !== dropdown) d.classList.remove('open');
+                });
+                
+                // Toggle current dropdown
+                if (!isOpen) {
+                    dropdown.classList.add('open');
+                } else {
+                    dropdown.classList.remove('open');
+                }
+                
+                // If on mobile and clicking a dropdown in the mobile menu, don't close the menu
+                if (window.innerWidth <= 768) {
+                    e.stopPropagation();
+                }
+            });
+        });
+        
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function() {
+            document.querySelectorAll('.dropdown').forEach(dropdown => {
+                dropdown.classList.remove('open');
+            });
+        });
+        
+        // Handle smooth scrolling for navigation links
+        document.querySelectorAll('a.smooth-scroll, .dropdown-menu a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                const targetId = this.getAttribute('href');
+                
+                // Skip if it's just a # or points to an external page
+                if (!targetId || targetId === '#' || targetId.includes('.html')) return;
+                
+                e.preventDefault();
+                try {
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        // Close mobile menu if open
+                        const mainNav = document.getElementById('main-nav');
+                        const menuToggle = document.getElementById('menu-toggle');
+                        if (mainNav && mainNav.classList.contains('active')) {
+                            menuToggle.classList.remove('active');
+                            mainNav.classList.remove('active');
+                        }
+                        
+                        // Close all dropdowns
+                        document.querySelectorAll('.dropdown').forEach(dropdown => {
+                            dropdown.classList.remove('open');
+                        });
+                        
+                        // Smooth scroll to target
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 100,
+                            behavior: 'smooth'
+                        });
+                    }
+                } catch (error) {
+                    console.error("Error finding or scrolling to target element:", targetId, error);
+                }
+            });
+        });
+        
+        // Original navLinks click handler for non-dropdown navigation
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                const targetId = link.getAttribute('href');
+                if (!targetId || targetId.includes('.html') || targetId === '#') return;
+                
+                e.preventDefault();
+                try {
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        navLinks.forEach(navLink => navLink.classList.remove('active'));
+                        link.classList.add('active');
+                        if (mainNav.classList.contains('active')) {
+                            menuToggle.classList.remove('active');
+                            mainNav.classList.remove('active');
+                        }
+                        window.scrollTo({ top: targetElement.offsetTop - 100, behavior: 'smooth' });
+                    }
+                } catch (error) {
+                    console.error("Error finding or scrolling to target element:", targetId, error);
+                }
+            });
+        });
+
+        searchButton.addEventListener('click', () => performSearch(searchInput.value));
+        searchInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') performSearch(searchInput.value); });
+
+        categoryButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                categoryButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                selectedType = button.getAttribute('data-type');
+                
+                const separator1 = document.getElementById('separator-1');
+                const separator2 = document.getElementById('separator-2');
+                
+                if (selectedType === 'exercise') {
+                    subcategoriesNav.style.display = 'none';
+                    languageNav.style.display = 'none';
+                    if (separator1) separator1.style.display = 'none';
+                    if (separator2) separator2.style.display = 'none';
+                } else {
+                    if (separator1) separator1.style.display = 'block';
+                    if (separator2) separator2.style.display = 'block';
+                    subcategoriesNav.style.display = 'flex';
+                    languageNav.style.display = 'flex';
+                }
+                visibleBookCount = BOOKS_PER_PAGE;
+                displayBooksByCategory();
+            });
+        });
+        
+        document.querySelectorAll('.language-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                if (button.classList.contains('active')) {
+                    button.classList.remove('active');
+                    selectedLanguage = 'all';
+                } else {
+                    document.querySelectorAll('.language-btn').forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    selectedLanguage = button.getAttribute('data-language');
+                }
+                
+                updateSubcategoryLabels(selectedLanguage);
+                
+                subcategoryButtons.forEach(btn => btn.classList.remove('active'));
+                document.querySelector('.subcategory-btn[data-category="all"]').classList.add('active');
+                selectedCategory = 'all';
+                
+                visibleBookCount = BOOKS_PER_PAGE;
+                displayBooksByCategory();
+            });
+        });
+
+        subcategoryButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                subcategoryButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                selectedCategory = button.getAttribute('data-category');
+                visibleBookCount = BOOKS_PER_PAGE;
+                displayBooksByCategory();
+            });
+        });
+
+        closeModalBtns.forEach(btn => btn.addEventListener('click', () => { 
+            bookDetailsModal.style.display = 'none'; 
+            document.body.style.overflow = '';
+        }));
+        closeAlertBtn.addEventListener('click', () => { customAlertModal.style.display = 'none'; });
+        closeCartModalBtn.addEventListener('click', () => { cartModal.style.display = 'none'; });
+        
+        // Redirect to payment page when cart icon is clicked
+        cartIcon.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.location.href = 'payment.html';
+        });
+        checkoutBtn.addEventListener('click', () => handleCheckoutWithPlatform('facebook'));
+        if(checkoutInstaBtn) checkoutInstaBtn.addEventListener('click', () => handleCheckoutWithPlatform('instagram'));
+
+
+        window.addEventListener('click', (e) => {
+            if (e.target === bookDetailsModal) {
+                 bookDetailsModal.style.display = 'none'; 
+                 document.body.style.overflow = '';
+            }
+            if (e.target === cartModal) cartModal.style.display = 'none';
+            if (e.target === document.getElementById('order-confirm-modal')) document.getElementById('order-confirm-modal').style.display = 'none';
+            if (e.target === customAlertModal) customAlertModal.style.display = 'none';
+             // The book-request-modal is removed but kept for completeness
+             // if (e.target === document.getElementById('book-request-modal')) document.getElementById('book-request-modal').style.display = 'none';
+        });
+        
+        window.addEventListener('scroll', () => {
+            backToTop.classList.toggle('show', window.pageYOffset > 300);
+            highlightNavOnScroll();
+        });
+
+        backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+        const commentForm = document.querySelector('.comment-form');
+        if (commentForm) {
+            const stars = document.querySelectorAll('.star-rating .fa-star');
+            const ratingInput = document.getElementById('rating-input');
+
+            // Star rating interaction logic
+            stars.forEach(star => {
+                star.addEventListener('click', function() {
+                    ratingInput.value = this.dataset.value;
+                    updateStars(parseInt(this.dataset.value));
+                });
+                star.addEventListener('mouseover', function() {
+                    updateStars(parseInt(this.dataset.value));
+                });
+                star.addEventListener('mouseout', function() {
+                    updateStars(parseInt(ratingInput.value || 0));
+                });
+            });
+
+            commentForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const submitButton = commentForm.querySelector('button[type="submit"]');
+                const name = commentForm.elements['name'].value.trim();
+                const email = commentForm.elements['email'].value.trim();
+                const message = commentForm.elements['message'].value.trim();
+                const rating = ratingInput.value;
+
+                if (!name || !email || !message || rating === "0") {
+                    showCustomAlert('Please fill in all fields and provide a star rating.');
+                    return;
+                }
+
+                submitButton.textContent = 'Submitting...';
+                submitButton.disabled = true;
+
+                try {
+                    await fetch(COMMENT_SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors', // Important for this type of App Script deployment
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            name: name,
+                            email: email,
+                            message: message,
+                            rating: rating,
+                            timestamp: new Date().toISOString()
+                        })
+                    });
+
+                    // Since it's a no-cors request, we can't read the response. 
+                    // We'll assume success and provide feedback to the user.
+                    showCustomAlert('Thank you for your review!');
+                    commentForm.reset();
+                    ratingInput.value = '0';
+                    updateStars(0);
+
+                } catch (error) {
+                    console.error('Error submitting review:', error);
+                    showCustomAlert('Could not submit your review. Please try again later.');
+                } finally {
+                    submitButton.textContent = 'Send Comment';
+                    submitButton.disabled = false;
+                }
+            });
+        }
+    }
+    
+    function highlightNavOnScroll() {
+        const scrollPosition = window.scrollY + 150;
+        let currentSectionId = 'home';
+        
+        const heroSection = document.querySelector('.hero');
+        if (heroSection && scrollPosition < heroSection.offsetHeight) {
+            currentSectionId = 'home';
+        } else {
+            document.querySelectorAll('.section-target').forEach(section => {
+                if (scrollPosition >= section.offsetTop) {
+                    currentSectionId = section.getAttribute('id');
+                }
+            });
+        }
+        
+        navLinks.forEach(link => {
+            const href = link.getAttribute('href');
+            if (href && href.startsWith('#')) {
+                link.classList.toggle('active', href === `#${currentSectionId}` || href === `index.html#${currentSectionId}`);
+            }
+        });
+    }
+    
+    function showCustomAlert(message) {
+        customAlertMessage.textContent = message;
+        customAlertModal.style.display = 'flex';
+    }
+
+    function displayBooksByCategory() {
+        categoryBooksGrid.innerHTML = '';
+        seeMoreContainer.innerHTML = '';
+
+        if (selectedType === 'exercise') {
+            exerciseCopies.forEach(copy => categoryBooksGrid.appendChild(createExerciseCopyCard(copy)));
+            updateAddToCartButtonsUI(); // *** ADDED THIS LINE ***
+            return;
+        }
+
+        const filteredBooks = books.filter(book => {
+            const typeMatch = selectedType === 'all' ||
+                              (book.condition && (book.condition.toLowerCase() === selectedType || book.condition.toLowerCase() === 'both'));
+            if (!typeMatch) return false;
+
+            const bookLangLower = (book.language || '').toLowerCase();
+            const bookPubLower = (book.publication || '').toLowerCase();
+            const isBookBengali = bookLangLower.includes('bengali') || bookLangLower.includes('বাংলা') ||
+                                  bookPubLower.includes('ananda') || bookPubLower.includes('dey') || bookPubLower.includes('বাংলা') ||
+                                  (book.category && (book.category === "উপন্যাস" || book.category === "কবিতা" || book.category === "গল্প" ));
+
+             let languageMatch = true;
+             if (selectedLanguage !== 'all') {
+                if (selectedLanguage === 'Bengali') {
+                    languageMatch = isBookBengali;
+                } else if (selectedLanguage === 'English') {
+                    languageMatch = !isBookBengali || bookLangLower.includes('english');
+                 } else {
+                     languageMatch = bookLangLower.includes(selectedLanguage.toLowerCase());
+                 }
+             }
+             if (!languageMatch) return false;
+
+            let categoryMatch = true;
+            if (selectedCategory !== 'all') {
+                if (!book.category) return false;
+                const bookCategoryValue = book.category;
+                if (bookCategoryValue.trim().toLowerCase() === selectedCategory.trim().toLowerCase()) {
+                    categoryMatch = true;
+                }
+                else if (selectedLanguage === 'Bengali' || (selectedLanguage === 'all' && isBookBengali)) {
+                    const expectedBengaliCategory = subcategoryTranslations[selectedCategory]?.Bengali;
+                    categoryMatch = expectedBengaliCategory && bookCategoryValue.trim() === expectedBengaliCategory.trim();
+                }
+                 else if (selectedLanguage === 'English' || (selectedLanguage === 'all' && !isBookBengali)) {
+                      categoryMatch = false;
+                 }
+                 else {
+                     categoryMatch = false;
+                 }
+            }
+             if (!categoryMatch) return false;
+            return true;
+        });
+
+        if (filteredBooks.length === 0) {
+            categoryBooksGrid.innerHTML = '<div class="no-books">No books found for the selected filters.</div>';
+            return;
+        }
+
+        const booksToShow = filteredBooks.slice(0, visibleBookCount);
+        booksToShow.forEach(book => categoryBooksGrid.appendChild(createBookCard(book)));
+
+        updateAddToCartButtonsUI();
+
+        if (filteredBooks.length > visibleBookCount) {
+            const seeMoreBtn = document.createElement('button');
+            seeMoreBtn.textContent = 'See More';
+            seeMoreBtn.id = 'see-more-btn';
+            seeMoreBtn.className = 'btn btn-primary';
+            seeMoreBtn.onclick = () => {
+                visibleBookCount += BOOKS_PER_PAGE;
+                displayBooksByCategory();
+            };
+            seeMoreContainer.appendChild(seeMoreBtn);
+        }
+    }
+
+    function createBookCard(book) {
+        const card = document.createElement('div');
+        card.className = 'book-card fade-in';
+        const discount = book.originalPrice > 0 ? Math.round(((book.originalPrice - book.price) / book.originalPrice) * 100) : 0;
+        const imageUrl = book.frontImg ? book.frontImg : 'https://dummyimage.com/130x180/5c5c5c/ffffff&text=No+Image';
+        const descriptionSnippet = book.description || '';
+
+        card.innerHTML = `
+            <div class="book-img">
+                <img src="${imageUrl}" alt="${book.title}" onerror="this.onerror=null; this.src='https://dummyimage.com/130x180/5c5c5c/ffffff&text=No+Image';">
+                <div class="book-hover-badge">${book.category || 'Book'}</div>
+            </div>
+            <div class="book-info">
+                <div>
+                    <h3 class="book-title">${book.title}</h3>
+                    <p class="book-author">by ${book.author}</p>
+                    <div class="book-price">
+                        <span class="current-price">₹${book.price}</span>
+                        ${book.originalPrice > 0 ? `<span class="original-price">M.R.P.: ₹${book.originalPrice}</span>` : ''}
+                        ${discount > 0 ? `<span class="discount">(${discount}% off)</span>` : ''}
+                    </div>
+                    <p class="free-delivery">Free delivery on 3 books</p>
+                    
+                </div>
+                <div class="book-actions">
+                    <button class="btn-add-cart add-to-cart-btn" data-id="${book.id}">
+                        Add to cart
+                    </button>
+                </div>
+            </div>
+            <div class="book-description-wrapper">
+                <p class="book-description">${descriptionSnippet}</p>
+            </div>
+        `; 
+        card.addEventListener('click', (e) => {
+            if (!e.target.closest('.add-to-cart-btn')) {
+                 showBookDetails(book.id);
+            }
+        });
+        card.querySelector('.add-to-cart-btn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleCartItem(book.id);
+        });
+        return card;
+    }
+
+    // --- *** THIS FUNCTION IS UPDATED *** ---
+    function createExerciseCopyCard(copy) {
+        const card = document.createElement('div');
+        card.className = 'book-card fade-in';
+        card.innerHTML = `
+            <div class="book-img"><img src="${copy.img}" alt="${copy.title}" style="object-fit: contain; padding: 10px;"></div>
+            <div class="book-info">
+                 <div>
+                    <h3 class="book-title">${copy.title}</h3>
+                    <div class="book-price"><span class="current-price">₹${copy.price}</span></div>
+                </div>
+                <div class="book-actions">
+                    <button class="btn-add-cart add-to-cart-btn" data-id="${copy.id}">
+                        Add to cart
+                    </button>
+                </div>
+            </div>
+            <div class="book-description-wrapper">
+                <p class="book-description">${copy.description || ''}</p>
+            </div>
+        `;
+        // Card click listener to open details modal
+        card.addEventListener('click', (e) => {
+            if (!e.target.closest('.add-to-cart-btn')) {
+                 showExerciseDetails(copy.id); // Call the correct details function
+            }
+        });
+        // Button click listener to add to cart
+        card.querySelector('.btn-add-cart').addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleCartItem(copy.id); 
+        });
+        return card;
+    }
+
+    function showExerciseDetails(copyId) {
+        const copy = exerciseCopies.find(c => c.id === copyId);
+        if (!copy) return;
+        bookDetailsContent.innerHTML = `
+            <div class="book-details-img"><img src="${copy.img}" alt="${copy.title}"></div>
+            <div class="book-details-info">
+                <h2>${copy.title}</h2>
+                <div class="book-details-price">₹${copy.price}</div>
+                <p style="font-size:14px; color: var(--gray); margin-bottom:15px;">(+ Delivery Charge)</p>
+                <p class="book-details-desc">${copy.description}</p>
+                </div>`;
+        bookDetailsModal.style.display = 'block';
+         document.body.style.overflow = 'hidden';
+    }
+    
+    // --- UPDATED performSearch FUNCTION FOR WHATSAPP BUTTON ---
+    function performSearch(query) {
+        if (!query.trim()) return;
+        
+        const searchSection = document.getElementById('search');
+        if (searchSection) {
+            searchSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        
+        const lowerQuery = query.trim().toLowerCase();
+        
+        // Function to check if any word in the search query matches any word in the target string
+        const matchesAnyWord = (searchStr, targetStr) => {
+            if (!targetStr) return false;
+            const searchWords = searchStr.split(/\s+/).filter(Boolean);
+            const targetWords = targetStr.toLowerCase().split(/\s+/);
+            return searchWords.some(word => 
+                targetWords.some(tWord => tWord.startsWith(word))
+            );
+        };
+        
+        const bookResults = books.filter(book => 
+            book.title.toLowerCase().includes(lowerQuery) || 
+            (book.author && matchesAnyWord(lowerQuery, book.author)) ||
+            (book.category && book.category.toLowerCase().includes(lowerQuery)) ||
+            (book.publication && book.publication.toLowerCase().includes(lowerQuery))
+        );
+        
+        const copyResults = exerciseCopies.filter(copy => 
+            copy.title.toLowerCase().includes(lowerQuery) ||
+            (copy.author && matchesAnyWord(lowerQuery, copy.author))
+        );
+
+        searchResultsGrid.innerHTML = '';
+        if (bookResults.length === 0 && copyResults.length === 0) {
+            searchResultsGrid.innerHTML = `
+                <div class="no-books">
+                    <p>No results found for "<strong>${query}</strong>"</p>
+                    <button id="contact-whatsapp-btn" class="btn btn-whatsapp" style="margin-top: 20px;">
+                        <i class="fab fa-whatsapp"></i> Request via WhatsApp
+                    </button>
+                </div>`;
+            
+            const whatsappBtn = document.getElementById('contact-whatsapp-btn');
+            whatsappBtn.addEventListener('click', () => {
+                // Phone number found in the footer contact info: +919330233178
+                const whatsappNumber = '919330233178'; 
+                const requestMessage = `Hello Readora, I'm requesting a book. The search query was: "${query}". Can this book be arranged?`;
+                const encodedMessage = encodeURIComponent(requestMessage);
+                
+                // Use the standard wa.me link to open WhatsApp
+                const whatsappLink = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+                
+                window.open(whatsappLink, '_blank');
+            });
+            return;
+        }
+
+        bookResults.forEach(book => searchResultsGrid.appendChild(createBookCard(book)));
+        copyResults.forEach(copy => searchResultsGrid.appendChild(createExerciseCopyCard(copy)));
+         updateAddToCartButtonsUI();
+    }
+    // --- END UPDATED performSearch FUNCTION ---
+
+    function showBookDetails(bookId) {
+        const book = books.find(b => b.id === bookId);
+        if (!book) return;
+
+        const discount = book.originalPrice > 0 ? Math.round(((book.originalPrice - book.price) / book.originalPrice) * 100) : 0;
+        
+        let language = 'English';
+        if (book.language) {
+            language = book.language;
+        } else if (book.publication && (book.publication.toLowerCase().includes('ananda') || book.publication.toLowerCase().includes('dey') || book.publication.toLowerCase().includes('বাংলা'))) {
+             language = 'Bengali';
+        }
+
+        let descriptionHTML = '';
+        if (book.description) {
+            descriptionHTML = `
+                <div style="margin-top: 20px;">
+                    <h3 style="font-size: 16px; margin-bottom: 10px; color: var(--dark);">Description:</h3>
+                    <p class="book-details-desc" id="book-desc-text">${book.description}</p>
+                </div>`;
+        }
+
+        const imageUrl = book.frontImg ? book.frontImg : 'https://dummyimage.com/250x375/5c5c5c/ffffff&text=No+Image';
+
+        bookDetailsContent.innerHTML = `
+            <div class="book-details-img">
+                <img src="${imageUrl}" alt="${book.title}" onerror="this.onerror=null; this.src='https://dummyimage.com/250x375/5c5c5c/ffffff&text=No+Image';">
+            </div>
+            <div class="book-details-info">
+                <h2>${book.title}</h2>
+                <p class="book-details-author">by ${book.author}</p>
+                <div style="margin: 15px 0; padding: 15px; background: #f9f9f9; border-radius: 6px;">
+                    <p style="font-size: 14px; color: var(--dark); margin-bottom: 8px;"><strong>Publisher:</strong> ${book.publication || 'N/A'}</p>
+                    <p style="font-size: 14px; color: var(--dark); margin-bottom: 8px;"><strong>Language:</strong> ${language}</p>
+                    <p style="font-size: 14px; color: var(--dark); margin-bottom: 0;"><strong>ISBN:</strong> ${book.isbn || 'N/A'}</p>
+                </div>
+                <div class="book-details-price">
+                    ₹${book.price}
+                    ${book.originalPrice > 0 ? `<span class="original-price" style="font-size: 18px; margin-left: 10px;">₹${book.originalPrice}</span>` : ''}
+                    ${discount > 0 ? `<span class="discount" style="margin-left: 10px;">${discount}% off</span>` : ''}
+                </div>
+                ${descriptionHTML} 
+            </div>`;
+            
+        bookDetailsModal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+        
+        const closeModal = () => {
+            bookDetailsModal.style.display = 'none';
+            document.body.style.overflow = '';
+        };
+        
+        const closeBtn = bookDetailsModal.querySelector('.close-modal');
+        if (closeBtn) {
+            closeBtn.onclick = closeModal;
+        }
+        
+        updateAddToCartButtonsUI();
+    }
+
+    // --- CART FUNCTIONS ---
+    function saveCartToStorage() { localStorage.setItem('readoraCart', JSON.stringify(cart)); }
+
+    function toggleCartItem(itemId) {
+         if (itemId == null) return;
+        if (cart.some(item => String(item.id) === String(itemId))) {
+            removeFromCart(itemId, true);
+        } else {
+            addToCart(itemId);
+        }
+        updateAddToCartButtonsUI();
+    }
+
+    // --- *** THIS FUNCTION IS UPDATED *** ---
+    function addToCart(itemId) {
+        // Find the item in either the books array or the exerciseCopies array
+        const itemToAdd = books.find(b => String(b.id) === String(itemId)) || exerciseCopies.find(c => String(c.id) === String(itemId));
+        if (!itemToAdd) {
+            console.error("Item not found:", itemId);
+            return; // Exit if the item isn't found
+        }
+
+        const itemInCart = cart.find(item => String(item.id) === String(itemId));
+        if (itemInCart) {
+            itemInCart.quantity++;
+        } else {
+            // Add the found item to the cart with a quantity of 1
+            cart.push({ ...itemToAdd, quantity: 1 });
+        }
+        saveCartToStorage();
+        updateCartBadge();
+    }
+
+    
+    function updateCartBadge() { 
+        cartBadge.textContent = cart.length; // FIXED: show unique items
+    }
+
+    function updateAddToCartButtonsUI() {
+        document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+            const itemId = btn.dataset.id;
+             if (itemId) {
+                const inCart = cart.some(item => String(item.id) === String(itemId));
+                if(btn.classList.contains('btn-add-cart')) {
+                    btn.textContent = inCart ? 'Added' : 'Add to cart';
+                    btn.classList.toggle('added', inCart);
+                } else {
+                    btn.innerHTML = inCart ? `<i class="fas fa-check"></i> Added` : `<i class="fas fa-cart-plus"></i> Cart`;
+                    btn.classList.toggle('added', inCart);
+                }
+            } else {
+                 if (!btn.classList.contains('enquire-btn')) {
+                    console.warn("Add to cart button found without a valid data-id:", btn);
+                 }
+             }
+        });
+    }
+
+    function displayCart() {
+        cartItemsContainer.innerHTML = '';
+        if (cart.length === 0) {
+            cartItemsContainer.innerHTML = `<p class="cart-empty-message">Your cart is empty.</p>`;
+            document.querySelector('.cart-checkout-buttons').style.display = 'none';
+        } else {
+            cart.forEach(item => {
+                if (item && item.id != null) {
+                    const cartItemEl = document.createElement('div');
+                    cartItemEl.className = 'cart-item';
+                    cartItemEl.innerHTML = `
+                        <img src="${item.frontImg || item.img || 'https://dummyimage.com/80x120/ccc/fff&text=No+Image'}" alt="${item.title}" class="cart-item-img" onerror="this.onerror=null;this.src='https://dummyimage.com/80x120/ccc/fff&text=No+Image';">
+                        <div class="cart-item-info">
+                            <h4>${item.title}</h4>
+                            <p class="cart-item-price">₹${item.price}</p>
+                        </div>
+                        <div class="cart-item-quantity">
+                            <button class="quantity-btn" data-id="${item.id}" data-change="-1">-</button>
+                            <span>${item.quantity}</span>
+                            <button class="quantity-btn" data-id="${item.id}" data-change="1">+</button>
+                        </div>
+                        <i class="fas fa-trash cart-item-remove" data-id="${item.id}"></i>`;
+                    cartItemsContainer.appendChild(cartItemEl);
+                }
+            });
+            document.querySelector('.cart-checkout-buttons').style.display = 'flex';
+        }
+        updateCartTotal();
+        addCartEventListeners();
+        cartModal.style.display = 'block';
+    }
+
+    function addCartEventListeners() {
+        cartItemsContainer.querySelectorAll('.quantity-btn, .cart-item-remove').forEach(btn => {
+            btn.onclick = (e) => {
+                 const itemId = e.currentTarget.dataset.id;
+                 if (itemId) {
+                    if (e.currentTarget.classList.contains('cart-item-remove')) {
+                        removeFromCart(itemId);
+                    } else {
+                        const change = parseInt(e.currentTarget.dataset.change);
+                        updateQuantity(itemId, change);
+                    }
+                }
+            };
+        });
+    }
+
+    function updateQuantity(itemId, change) {
+        const itemInCart = cart.find(item => String(item.id) === String(itemId));
+        if (itemInCart) {
+            itemInCart.quantity += change;
+            if (itemInCart.quantity <= 0) removeFromCart(itemId);
+            else {
+                saveCartToStorage();
+                displayCart();
+            }
+        }
+    }
+
+    function removeFromCart(itemId, isSilent = false) {
+        cart = cart.filter(item => String(item.id) !== String(itemId));
+        saveCartToStorage();
+        if (!isSilent) displayCart();
+        updateCartBadge();
+        updateAddToCartButtonsUI();
+    }
+
+    function updateCartTotal() {
+        const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        cartTotalPriceEl.textContent = `₹${total}`;
+    }
+
+    function handleCheckoutWithPlatform(platform) {
+        const dateTime = new Date().toLocaleString('en-IN', { dateStyle: 'short', timeStyle: 'short' });
+        let orderDetails = "I would like to order the following items:\n\n";
+        cart.forEach(item => {
+            orderDetails += `📖 ${item.title}\n✍️ by ${item.author || 'N/A'}\n🏢 Publisher: ${item.publication || 'N/A'}\n- Qty: ${item.quantity}, Price: ₹${item.price * item.quantity}\n\n`;
+        });
+        const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        orderDetails += `--------------------\n💰 Total Bill: ₹${total}\n📅 Order Time: ${dateTime}\n\nPlease confirm availability and delivery details.`;
+        
+        showOrderConfirmModal(orderDetails, platform);
+        cartModal.style.display = 'none';
+    }
+
+    function showOrderConfirmModal(orderText, platform) {
+        const modal = document.getElementById('order-confirm-modal');
+        modal.querySelector('#order-message-text').innerText = orderText;
+        const copyBtn = modal.querySelector('#copy-and-redirect-btn');
+
+        const platformDetails = {
+            facebook: {
+                url: 'https://www.messenger.com/t/718957201308613',
+                name: 'Messenger',
+                icon: 'fa-facebook-messenger',
+                style: '' // Resets to default CSS
+            },
+            instagram: {
+                url: 'https://www.instagram.com/direct/t/17847140604595484/',
+                name: 'Instagram',
+                icon: 'fa-instagram',
+                style: 'linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)'
+            }
+        };
+        const details = platformDetails[platform];
+
+        copyBtn.innerHTML = `<i class="fab ${details.icon}"></i> Copy & Go to ${details.name}`;
+        copyBtn.style.background = details.style;
+
+        modal.style.display = 'block';
+        const closeBtn = modal.querySelector('.close-confirm-modal');
+        const closeModalHandler = () => {
+            modal.style.display = 'none';
+            copyBtn.style.background = ''; // Reset style on close
+        };
+        closeBtn.onclick = closeModalHandler;
+
+        copyBtn.onclick = async function() {
+            this.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Copying...`;
+            this.disabled = true;
+            try {
+                await copyToClipboard(orderText);
+                window.open(details.url, '_blank');
+            } catch (err) {
+                console.error('Failed to copy or open:', err);
+            } finally {
+                setTimeout(() => {
+                    this.disabled = false;
+                    closeModalHandler();
+                }, 1000);
+            }
+        };
+    }
+
+    function copyToClipboard(text) {
+        try {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            textArea.style.top = "0";
+            textArea.style.left = "0";
+            textArea.style.opacity = "0";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            const successful = document.execCommand('copy');
+            document.body.removeChild(textArea);
+            return successful ? Promise.resolve() : Promise.reject(new Error('Copy command failed'));
+        } catch (err) {
+            console.error('Fallback copy failed:', err);
+            return Promise.reject(err);
+        }
+    }
+
+    // Initialize the app by fetching data first.
+    document.addEventListener('DOMContentLoaded', fetchBooksAndInitialize);
+</script>
+</body>
+</html>

@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Readora - Online Book Store</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Montserrat:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #4a6fa5;
+            --secondary: #166088;
+            --accent: #4fc3a1;
+            --accent-dark: #3a9378;
+            --light: #f8f9fa;
+            --dark: #2d3436;
+            --darker: #1e2224;
+            --danger: #dc3545;
+            --success: #28a745;
+            --warning: #ffc107;
+            --gray: #8a8a8a;
+            --light-gray: #e0e0e0;
+        }
+
+        body {
+            background-color: #f5f7f9;
+            color: var(--dark);
+            line-height: 1.6;
+            font-family: 'Montserrat', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        h1, h2, h3, h4, h5 {
+            font-family: 'Merriweather', serif;
+            font-weight: 700;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(to right, var(--darker), var(--dark));
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo { font-size: 1.8rem; font-weight: 700; display: flex; align-items: center; text-decoration: none; color: white;}
+        .logo i { margin-right: 10px; color: var(--accent); font-size: 2.2rem; }
+
+
+        nav {
+            display: flex;
+            align-items: center;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 20px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 15px;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        nav ul li a:hover,
+        nav ul li a.active {
+            background: rgba(255, 255, 255, 0.15);
+            color: var(--accent);
+        }
+        
+        nav ul li.dropdown {
+            position: relative;
+        }
+
+        nav ul li.dropdown .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: var(--darker);
+            list-style: none;
+            padding: 10px 0;
+            margin: 0;
+            border-radius: 4px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            min-width: 160px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            z-index: 1001;
+        }
+
+        nav ul li.dropdown:hover .dropdown-menu {
+            display: block;
+            opacity: 1;
+            visibility: visible;
+        }
+
+        nav ul li.dropdown .dropdown-menu li {
+            margin: 0;
+        }
+
+        nav ul li.dropdown .dropdown-menu li a {
+            padding: 10px 20px;
+            display: block;
+            width: 100%;
+            text-align: left;
+            white-space: nowrap;
+        }
+        nav ul li a .fa-caret-down {
+            margin-left: 5px;
+            font-size: 0.8em;
+        }
+
+        .header-right-icons {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .cart-icon {
+            position: relative;
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -12px;
+            background: var(--danger);
+            color: white;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            justify-content: space-around;
+            width: 30px;
+            height: 25px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            z-index: 1001;
+        }
+
+        .menu-toggle span {
+            width: 100%;
+            height: 3px;
+            background-color: white;
+            border-radius: 5px;
+            transition: all 0.3s linear;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            position: relative;
+        }
+
+        .section-title:after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: var(--accent);
+            margin: 15px auto;
+            border-radius: 2px;
+        }
+        
+        #about {
+            background: white;
+            padding: 80px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+            position: relative;
+        }
+
+        .about-text h2 {
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+        }
+
+        .about-text p {
+            margin-bottom: 15px;
+            line-height: 1.8;
+            font-size: 1.1rem;
+            text-align: justify;
+        }
+
+        .about-image-collage {
+            position: relative;
+            height: 500px;
+        }
+
+        .about-img {
+            position: absolute;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+            transition: all 0.4s ease;
+        }
+
+        .about-img-1 {
+            width: 65%;
+            height: 60%;
+            top: 0;
+            left: 0;
+            z-index: 2;
+            transform: rotate(-3deg);
+        }
+
+        .about-img-2 {
+            width: 55%;
+            height: 50%;
+            bottom: 0;
+            right: 0;
+            z-index: 2;
+            transform: rotate(4deg);
+        }
+
+        .about-img-3 {
+            width: 40%;
+            height: 45%;
+            top: 30%;
+            left: 30%;
+            z-index: 3;
+            transform: rotate(0deg);
+            border: 5px solid white;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .about-img:hover {
+            transform: scale(1.05) rotate(0deg);
+            z-index: 4;
+        }
+
+        .about-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .about-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .stat-item {
+            padding: 20px;
+            background: var(--light);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .stat-text {
+            font-size: 1rem;
+            color: var(--gray);
+        }
+
+        .quotes-section {
+            padding: 80px 0;
+            background-color: var(--light);
+        }
+
+        .quotes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .quote-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            border-left: 5px solid var(--accent);
+            position: relative;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 220px;
+        }
+        
+        .quote-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.12);
+        }
+        
+        .quote-card::before {
+            content: '\f10d';
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 2rem;
+            color: var(--light-gray);
+            z-index: 1;
+        }
+
+        .quote-text {
+            font-size: 1.1rem;
+            font-style: italic;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 2;
+            padding-left: 20px;
+        }
+
+        .quote-author {
+            font-weight: 700;
+            color: var(--primary);
+            text-align: right;
+            margin-top: auto;
+        }
+        
+        .bengali-quote .quote-text,
+        .bengali-quote .quote-author {
+            font-family: 'Hind Siliguri', sans-serif;
+        }
+
+        /* Footer */
+        footer { 
+            background: #2d3436; 
+            color: white; 
+            padding: 40px 0 20px; 
+        }
+        
+        .footer-content { 
+            display: grid; 
+            grid-template-columns: 2fr 1.5fr 1.5fr; 
+            gap: 80px; 
+            margin-bottom: 50px; 
+        }
+        
+        .footer-logo { 
+            font-size: 1.4rem; 
+            font-weight: 700; 
+            margin-bottom: 15px; 
+            display: flex; 
+            align-items: center; 
+        }
+        
+        .footer-logo i { 
+            margin-right: 10px; 
+            color: var(--accent); 
+            font-size: 1.6rem; 
+        }
+        
+        .footer-about p { 
+            margin-bottom: 25px; 
+            line-height: 1.6; 
+            color: rgba(255, 255, 255, 0.75); 
+            font-size: 13px; 
+        }
+        
+        .social-links { 
+            display: flex; 
+            gap: 10px; 
+            margin-top: 25px; 
+        }
+        
+        .social-link { 
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center; 
+            width: 32px; 
+            height: 32px; 
+            background: rgba(255, 255, 255, 0.15); 
+            border-radius: 4px; 
+            color: white; 
+            transition: all 0.3s; 
+            font-size: 13px; 
+        }
+        
+        .social-link:hover { 
+            background: var(--accent); 
+            transform: translateY(-2px); 
+        }
+        
+        .footer-heading { 
+            font-size: 1rem; 
+            margin-bottom: 18px; 
+            position: relative; 
+            padding-bottom: 10px; 
+            font-weight: 600; 
+        }
+        
+        .footer-heading:after { 
+            content: ''; 
+            position: absolute; 
+            left: 0; 
+            bottom: 0; 
+            width: 40px; 
+            height: 2px; 
+            background: var(--accent); 
+        }
+        
+        .footer-links ul { 
+            list-style: none; 
+        }
+        
+        .footer-links ul li { 
+            margin-bottom: 10px; 
+        }
+        
+        .footer-links ul li a { 
+            color: rgba(255, 255, 255, 0.7); 
+            text-decoration: none; 
+            transition: all 0.3s; 
+            font-size: 13px; 
+        }
+        .footer-links ul li a i {
+            margin-left: 6px;
+            font-size: 0.7rem;
+        }
+        .footer-links ul li.has-sub .sub-links {
+            list-style: none;
+            margin-top: 8px;
+            margin-left: 14px;
+        }
+        .footer-links ul li.has-sub .sub-links li {
+            margin-bottom: 8px;
+        }
+        .footer-links ul li.has-sub .sub-links li a {
+            font-size: 12.5px;
+            color: rgba(255, 255, 255, 0.65);
+        }
+        
+        .footer-links ul li a:hover { 
+            color: var(--accent); 
+            padding-left: 5px; 
+        }
+
+        .footer-comments form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .footer-comments input,
+        .footer-comments textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            font-size: 13px;
+            transition: border-color 0.3s ease, background 0.3s ease;
+        }
+        .footer-comments input::placeholder,
+        .footer-comments textarea::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        .footer-comments input:focus,
+        .footer-comments textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: rgba(255, 255, 255, 0.12);
+        }
+        .footer-comments textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        .footer-comments button {
+            align-self: flex-start;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            background: var(--accent);
+            color: #0b1221;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+        .footer-comments button:hover {
+            background: #fff;
+            transform: translateY(-2px);
+        }
+        
+        /* NEW: Star Rating CSS */
+        .footer-comments .star-rating {
+            display: flex;
+            justify-content: flex-start;
+            gap: 5px;
+            margin-bottom: 12px;
+            font-size: 1.5rem;
+            color: var(--gray);
+            cursor: pointer;
+        }
+        .footer-comments .star-rating > .fa-star {
+            transition: color 0.2s;
+        }
+        .footer-comments .star-rating:hover .fa-star {
+            color: #ffdd6a;
+        }
+        .footer-comments .star-rating .fa-star:hover ~ .fa-star {
+            color: var(--gray);
+        }
+        .footer-comments .star-rating > .fa-star.selected {
+            color: var(--warning);
+        }
+        
+        .contact-info p { 
+            display: flex; 
+            align-items: flex-start; 
+            margin-bottom: 12px; 
+            color: rgba(255, 255, 255, 0.75); 
+            font-size: 13px; 
+        }
+        
+        .contact-info i { 
+            margin-right: 10px; 
+            color: var(--accent); 
+            margin-top: 2px; 
+            font-size: 14px; 
+        }
+        
+        .copyright { 
+            text-align: center; 
+            padding-top: 20px; 
+            border-top: 1px solid rgba(255, 255, 255, 0.1); 
+            color: rgba(255, 255, 255, 0.5); 
+            font-size: 13px; 
+        }
+        
+        /* Modal, Cart & Order Confirmation Styles */
+        .modal, .order-confirm-modal, .custom-alert {
+            display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.6); align-items: center; justify-content: center;
+        }
+        .modal-content, .order-confirm-content, .custom-alert-content {
+            background-color: #fff; margin: auto; border-radius: 12px; width: 90%;
+            position: relative; box-shadow: 0 5px 15px rgba(0,0,0,0.3); animation: modalFade 0.3s;
+        }
+        .modal-content { max-width: 800px; max-height: 90vh; overflow: hidden; display: flex; flex-direction: column; }
+        .order-confirm-content { max-width: 500px; text-align: left; }
+        .custom-alert-content { max-width: 400px; text-align: center; padding: 25px; }
+        @keyframes modalFade { from { opacity: 0; transform: translateY(-60px); } to { opacity: 1; transform: translateY(0); } }
+        .modal-header { padding: 20px; border-bottom: 1px solid var(--light-gray); flex-shrink: 0; }
+        .close-cart-modal, .close-confirm-modal, .close-alert-btn { font-size: 28px; cursor: pointer; color: var(--gray); transition: color 0.3s; position: absolute; top: 15px; right: 20px; z-index: 10; }
+        .close-cart-modal:hover, .close-confirm-modal:hover, .close-alert-btn:hover { color: var(--dark); }
+        .modal-body { padding: 30px; overflow-y: auto; flex-grow: 1; }
+        .cart-item { display: flex; align-items: center; gap: 15px; border-bottom: 1px solid var(--light-gray); padding: 15px 0; }
+        .cart-item:last-child { border-bottom: none; }
+        .cart-item-img { width: 80px; height: 120px; object-fit: cover; border-radius: 4px; }
+        .cart-item-info { flex-grow: 1; }
+        .cart-item-info h4 { font-size: 16px; margin-bottom: 5px; }
+        .cart-item-price { font-weight: 600; color: var(--secondary); }
+        .cart-item-quantity { display: flex; align-items: center; gap: 10px; }
+        .quantity-btn { width: 30px; height: 30px; border: 1px solid var(--light-gray); background: white; cursor: pointer; border-radius: 50%; }
+        .cart-item-remove { color: var(--danger); cursor: pointer; font-size: 1.2rem; }
+        .cart-empty-message { text-align: center; padding: 50px 0; color: var(--gray); }
+        .cart-footer { padding: 20px 30px; border-top: 1px solid var(--light-gray); background: var(--light); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+        .cart-total { font-size: 1.2rem; }
+        .order-confirm-header { padding: 20px; border-bottom: 1px solid var(--light-gray); background: var(--light); }
+        .order-confirm-header h2 { font-size: 1.5rem; color: var(--primary); margin:0;}
+        .order-confirm-body { padding: 30px; }
+        .order-message { background: #f9f9f9; border-left: 4px solid var(--accent); padding: 15px; margin-top: 10px; border-radius: 4px; font-size: 14px; white-space: pre-wrap; max-height: 250px; overflow-y: auto; }
+        .order-actions { margin-top: 25px; }
+        .btn-copy-messenger { background: var(--primary); color: white; border: none; padding: 15px; border-radius: 4px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; }
+        .btn-copy-messenger:disabled { background-color: var(--gray); cursor: not-allowed; }
+        
+        .btn { padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.3s; display: inline-flex; align-items: center; justify-content: center; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-large { padding: 15px 25px; font-size: 16px; }
+        .btn-primary:hover { background: var(--secondary); }
+        
+        .cart-checkout-buttons { display: flex; gap: 10px; }
+        .btn-instagram { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color: white; border: none; }
+        .btn-instagram:hover { opacity: 0.9; transform: translateY(-2px); }
+        
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .about-content { grid-template-columns: 1fr; }
+            .about-image-collage { height: 400px; margin-top: 40px; }
+        }
+        @media (max-width: 768px) {
+            nav { position: fixed; top: 0; right: -300px; width: 300px; height: 100vh; background: var(--darker); box-shadow: -5px 0 15px rgba(0,0,0,0.2); transition: right 0.3s ease-in-out; z-index: 1000; padding-top: 80px; flex-direction: column; align-items: stretch; }
+            nav.active { right: 0; }
+            nav ul { flex-direction: column; padding: 0; width: 100%; text-align: center; }
+            nav ul li { margin: 0; }
+            nav ul li a { display: block; padding: 18px 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+            nav ul li.dropdown .dropdown-menu { display: block; position: static; background: var(--dark); box-shadow: none; padding: 0; max-height: 0; overflow: hidden; transition: max-height 0.3s ease-in-out; }
+            nav ul li.dropdown.open .dropdown-menu { max-height: 500px; }
+            .menu-toggle { display: flex; }
+            .menu-toggle.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+            .menu-toggle.active span:nth-child(2) { opacity: 0; }
+            .menu-toggle.active span:nth-child(3) { transform: rotate(-45deg) translate(7px, -6px); }
+            .about-stats { grid-template-columns: 1fr; }
+            .footer-content { grid-template-columns: 1fr; text-align: center; gap: 40px; }
+            .footer-heading:after { left: 50%; transform: translateX(-50%); }
+            .contact-info p, .social-links { justify-content: center; }
+            .cart-footer { flex-direction: column; gap: 15px; align-items: stretch;}
+            .cart-checkout-buttons { flex-direction: column; width: 100%;}
+            .cart-footer .btn-large { width: 100%; }
+        }
+        @media (min-width: 769px) { .header-right-icons .menu-toggle { display: none; } }
+        @media (max-width: 480px) {
+            .about-image-collage { height: 300px; }
+            .footer-logo { justify-content: center; }
+            .footer-heading { font-size: 1.1rem; }
+            .contact-info p { font-size: 0.9rem; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+           <a href="index.html" class="logo" style="font-family: Algerian; display:flex; align-items:center; gap:10px; height:60px;">
+    <img src="logo2.png" alt="Readora Logo" style="width:90px; height:90px; object-fit:contain; border-radius:50%;">
+    <span style="font-size:30px;">READORA</span>
+</a>
+
+            
+            <nav id="main-nav">
+               <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html" class="active">About</a></li>
+                    <li><a href="index.html#search">Search</a></li>
+                    <li><a href="index.html#categories">Categories</a></li>
+                    <li class="dropdown">
+                        <a href="#">Collections <i class="fas fa-caret-down"></i></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="newarrival.html">New Arrivals</a></li>
+                            <li><a href="bestselling.html">Bestselling</a></li>
+                        </ul>
+                    </li>
+                     <li class="dropdown">
+                        <a href="#">Explore <i class="fas fa-caret-down"></i></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="publications.html">Publications</a></li>
+                            <li><a href="authors.html">Authors</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="nav-link" onclick="event.preventDefault()">Contact <i class="fas fa-caret-down"></i></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#footer" class="smooth-scroll">Contact Us</a></li>
+                            <li><a href="Review.html">Reviews</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="header-right-icons">
+                 <div class="cart-icon" id="cart-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span id="cart-badge" class="cart-badge">0</span>
+                </div>
+                <button class="menu-toggle" id="menu-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+    
+    <main>
+        <section id="about">
+            <div class="container">
+                <h2 class="section-title">About Readora</h2>
+                <div class="about-content">
+                    <div class="about-text">
+                        <h2>Your Gateway to the World of Books</h2>
+                        <p>Readora is a premium online bookstore dedicated to bringing literature lovers the best selection of books across all genres. From timeless classics to contemporary bestsellers, we have something for every reader.</p>
+                        <p>Our mission is to foster a love for reading by making books accessible to everyone. We carefully curate our collection to ensure quality and diversity in our offerings.</p>
+                        <p>With competitive prices, regular discounts, and a user-friendly platform, Readora makes finding your next great read an enjoyable experience.</p>
+                        
+                        <div class="about-stats">
+                            <div class="stat-item">
+                                <div class="stat-number">10,000+</div>
+                                <div class="stat-text">Books Available</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">95%</div>
+                                <div class="stat-text">Happy Readers</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">24/7</div>
+                                <div class="stat-text">Support</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="about-image-collage">
+                        <div class="about-img about-img-1">
+                            <img src="https://images.unsplash.com/photo-1551029506-0807df4e2031?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%D%D&auto=format&fit=crop&w=800&q=80" alt="Book collection">
+                        </div>
+                        <div class="about-img about-img-2">
+                            <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%D%D&auto=format&fit=crop&w=800&q=80" alt="Reading time">
+                        </div>
+                        <div class="about-img about-img-3">
+                            <img src="https://images.unsplash.com/photo-1532012197267-da84d127e765?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%D%D&auto=format&fit=crop&w=800&q=80" alt="Bookstore">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="quotes-section">
+            <div class="container">
+                <h2 class="section-title">Words of Wisdom</h2>
+                <div class="quotes-grid">
+                    <div class="quote-card bengali-quote">
+                        <div>
+                            <p class="quote-text">বই কিনে কেউ দেউলে হয় না।</p>
+                        </div>
+                        <p class="quote-author">- সৈয়দ মুজতবা আলী</p>
+                    </div>
+                    <div class="quote-card">
+                        <div>
+                           <p class="quote-text">A reader lives a thousand lives before he dies . . . The man who never reads lives only one.</p>
+                        </div>
+                        <p class="quote-author">- George R.R. Martin</p>
+                    </div>
+                    <div class="quote-card bengali-quote">
+                         <div>
+                           <p class="quote-text">মানুষ বইয়ের পাতা ওল্টায়, আর বই মানুষের মন।</p>
+                        </div>
+                        <p class="quote-author">- রবীন্দ্রনাথ ঠাকুর</p>
+                    </div>
+                    <div class="quote-card">
+                        <div>
+                            <p class="quote-text">There is no friend as loyal as a book.</p>
+                        </div>
+                        <p class="quote-author">- Ernest Hemingway</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="cart-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Your Shopping Cart</h2>
+                <span class="close-cart-modal">&times;</span>
+            </div>
+            <div class="modal-body" id="cart-items-container">
+            </div>
+            <div class="cart-footer">
+                <div class="cart-total">
+                    <strong>Total:</strong> <span id="cart-total-price">₹0</span>
+                </div>
+                <div class="cart-checkout-buttons">
+                    <button id="checkout-btn" class="btn btn-primary btn-large">
+                        <i class="fab fa-facebook-messenger"></i> FB Chat to Order
+                    </button>
+                    <button id="checkout-insta-btn" class="btn btn-instagram btn-large">
+                        <i class="fab fa-instagram"></i> Insta Chat to Order
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="order-confirm-modal" class="order-confirm-modal">
+        <div class="order-confirm-content">
+            <div class="order-confirm-header">
+                <h2>Order Confirmation</h2>
+                <span class="close-confirm-modal">&times;</span>
+            </div>
+            <div class="order-confirm-body">
+                <p>Review your order, copy the message, and paste it into the chat to confirm.</p>
+                <div class="order-message" id="order-message-text"></div>
+                <div class="order-actions">
+                    <button id="copy-and-redirect-btn" class="btn-copy-messenger">
+                        </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="custom-alert-modal" class="custom-alert">
+        <div class="custom-alert-content">
+            <span class="close-alert-btn">&times;</span>
+            <p id="custom-alert-message"></p>
+        </div>
+    </div>
+
+
+     <footer id="footer" class="section-target">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-about">
+                    <div class="footer-logo">
+                        <a href="index.html" class="logo" style="font-family: Algerian; display:flex; align-items:center; gap:10px; height:60px;">
+    <img src="logo2.png" alt="Readora Logo" style="width:90px; height:90px; object-fit:contain; border-radius:50%;">
+    <span style="font-size:30px;">READORA</span>
+</a>
+
+                    </div>
+                    <p>Your one-stop destination for all books. We offer a wide selection of books across all genres at competitive prices.</p>
+                    <div class="social-links">
+                        <a href="https://www.facebook.com/share/17JzLNsUGm/" class="social-link facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://www.instagram.com/readorabookshop?igsh=MWxvZDk4cmswMGk1MA==" class="social-link instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="tel:+919163621264" class="social-link call"><i class="fas fa-phone"></i></a>
+                        <a href="mailto:readora07@gmail.com" class="social-link email"><i class="fas fa-envelope"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-comments">
+                    <h3 class="footer-heading">Share Your Comments</h3>
+                    <form class="comment-form">
+                        <input type="text" name="name" placeholder="Your Name" required>
+                        <input type="email" name="email" placeholder="Email Address" required>
+                        <div class="star-rating">
+                            <i class="fas fa-star" data-value="1"></i><i class="fas fa-star" data-value="2"></i><i class="fas fa-star" data-value="3"></i><i class="fas fa-star" data-value="4"></i><i class="fas fa-star" data-value="5"></i>
+                        </div>
+                        <input type="hidden" name="rating" id="rating-input" value="0">
+                        <textarea name="message" placeholder="Your Comment" required></textarea>
+                        <button type="submit">Send Comment</button>
+                    </form>
+                </div>
+                
+                <div class="contact-info">
+                    <h3 class="footer-heading">Contact Us</h3>
+                    <p><i class="fas fa-map-marker-alt"></i> Sajirhat,Madhyamgram,Kolkata-700130</p>
+                    <p><i class="fas fa-phone"></i> +91 9163621264</p>
+                    <p><i class="fas fa-envelope"></i>readora07@gmail.com</p>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2020 Readora. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+   <script>
+    const COMMENT_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzB8EpgD4l6bufe8xpFIWGkT8UnJ4PFYpdH3l1X8TJeYnDRK630cvKKN-a4FJ0pp_G2/exec';
+
+    // --- START: SCRIPT FOR about.html ---
+
+    // Global state
+    let cart = JSON.parse(localStorage.getItem('readoraCart')) || [];
+
+    // DOM Elements
+    const cartIcon = document.getElementById('cart-icon');
+    const cartBadge = document.getElementById('cart-badge');
+    const cartModal = document.getElementById('cart-modal');
+    const closeCartModalBtn = cartModal.querySelector('.close-cart-modal');
+    const cartItemsContainer = document.getElementById('cart-items-container');
+    const cartTotalPriceEl = document.getElementById('cart-total-price');
+    const checkoutBtn = document.getElementById('checkout-btn');
+    const checkoutInstaBtn = document.getElementById('checkout-insta-btn');
+    const menuToggle = document.getElementById('menu-toggle');
+    const mainNav = document.getElementById('main-nav');
+
+    // --- UTILITY FUNCTIONS ---
+    function showCustomAlert(message) {
+        const modal = document.getElementById('custom-alert-modal');
+        if (modal) {
+            modal.querySelector('#custom-alert-message').textContent = message;
+            modal.style.display = 'flex';
+        }
+    }
+
+    function copyToClipboard(text) {
+        return navigator.clipboard.writeText(text);
+    }
+    
+    // NEW: Function to update star display
+    function updateStars(rating) {
+        const stars = document.querySelectorAll('.star-rating .fa-star');
+        stars.forEach(star => {
+            star.classList.toggle('selected', star.dataset.value <= rating);
+        });
+    }
+
+
+    // --- CART FUNCTIONS ---
+    function saveCartToStorage() {
+        localStorage.setItem('readoraCart', JSON.stringify(cart));
+    }
+
+    function updateCartBadge() {
+        if (cartBadge) {
+            cartBadge.textContent = cart.length; // FIXED to show unique books
+        }
+    }
+
+    function displayCart() {
+        const allBooks = JSON.parse(localStorage.getItem('readoraBooks')) || [];
+        cartItemsContainer.innerHTML = '';
+        const checkoutButtons = cartModal.querySelector('.cart-checkout-buttons');
+
+        if (cart.length === 0) {
+            cartItemsContainer.innerHTML = `<p class="cart-empty-message">Your cart is empty.</p>`;
+            if(checkoutButtons) checkoutButtons.style.display = 'none';
+        } else {
+            cart.forEach(item => {
+                 // Try to fetch image/details from allBooks if needed, though most cart items should have them
+                const bookDetails = allBooks.find(b => String(b.id) === String(item.id)) || item;
+
+                const cartItemEl = document.createElement('div');
+                cartItemEl.className = 'cart-item';
+                const imageUrl = bookDetails.frontImg || bookDetails.img || 'https://via.placeholder.com/80x120.png?text=No+Image';
+                cartItemEl.innerHTML = `
+                    <img src="${imageUrl}" alt="${bookDetails.title}" class="cart-item-img" onerror="this.onerror=null;this.src='https://via.placeholder.com/80x120.png?text=No+Image';">
+                    <div class="cart-item-info">
+                        <h4>${bookDetails.title}</h4>
+                        <p class="cart-item-price">₹${bookDetails.price}</p>
+                    </div>
+                    <div class="cart-item-quantity">
+                        <button class="quantity-btn" data-id="${bookDetails.id}" data-change="-1">-</button>
+                        <span>${item.quantity}</span>
+                        <button class="quantity-btn" data-id="${bookDetails.id}" data-change="1">+</button>
+                    </div>
+                    <i class="fas fa-trash cart-item-remove" data-id="${bookDetails.id}"></i>
+                `;
+                cartItemsContainer.appendChild(cartItemEl);
+            });
+            if(checkoutButtons) checkoutButtons.style.display = 'flex';
+        }
+
+        updateCartTotal();
+        addCartEventListeners();
+        if(cartModal) cartModal.style.display = 'block';
+    }
+
+    function addCartEventListeners() {
+        cartItemsContainer.querySelectorAll('.quantity-btn, .cart-item-remove').forEach(btn => {
+            btn.addEventListener('click', e => {
+                const itemId = e.currentTarget.dataset.id;
+                const isRemove = e.currentTarget.classList.contains('cart-item-remove');
+                
+                if (isRemove) {
+                    removeFromCart(itemId);
+                } else {
+                    const change = parseInt(e.currentTarget.dataset.change);
+                    updateQuantity(itemId, change);
+                }
+            });
+        });
+    }
+
+    function updateQuantity(itemId, change) {
+        const itemInCart = cart.find(item => String(item.id) === String(itemId));
+        if (itemInCart) {
+            itemInCart.quantity += change;
+            if (itemInCart.quantity <= 0) {
+                removeFromCart(itemId);
+            } else {
+                saveCartToStorage();
+                displayCart();
+            }
+        }
+    }
+
+    function removeFromCart(itemId) {
+        cart = cart.filter(item => String(item.id) !== String(itemId));
+        saveCartToStorage();
+        displayCart();
+        updateCartBadge();
+    }
+
+    function updateCartTotal() {
+        const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        if(cartTotalPriceEl) cartTotalPriceEl.textContent = `₹${total}`;
+    }
+
+    function handleCheckoutWithPlatform(platform) {
+        const dateTime = new Date().toLocaleString('en-IN', { dateStyle: 'short', timeStyle: 'short' });
+        let orderDetails = "I would like to order the following books:\n\n";
+        cart.forEach(item => {
+            orderDetails += `📖 ${item.title}\n✍️ by ${item.author || 'N/A'}\n🏢 Publisher: ${item.publication || 'N/A'}\n- Qty: ${item.quantity}, Price: ₹${item.price * item.quantity}\n\n`;
+        });
+        const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        orderDetails += `--------------------\n💰 Total Bill: ₹${total}\n📅 Order Time: ${dateTime}\n\nPlease confirm availability and delivery details.`;
+        showOrderConfirmModal(orderDetails, platform);
+        if (cartModal) cartModal.style.display = 'none';
+    }
+
+    function showOrderConfirmModal(orderText, platform) {
+        const modal = document.getElementById('order-confirm-modal');
+        if (!modal) return;
+        modal.querySelector('#order-message-text').innerText = orderText;
+        const copyBtn = modal.querySelector('#copy-and-redirect-btn');
+
+        const platformDetails = {
+            facebook: { url: 'https://www.messenger.com/t/718957201308613', name: 'Messenger', icon: 'fa-facebook-messenger', style: '' },
+            instagram: { url: 'https://www.instagram.com/direct/t/17847140604595484/', name: 'Instagram', icon: 'fa-instagram', style: 'linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)' }
+        };
+        const details = platformDetails[platform];
+
+        copyBtn.innerHTML = `<i class="fab ${details.icon}"></i> Copy & Go to ${details.name}`;
+        copyBtn.style.background = details.style;
+        modal.style.display = 'flex';
+        
+        const closeModalHandler = () => {
+            modal.style.display = 'none';
+            copyBtn.style.background = '';
+        };
+        modal.querySelector('.close-confirm-modal').onclick = closeModalHandler;
+
+        copyBtn.onclick = async function() {
+            this.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Copying...`;
+            this.disabled = true;
+            try {
+                await copyToClipboard(orderText);
+                window.open(details.url, '_blank');
+            } catch (err) { console.error('Failed to copy or open:', err); } 
+            finally { setTimeout(() => { this.disabled = false; closeModalHandler(); }, 1000); }
+        };
+    }
+
+    // --- INITIALIZATION & EVENT LISTENERS ---
+    document.addEventListener('DOMContentLoaded', function() {
+        updateCartBadge();
+        
+        // Add click event to cart icon to redirect to payment.html
+        const cartIcon = document.getElementById('cart-icon');
+        if (cartIcon) {
+            cartIcon.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.location.href = 'payment.html';
+            });
+        }
+
+        // Mobile menu toggle
+        if (menuToggle && mainNav) {
+            menuToggle.addEventListener('click', function(e) {
+                e.stopPropagation();
+                this.classList.toggle('active');
+                mainNav.classList.toggle('active');
+                if (!mainNav.classList.contains('active')) {
+                    document.querySelectorAll('.dropdown').forEach(dropdown => dropdown.classList.remove('open'));
+                }
+            });
+        }
+
+        // Cart icon
+        if (cartIcon) {
+            cartIcon.addEventListener('click', displayCart);
+        }
+
+        // Dropdown functionality
+        document.querySelectorAll('.dropdown > a').forEach(dropdownToggle => {
+            const newToggle = dropdownToggle.cloneNode(true);
+            dropdownToggle.parentNode.replaceChild(newToggle, dropdownToggle);
+            newToggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                const dropdown = this.parentElement;
+                const isOpen = dropdown.classList.contains('open');
+                document.querySelectorAll('.dropdown').forEach(d => { if (d !== dropdown) d.classList.remove('open'); });
+                if (!isOpen) { dropdown.classList.add('open'); } 
+                else { dropdown.classList.remove('open'); }
+            });
+        });
+
+        // Close dropdowns and mobile menu when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.dropdown')) {
+                document.querySelectorAll('.dropdown').forEach(dropdown => dropdown.classList.remove('open'));
+            }
+            if (mainNav && !mainNav.contains(e.target) && !menuToggle.contains(e.target)) {
+                menuToggle.classList.remove('active');
+                mainNav.classList.remove('active');
+            }
+        });
+        
+        // NEW: Comment Form Logic
+        const commentForm = document.querySelector('.comment-form');
+        if (commentForm) {
+            const stars = document.querySelectorAll('.star-rating .fa-star');
+            const ratingInput = document.getElementById('rating-input');
+
+            // Star rating interaction logic
+            stars.forEach(star => {
+                star.addEventListener('click', function() {
+                    ratingInput.value = this.dataset.value;
+                    updateStars(parseInt(this.dataset.value));
+                });
+                star.addEventListener('mouseover', function() {
+                    updateStars(parseInt(this.dataset.value));
+                });
+                star.addEventListener('mouseout', function() {
+                    updateStars(parseInt(ratingInput.value || 0));
+                });
+            });
+
+            commentForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const submitButton = commentForm.querySelector('button[type="submit"]');
+                const name = commentForm.elements['name'].value.trim();
+                const email = commentForm.elements['email'].value.trim();
+                const message = commentForm.elements['message'].value.trim();
+                const rating = ratingInput.value;
+
+                if (!name || !email || !message || rating === "0") {
+                    showCustomAlert('Please fill in all fields and provide a star rating.');
+                    return;
+                }
+
+                submitButton.textContent = 'Submitting...';
+                submitButton.disabled = true;
+
+                try {
+                    await fetch(COMMENT_SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            name: name,
+                            email: email,
+                            message: message,
+                            rating: rating,
+                            timestamp: new Date().toISOString()
+                        })
+                    });
+
+                    showCustomAlert('Thank you for your review!');
+                    commentForm.reset();
+                    ratingInput.value = '0';
+                    updateStars(0);
+
+                } catch (error) {
+                    console.error('Error submitting review:', error);
+                    showCustomAlert('Could not submit your review. Please try again later.');
+                } finally {
+                    submitButton.textContent = 'Send Comment';
+                    submitButton.disabled = false;
+                }
+            });
+        }
+        
+         // Other modals
+        if (closeCartModalBtn) closeCartModalBtn.addEventListener('click', () => cartModal.style.display = 'none');
+        if (checkoutBtn) checkoutBtn.addEventListener('click', () => handleCheckoutWithPlatform('facebook'));
+        if (checkoutInstaBtn) checkoutInstaBtn.addEventListener('click', () => handleCheckoutWithPlatform('instagram'));
+        window.addEventListener('click', (e) => {
+            if (e.target === cartModal) cartModal.style.display = 'none';
+            if (e.target === document.getElementById('order-confirm-modal')) document.getElementById('order-confirm-modal').style.display = 'none';
+            const customAlert = document.getElementById('custom-alert-modal');
+            if (e.target === customAlert) customAlert.style.display = 'none';
+        });
+
+        const closeAlertBtn = document.querySelector('.close-alert-btn');
+        if (closeAlertBtn) {
+            closeAlertBtn.addEventListener('click', () => {
+                document.getElementById('custom-alert-modal').style.display = 'none';
+            });
+        }
+    });
+    // --- END: SCRIPT FOR about.html ---
+</script>
+</body>
+</html>
