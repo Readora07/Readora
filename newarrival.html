@@ -902,17 +902,16 @@
             
            const newArrivalsGrid = document.getElementById('new-arrivals-grid');
 const newArrivalsBooks = allBooks.filter(book => {
-    // This logic now matches bestselling.html
     const status = book.status ? book.status.toLowerCase().trim() : '';
     return status === 'newarrival' || status === 'new arrival' || status === 'both';
-});
-            
+});     
+newArrivalsBooks.sort((a, b) => b.id - a.id);   
             if (newArrivalsBooks.length > 0) {
-                newArrivalsBooks.forEach(book => newArrivalsGrid.appendChild(createBookCard(book)));
-            } else {
-                newArrivalsGrid.innerHTML = '<p class="no-books">No new arrival books at the moment. Check back soon!</p>';
-            }
-            
+    newArrivalsGrid.innerHTML = ''; 
+    newArrivalsBooks.forEach(book => newArrivalsGrid.appendChild(createBookCard(book)));
+} else {
+    newArrivalsGrid.innerHTML = '<p class="no-books">No new arrival books at the moment. Check back soon!</p>';
+}
             updateCartBadge();
             updateAddToCartButtonsUI();
 
