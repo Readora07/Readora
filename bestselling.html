@@ -755,11 +755,15 @@ function handleCheckoutWithPlatform(platform) {
                 return status === 'bestselling' || status === 'best selling' || status === 'both';
             });
             
+            // 2. SORT: Newest (Highest ID) at the top
+    bestsellingBooks.sort((a, b) => b.id - a.id);
+    
             if (bestsellingBooks.length > 0) {
-                bestsellingBooks.forEach(book => bestsellingGrid.appendChild(createBookCard(book)));
-            } else {
-                bestsellingGrid.innerHTML = '<p class="no-books">No bestselling books at the moment. Check back soon!</p>';
-            }
+        bestsellingGrid.innerHTML = ''; // Clear existing content
+        bestsellingBooks.forEach(book => bestsellingGrid.appendChild(createBookCard(book)));
+    } else {
+        bestsellingGrid.innerHTML = '<p class="no-books">No bestselling books at the moment. Check back soon!</p>';
+    }
             
             updateCartBadge();
             updateAddToCartButtonsUI();
