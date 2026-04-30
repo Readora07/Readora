@@ -2388,38 +2388,45 @@
         });
         
         // Handle smooth scrolling for navigation links
-        document.querySelectorAll('a.smooth-scroll, .dropdown-menu a').forEach(anchor => {
+        document.querySelectorAll('a.smooth-scroll, .dropdown-menu a, .nav-link').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
                 const targetId = this.getAttribute('href');
                 
-                // Skip if it's just a # or points to an external page
-                if (!targetId || targetId === '#' || targetId.includes('.html')) return;
+                // Skip if it's just a # or external page without anchor
+                if (!targetId || targetId === '#' || (targetId.includes('.html') && !targetId.includes('#'))) return;
                 
-                e.preventDefault();
-                try {
-                    const targetElement = document.querySelector(targetId);
-                    if (targetElement) {
-                        // Close mobile menu if open
-                        const mainNav = document.getElementById('main-nav');
-                        const menuToggle = document.getElementById('menu-toggle');
-                        if (mainNav && mainNav.classList.contains('active')) {
-                            menuToggle.classList.remove('active');
-                            mainNav.classList.remove('active');
+                // Close mobile menu if open - THIS IS THE FIX
+                if (mainNav && mainNav.classList.contains('active')) {
+                    menuToggle.classList.remove('active');
+                    mainNav.classList.remove('active');
+                }
+                
+                // Close all dropdowns
+                document.querySelectorAll('.dropdown').forEach(dropdown => {
+                    dropdown.classList.remove('open');
+                });
+                
+                // Handle anchor links (including those with .html#anchor)
+                let actualTargetId = targetId;
+                if (targetId.includes('.html#')) {
+                    actualTargetId = '#' + targetId.split('#')[1];
+                }
+                
+                // Only prevent default and scroll if it's an anchor link
+                if (actualTargetId.startsWith('#')) {
+                    e.preventDefault();
+                    try {
+                        const targetElement = document.querySelector(actualTargetId);
+                        if (targetElement) {
+                            // Smooth scroll to target
+                            window.scrollTo({
+                                top: targetElement.offsetTop - 100,
+                                behavior: 'smooth'
+                            });
                         }
-                        
-                        // Close all dropdowns
-                        document.querySelectorAll('.dropdown').forEach(dropdown => {
-                            dropdown.classList.remove('open');
-                        });
-                        
-                        // Smooth scroll to target
-                        window.scrollTo({
-                            top: targetElement.offsetTop - 100,
-                            behavior: 'smooth'
-                        });
+                    } catch (error) {
+                        console.error("Error finding or scrolling to target element:", actualTargetId, error);
                     }
-                } catch (error) {
-                    console.error("Error finding or scrolling to target element:", targetId, error);
                 }
             });
         });
