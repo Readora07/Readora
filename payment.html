@@ -870,11 +870,11 @@ nav ul li.dropdown .dropdown-menu li a {
                     
                     const cartItemEl = document.createElement('div');
                     cartItemEl.className = 'cart-item';
-                    const imageUrl = bookDetails.frontImg || bookDetails.img || 'https://dummyimage.com/60x90/ccc/fff&text=No+Image';
+                    const imageUrl = bookDetails.frontImg || bookDetails.img || 'bookimg.jpeg';
                     
                     // --- UPDATED HTML STRUCTURE ---
                     cartItemEl.innerHTML = `
-                        <img src="${imageUrl}" alt="${bookDetails.title}" class="cart-item-img" onerror="this.onerror=null;this.src='https://dummyimage.com/60x90/ccc/fff&text=No+Image';">
+                        <img src="${imageUrl}" alt="${bookDetails.title}" class="cart-item-img" onerror="this.onerror=null;this.src='bookimg.jpeg';">
                         <div class="cart-item-info">
                             <h4 style="font-size: 1rem; font-weight: 700;">${bookDetails.title}</h4>
                             <p style="font-size: 0.9em; color: var(--gray); margin: 2px 0;">by ${bookDetails.author || 'N/A'}</p>
@@ -952,12 +952,12 @@ nav ul li.dropdown .dropdown-menu li a {
             const card = document.createElement('div');
             card.className = 'book-card';
             const discount = book.originalPrice > 0 ? Math.round(((book.originalPrice - book.price) / book.originalPrice) * 100) : 0;
-            const imageUrl = book.frontImg ? book.frontImg : 'https://dummyimage.com/130x180/5c5c5c/ffffff&text=No+Image';
+            const imageUrl = book.frontImg ? book.frontImg : 'bookimg.jpeg';
             const descriptionSnippet = book.description || '';
 
             card.innerHTML = `
                 <div class="book-img">
-                    <img src="${imageUrl}" alt="${book.title}" onerror="this.onerror=null; this.src='https://dummyimage.com/130x180/5c5c5c/ffffff&text=No+Image';">
+                    <img src="${imageUrl}" alt="${book.title}" onerror="this.onerror=null; this.src='bookimg.jpeg';">
                     <div class="book-hover-badge">${book.category || 'Book'}</div>
                 </div>
                 <div class="book-info">
@@ -1018,11 +1018,11 @@ nav ul li.dropdown .dropdown-menu li a {
                     </div>`;
             }
 
-            const imageUrl = book.frontImg ? book.frontImg : 'https://dummyimage.com/250x375/5c5c5c/ffffff&text=No+Image';
+            const imageUrl = book.frontImg ? book.frontImg : 'bookimg.jpeg';
 
             bookDetailsContent.innerHTML = `
                 <div class="book-details-img">
-                    <img src="${imageUrl}" alt="${book.title}" onerror="this.onerror=null; this.src='https://dummyimage.com/250x375/5c5c5c/ffffff&text=No+Image';">
+                    <img src="${imageUrl}" alt="${book.title}" onerror="this.onerror=null; this.src='bookimg.jpeg';">
                 </div>
                 <div class="book-details-info">
                     <h2>${book.title}</h2>
@@ -1077,9 +1077,9 @@ nav ul li.dropdown .dropdown-menu li a {
                 cart.forEach(item => {
                     const cartItemEl = document.createElement('div');
                     cartItemEl.className = 'cart-item';
-                    const imageUrl = item.frontImg || 'https://dummyimage.com/80x120/ccc/fff&text=No+Image';
+                    const imageUrl = item.frontImg || 'bookimg.jpeg';
                     cartItemEl.innerHTML = `
-                        <img src="${imageUrl}" alt="${item.title}" class="cart-item-img" onerror="this.onerror=null;this.src='https://dummyimage.com/80x120/ccc/fff&text=No+Image';">
+                        <img src="${imageUrl}" alt="${item.title}" class="cart-item-img" onerror="this.onerror=null;this.src='bookimg.jpeg';">
                         <div class="cart-item-info"><h4>${item.title}</h4><p class="cart-item-price">₹${item.price}</p></div>
                         <div class="cart-item-quantity">
                             <button class="quantity-btn" data-id="${item.id}" data-change="-1">-</button>
