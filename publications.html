@@ -14,12 +14,9 @@
             --light: #f8f9fa; --dark: #2d3436; --darker: #1e2224; --danger: #dc3545;
             --success: #28a745; --warning: #ffc107; --gray: #8a8a8a; --light-gray: #e0e0e0;
         }
-        html, body { height: 100%; min-height: 100vh; }
-        body { background-color: #f5f7f9; color: var(--dark); line-height: 1.6; font-family: 'Montserrat', sans-serif; display: flex; flex-direction: column; }
+        body { background-color: #f5f7f9; color: var(--dark); line-height: 1.6; font-family: 'Montserrat', sans-serif; }
         h1, h2, h3, h4, h5 { font-family: 'Merriweather', serif; font-weight: 700; }
         .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 15px; }
-        main { flex: 1 0 auto; }
-        footer { margin-top: auto; }
 
         /* Header & Footer Styles */
         header { background: linear-gradient(to right, var(--darker), var(--dark)); color: white; padding: 1rem 0; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); position: sticky; top: 0; z-index: 100; }
@@ -253,13 +250,13 @@
             .books-grid { display: flex; flex-direction: column; gap: 12px; }
             .book-card { flex-direction: row; align-items: center; padding: 10px; min-height: 150px; }
             .book-img { width: 100px; min-width: 100px; height: 140px; }
-            .book-info { padding: 0 15px; text-align: left; flex-grow: 1; flex-basis: auto; height: auto; justify-content: center; }
+            .book-info { padding: 0; display: flex; flex-direction: column; flex-grow: 0; flex-shrink: 0; flex-basis: auto; height: auto; justify-content: center; }
             .book-description-wrapper { display: none; }
             .book-title { font-size: 15px; }
             .current-price { font-size: 20px; }
             .btn-add-cart { width: 100%; padding: 6px 15px; font-size: 12px; }
-            .book-price { flex-direction: column; align-items: flex-start; gap: 2px !important; }
-            .discount { margin-left: 10 !important; display: block; margin-top: 2px; }
+            .book-price { flex-direction: row; align-items: center; flex-wrap: wrap; gap: 8px !important; }
+            .discount { width: 100%; margin-left: 0 !important; margin-top: 0; }
             .footer-content { grid-template-columns: 1fr; text-align: center; gap: 40px; }
             .footer-heading:after { left: 50%; transform: translateX(-50%); }
             .footer-logo, .contact-info p, .social-links { justify-content: center; }
@@ -651,12 +648,12 @@
             const card = document.createElement('div');
             card.className = 'book-card';
             const discount = book.originalPrice > 0 ? Math.round(((book.originalPrice - book.price) / book.originalPrice) * 100) : 0;
-            const imageUrl = book.frontImg ? book.frontImg : 'https://dummyimage.com/130x180/5c5c5c/ffffff&text=No+Image';
+            const imageUrl = book.frontImg ? book.frontImg : 'bookimg.jpeg';
             const descriptionSnippet = book.description || '';
 
             card.innerHTML = `
                 <div class="book-img">
-                    <img src="${imageUrl}" alt="${book.title}" onerror="this.onerror=null; this.src='https://dummyimage.com/130x180/5c5c5c/ffffff&text=No+Image';">
+                    <img src="${imageUrl}" alt="${book.title}" onerror="this.onerror=null; this.src='bookimg.jpeg';">
                     <div class="book-hover-badge">${book.category || 'Book'}</div>
                 </div>
                 <div class="book-info">
@@ -693,8 +690,7 @@
             return card;
         }
         // --- END: EXACT createBookCard function ---
-
-        // --- START: EXACT showBookDetails function from index.html ---
+        
         function showBookDetails(bookId) {
             const book = allBooks.find(b => b.id === bookId);
             if (!book) return;
@@ -719,11 +715,11 @@
                     </div>`;
             }
 
-            const imageUrl = book.frontImg ? book.frontImg : 'https://dummyimage.com/250x375/5c5c5c/ffffff&text=No+Image';
+            const imageUrl = book.frontImg ? book.frontImg : 'bookimg.jpeg';
 
             bookDetailsContent.innerHTML = `
                 <div class="book-details-img">
-                    <img src="${imageUrl}" alt="${book.title}" onerror="this.onerror=null; this.src='https://dummyimage.com/250x375/5c5c5c/ffffff&text=No+Image';">
+                    <img src="${imageUrl}" alt="${book.title}" onerror="this.onerror=null; this.src='bookimg.jpeg';">
                 </div>
                 <div class="book-details-info">
                     <h2>${book.title}</h2>
@@ -788,9 +784,9 @@
                 cart.forEach(item => {
                     const cartItemEl = document.createElement('div');
                     cartItemEl.className = 'cart-item';
-                    const imageUrl = item.frontImg || 'https://dummyimage.com/80x120/ccc/fff&text=No+Image';
+                    const imageUrl = item.frontImg || 'bookimg.jpeg';
                     cartItemEl.innerHTML = `
-                        <img src="${imageUrl}" alt="${item.title}" class="cart-item-img" onerror="this.onerror=null;this.src='https://dummyimage.com/80x120/ccc/fff&text=No+Image';">
+                        <img src="${imageUrl}" alt="${item.title}" class="cart-item-img" onerror="this.onerror=null;this.src='bookimg.jpeg';">
                         <div class="cart-item-info"><h4>${item.title}</h4><p class="cart-item-price">₹${item.price}</p></div>
                         <div class="cart-item-quantity">
                             <button class="quantity-btn" data-id="${item.id}" data-change="-1">-</button>
