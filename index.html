@@ -664,7 +664,38 @@
         
         #see-more-btn {
             margin: 30px auto 0;
-            display: block;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            font-size: 18px;
+            animation: bounce 2s infinite;
+        }
+
+        #see-more-btn:hover {
+            background: var(--secondary);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-8px);
+            }
+            60% {
+                transform: translateY(-4px);
+            }
         }
 
         /* Search Section */
@@ -679,12 +710,49 @@
             margin: 0 auto 40px;
         }
 
+        .search-input-wrapper {
+            flex: 1;
+            position: relative;
+            display: flex;
+        }
+
         .search-box input {
             flex: 1;
-            padding: 15px;
+            padding: 15px 40px 15px 15px;
             border: 2px solid var(--light-gray);
-            border-radius: 4px 0 0 4px;
+            border-radius: 8px 0 0 8px;
             font-size: 1rem;
+            width: 100%;
+        }
+
+        .clear-search-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .clear-search-btn:hover {
+            background: #ff5252;
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .clear-search-btn i {
+            margin: 0;
+            font-size: 10px;
         }
 
         .search-box button {
@@ -1583,12 +1651,12 @@
                 overflow-x: auto;
             }
              .subcategories, .language-subcategories {
-                gap: 8px;
+                gap: 6px;
             }
-            
+
             .category-btn, .subcategory-btn, .language-btn {
-                padding: 8px 16px;
-                font-size: 14px;
+                padding: 6px 12px;
+                font-size: 12px;
             }
             
             .book-actions {
@@ -1601,8 +1669,9 @@
             }
             
             #see-more-btn {
-                width: auto;
-                padding: 10px 30px;
+                width: 45px;
+                height: 45px;
+                font-size: 16px;
             }
 
 	     .books-grid {
@@ -1824,15 +1893,218 @@
             }
             
             .book-price {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 2px !important;
+                flex-direction: row;
+                align-items: center;
+                flex-wrap: wrap;
+                gap: 8px !important;
             }
             
             .discount {
-                margin-left: 10 !important;
-                display: block;
-                margin-top: 2px;
+                width: 100%;
+                margin-left: 0 !important;
+                margin-top: 0;
+            }
+        }
+        
+        /* Search Related Books Styles */
+        .related-title {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+        }
+        .related-title:after {
+            width: 60px;
+            height: 3px;
+        }
+        .related-books-container {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            padding: 15px 10px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent) #e0e0e0;
+        }
+        .related-books-container::-webkit-scrollbar {
+            height: 8px;
+        }
+        .related-books-container::-webkit-scrollbar-track {
+            background: #e0e0e0;
+            border-radius: 4px;
+        }
+        .related-books-container::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 4px;
+        }
+        .scroll-arrows-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-top: 20px;
+            padding-bottom: 10px;
+        }
+        .scroll-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+            background: white;
+            color: var(--primary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            flex-shrink: 0;
+        }
+        .scroll-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.1);
+        }
+        .scroll-btn i {
+            font-size: 16px;
+        }
+        .related-book-card {
+            min-width: 220px;
+            max-width: 220px;
+            flex-shrink: 0;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            min-height: 320px;
+            position: relative;
+            justify-content: flex-start;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .related-book-card .book-img {
+            width: 130px;
+            min-width: 130px;
+            height: 180px;
+            margin-right: 0;
+            margin-bottom: 12px;
+        }
+        .related-book-card .book-info {
+            flex-basis: auto;
+            height: auto;
+            text-align: center;
+            align-items: center;
+            width: 100%;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+        .related-book-card .book-details-wrapper {
+            flex-grow: 1;
+            width: 100%;
+        }
+        .related-book-card .book-title {
+            font-size: 14px;
+            -webkit-line-clamp: 2;
+            min-height: 2.8em;
+            text-align: center;
+            width: 100%;
+        }
+        .related-book-card .book-author {
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+        .related-book-card .book-price {
+            margin-bottom: 2px;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .related-book-card .book-price .current-price,
+        .related-book-card .book-price .original-price {
+            display: inline-block;
+            white-space: nowrap;
+        }
+        .related-book-card .book-price .discount {
+            display: block;
+            width: 100%;
+            flex-basis: 100%;
+            margin-top: 4px;
+            text-align: center;
+        }
+        .related-book-card .current-price {
+            font-size: 18px;
+        }
+        .related-book-card .btn-add-cart {
+            padding: 8px 16px;
+            font-size: 12px;
+            width: 100%;
+        }
+        .related-book-card .free-delivery {
+            font-size: 11px;
+            color: #2e7d32;
+            margin-top: auto;
+            margin-bottom: 8px;
+            order: 0;
+        }
+        .related-book-card .book-actions {
+            width: 100%;
+            margin-top: 0;
+        }
+        
+        /* Mobile responsive for related book cards - prices side by side */
+        @media (max-width: 768px) {
+            .related-book-card {
+                min-width: 190px;
+                max-width: 190px;
+            }
+            .related-book-card .book-price {
+                display: flex !important;
+                flex-wrap: wrap !important;
+                flex-direction: row !important;
+                justify-content: center;
+                align-items: center;
+                gap: 6px;
+            }
+            .related-book-card .book-price .current-price,
+            .related-book-card .book-price .original-price {
+                display: inline-block !important;
+                white-space: nowrap;
+            }
+            .related-book-card .book-price .discount {
+                display: block !important;
+                width: 100% !important;
+                flex-basis: 100% !important;
+                margin-top: 4px !important;
+                text-align: center;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .related-book-card {
+                min-width: 170px;
+                max-width: 170px;
+            }
+            .related-book-card .book-price {
+                display: flex !important;
+                flex-wrap: wrap !important;
+                flex-direction: row !important;
+                justify-content: center;
+                align-items: center;
+                gap: 5px;
+                font-size: 13px;
+            }
+            .related-book-card .book-price .current-price {
+                font-size: 16px;
+            }
+            .related-book-card .book-price .original-price {
+                font-size: 13px;
+            }
+            .related-book-card .book-price .discount {
+                font-size: 12px;
+                display: block !important;
+                width: 100% !important;
+                flex-basis: 100% !important;
+                margin-top: 4px !important;
+                text-align: center;
             }
         }
     </style>
@@ -1915,11 +2187,26 @@
         <div class="container">
             <h2 class="section-title">Search Books</h2>
             <div class="search-box">
-                <input type="text" id="search-input" placeholder="Search by title, author...">
+                <div class="search-input-wrapper">
+                    <input type="text" id="search-input" placeholder="Search by title, author...">
+                    <button id="clear-search-btn" class="clear-search-btn" style="display: none;">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
                 <button id="search-button"><i class="fas fa-search"></i> Search</button>
             </div>
             <div class="books-grid" id="search-results">
                 </div>
+            
+            <!-- You May Also Like Section for Search -->
+            <div id="search-related-section" style="display: none; margin-top: 40px;">
+                <h2 class="section-title related-title">You May Also Like</h2>
+                <div class="related-books-container" id="search-related-grid"></div>
+                <div class="scroll-arrows-wrapper">
+                    <button class="scroll-btn scroll-left" onclick="scrollSearchRelatedBooks(-1)"><i class="fas fa-chevron-left"></i></button>
+                    <button class="scroll-btn scroll-right" onclick="scrollSearchRelatedBooks(1)"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -2249,10 +2536,10 @@
 
     // Sample exercise copy data remains hard-coded
     const exerciseCopies = [
-        { id: 'ex1', title: 'Classmate Notebook', img: 'https://images.meesho.com/images/products/112719835/hqino_512.webp?width=512', description: 'Durable notebook for everyday use.', price: 60, author: 'Classmate', publication: 'ITC' },
-        { id: 'ex2', title: 'Spiral Notebook', img: 'https://rukminim2.flixcart.com/image/850/1000/kfmv9u80/notebook/p/y/g/navneet-youva-soft-bound-long-notebook-17x27-single-line-original-imafwfz7z7hzzfyb.jpeg?q=20&crop=false', description: 'Spiral bound, easy to flip pages.', price: 80, author: 'Navneet', publication: 'Navneet' },
-        { id: 'ex3', title: 'Practical Copy', img: 'https://targetpublications.org/media/catalog/product/cache/1/image/700x700/9df78eab33525d08d6e5fb8d27136e95/t/a/target_s_eco-friendly_practical_notebook_for_students_2.jpg', description: 'Eco-friendly practical notebook.', price: 100, author: 'Target', publication: 'Target' },
-        { id: 'ex4', title: 'Graph Paper Book', img: 'https://laxmistationery.com/wp-content/uploads/2021/07/Classmate-Graph-Book-32-Pages-Pack-of-12.jpg', description: 'Perfect for math & geometry.', price: 50, author: 'Classmate', publication: 'ITC' }
+        { id: 'ex1', title: 'Classmate Notebook', img: 'bookimg.jpeg', description: 'Durable notebook for everyday use.', price: 60, author: 'Classmate', publication: 'ITC' },
+        { id: 'ex2', title: 'Spiral Notebook', img: 'bookimg.jpeg', description: 'Spiral bound, easy to flip pages.', price: 80, author: 'Navneet', publication: 'Navneet' },
+        { id: 'ex3', title: 'Practical Copy', img: 'bookimg.jpeg', description: 'Eco-friendly practical notebook.', price: 100, author: 'Target', publication: 'Target' },
+        { id: 'ex4', title: 'Graph Paper Book', img: 'bookimg.jpeg', description: 'Perfect for math & geometry.', price: 50, author: 'Classmate', publication: 'ITC' }
     ];
 
     // DOM Elements
@@ -2457,6 +2744,29 @@
 
         searchButton.addEventListener('click', () => performSearch(searchInput.value));
         searchInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') performSearch(searchInput.value); });
+
+        // Clear search button functionality
+        const clearSearchBtn = document.getElementById('clear-search-btn');
+        const searchResults = document.getElementById('search-results');
+        const searchRelatedSection = document.getElementById('search-related-section');
+
+        // Show/hide clear button based on input
+        searchInput.addEventListener('input', () => {
+            if (searchInput.value.length > 0) {
+                clearSearchBtn.style.display = 'flex';
+            } else {
+                clearSearchBtn.style.display = 'none';
+            }
+        });
+
+        // Clear search on X button click
+        clearSearchBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            clearSearchBtn.style.display = 'none';
+            searchResults.innerHTML = '';
+            searchRelatedSection.style.display = 'none';
+            searchInput.focus();
+        });
 
         categoryButtons.forEach(button => {
             button.addEventListener('click', () => {
@@ -2714,9 +3024,9 @@
 
         if (filteredBooks.length > visibleBookCount) {
             const seeMoreBtn = document.createElement('button');
-            seeMoreBtn.textContent = 'See More';
+            seeMoreBtn.innerHTML = '<i class="fas fa-chevron-down"></i>';
             seeMoreBtn.id = 'see-more-btn';
-            seeMoreBtn.className = 'btn btn-primary';
+            seeMoreBtn.title = 'See More';
             seeMoreBtn.onclick = () => {
                 visibleBookCount += BOOKS_PER_PAGE;
                 displayBooksByCategory();
@@ -2729,12 +3039,12 @@
         const card = document.createElement('div');
         card.className = 'book-card fade-in';
         const discount = book.originalPrice > 0 ? Math.round(((book.originalPrice - book.price) / book.originalPrice) * 100) : 0;
-        const imageUrl = book.frontImg ? book.frontImg : 'https://dummyimage.com/130x180/5c5c5c/ffffff&text=No+Image';
+        const imageUrl = book.frontImg ? book.frontImg : 'bookimg.jpeg';
         const descriptionSnippet = book.description || '';
 
         card.innerHTML = `
             <div class="book-img">
-                <img src="${imageUrl}" alt="${book.title}" onerror="this.onerror=null; this.src='https://dummyimage.com/130x180/5c5c5c/ffffff&text=No+Image';">
+                <img src="${imageUrl}" alt="${book.title}" onerror="this.onerror=null; this.src='bookimg.jpeg';">
                 <div class="book-hover-badge">${book.category || 'Book'}</div>
             </div>
             <div class="book-info">
@@ -2819,6 +3129,158 @@
                 </div>`;
         bookDetailsModal.style.display = 'block';
          document.body.style.overflow = 'hidden';
+    }
+
+    // --- Search Related Books Functions ---
+    function createSearchRelatedBookCard(book) {
+        const card = document.createElement('div');
+        card.className = 'book-card related-book-card';
+        const discount = book.originalPrice > 0 ? Math.round(((book.originalPrice - book.price) / book.originalPrice) * 100) : 0;
+        const imageUrl = book.frontImg ? book.frontImg : 'bookimg.jpeg';
+
+        card.innerHTML = `
+            <div class="book-img">
+                <img src="${imageUrl}" alt="${book.title}" onerror="this.onerror=null; this.src='bookimg.jpeg';">
+                <div class="book-hover-badge">${book.category || 'Book'}</div>
+            </div>
+            <div class="book-info">
+                <div class="book-details-wrapper">
+                    <h3 class="book-title">${book.title}</h3>
+                    <p class="book-author">by ${book.author}</p>
+                    <div class="book-price">
+                        <span class="current-price">₹${book.price}</span>
+                        ${book.originalPrice > 0 ? `<span class="original-price">₹${book.originalPrice}</span>` : ''}
+                        ${discount > 0 ? `<span class="discount">(${discount}% off)</span>` : ''}
+                    </div>
+                </div>
+                <p class="free-delivery">Free delivery on 3 books</p>
+                <div class="book-actions">
+                    <button class="btn-add-cart add-to-cart-btn" data-id="${book.id}">
+                        Add to cart
+                    </button>
+                </div>
+            </div>
+        `;
+
+        card.addEventListener('click', (e) => {
+            if (!e.target.closest('.add-to-cart-btn')) {
+                showBookDetails(book.id);
+            }
+        });
+        card.querySelector('.add-to-cart-btn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleCartItem(book.id);
+        });
+        return card;
+    }
+
+    function showSearchRelatedBooks(foundBooks, searchQuery) {
+        const relatedSection = document.getElementById('search-related-section');
+        const relatedGrid = document.getElementById('search-related-grid');
+        
+        if (!relatedSection || !relatedGrid) return;
+        
+        relatedGrid.innerHTML = '';
+        
+        let suggestions = [];
+        const lowerQuery = searchQuery.toLowerCase().trim();
+        
+        // Debug logging
+        console.log('showSearchRelatedBooks called with:', foundBooks.length, 'books');
+        console.log('Total books available:', books.length);
+        
+        if (foundBooks && foundBooks.length > 0) {
+            // Book(s) found - get categories and authors from found books
+            const foundCategories = [...new Set(foundBooks.map(b => b.category).filter(Boolean))];
+            const foundAuthors = [...new Set(foundBooks.map(b => b.author).filter(Boolean))];
+            const foundPublications = [...new Set(foundBooks.map(b => b.publication).filter(Boolean))];
+            
+            console.log('Found categories:', foundCategories);
+            console.log('Found authors:', foundAuthors);
+            console.log('Found publications:', foundPublications);
+            
+            // Get books not in the found results
+            const availableBooks = books.filter(b => !foundBooks.find(fb => fb.id === b.id));
+            
+            // Priority 1: Same category books (3-4 books)
+            if (foundCategories.length > 0) {
+                const sameCategory = availableBooks.filter(b => {
+                    if (!b.category) return false;
+                    const bookCat = b.category.toLowerCase().trim();
+                    return foundCategories.some(cat => cat.toLowerCase().trim() === bookCat);
+                });
+                console.log('Same category books found:', sameCategory.length);
+                const categoryShuffled = sameCategory.sort(() => 0.5 - Math.random());
+                suggestions = suggestions.concat(categoryShuffled.slice(0, 4));
+            }
+            
+            // Priority 2: Same author books (2-3 books)
+            if (foundAuthors.length > 0) {
+                const sameAuthor = availableBooks.filter(b => 
+                    b.author && foundAuthors.some(auth => 
+                        auth.toLowerCase() === b.author.toLowerCase()
+                    ) && !suggestions.find(s => s.id === b.id)
+                );
+                const authorShuffled = sameAuthor.sort(() => 0.5 - Math.random());
+                suggestions = suggestions.concat(authorShuffled.slice(0, 3));
+            }
+            
+            // Priority 3: Same publication books (2-3 books)
+            if (foundPublications.length > 0) {
+                const samePublication = availableBooks.filter(b => 
+                    b.publication && foundPublications.some(pub => 
+                        pub.toLowerCase() === b.publication.toLowerCase()
+                    ) && !suggestions.find(s => s.id === b.id)
+                );
+                const pubShuffled = samePublication.sort(() => 0.5 - Math.random());
+                suggestions = suggestions.concat(pubShuffled.slice(0, 2));
+            }
+            
+            // Fill remaining with random books
+            const usedIds = suggestions.map(b => b.id);
+            const remainingBooks = availableBooks.filter(b => !usedIds.includes(b.id));
+            const needed = 10 - suggestions.length;
+            if (needed > 0 && remainingBooks.length > 0) {
+                const randomShuffled = remainingBooks.sort(() => 0.5 - Math.random());
+                suggestions = suggestions.concat(randomShuffled.slice(0, needed));
+            }
+            
+            // Fallback: If still no suggestions, show random books
+            if (suggestions.length === 0 && books.length > 0) {
+                console.log('No matching suggestions found, showing random books');
+                const randomShuffled = books.filter(b => !foundBooks.find(fb => fb.id === b.id))
+                    .sort(() => 0.5 - Math.random());
+                suggestions = randomShuffled.slice(0, 10);
+            }
+        } else {
+            // No books found - show completely random books
+            const randomShuffled = books.sort(() => 0.5 - Math.random());
+            suggestions = randomShuffled.slice(0, 10);
+        }
+        
+        console.log('Total suggestions to show:', suggestions.length);
+        
+        // Final shuffle
+        suggestions = suggestions.sort(() => 0.5 - Math.random());
+        
+        if (suggestions.length > 0) {
+            suggestions.forEach(book => {
+                const bookCard = createSearchRelatedBookCard(book);
+                relatedGrid.appendChild(bookCard);
+            });
+            relatedSection.style.display = 'block';
+            updateAddToCartButtonsUI();
+        } else {
+            relatedSection.style.display = 'none';
+        }
+    }
+
+    function scrollSearchRelatedBooks(direction) {
+        const container = document.getElementById('search-related-grid');
+        if (container) {
+            const scrollAmount = 300;
+            container.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+        }
     }
     
     // --- UPDATED performSearch FUNCTION FOR WHATSAPP BUTTON ---
@@ -2970,11 +3432,15 @@
                 
                 window.open(facebookLink, '_blank');
             });
+            // Show random books when no results found
+            showSearchRelatedBooks([], query);
             return;
         }
 
         bookResults.forEach(book => searchResultsGrid.appendChild(createBookCard(book)));
-         updateAddToCartButtonsUI();
+        updateAddToCartButtonsUI();
+        // Show related books based on search results
+        showSearchRelatedBooks(bookResults, query);
     }
     // --- END UPDATED performSearch FUNCTION ---
 
@@ -3000,11 +3466,11 @@
                 </div>`;
         }
 
-        const imageUrl = book.frontImg ? book.frontImg : 'https://dummyimage.com/250x375/5c5c5c/ffffff&text=No+Image';
+        const imageUrl = book.frontImg ? book.frontImg : 'bookimg.jpeg';
 
         bookDetailsContent.innerHTML = `
             <div class="book-details-img">
-                <img src="${imageUrl}" alt="${book.title}" onerror="this.onerror=null; this.src='https://dummyimage.com/250x375/5c5c5c/ffffff&text=No+Image';">
+                <img src="${imageUrl}" alt="${book.title}" onerror="this.onerror=null; this.src='bookimg.jpeg';">
             </div>
             <div class="book-details-info">
                 <h2>${book.title}</h2>
@@ -3107,7 +3573,7 @@
                     const cartItemEl = document.createElement('div');
                     cartItemEl.className = 'cart-item';
                     cartItemEl.innerHTML = `
-                        <img src="${item.frontImg || item.img || 'https://dummyimage.com/80x120/ccc/fff&text=No+Image'}" alt="${item.title}" class="cart-item-img" onerror="this.onerror=null;this.src='https://dummyimage.com/80x120/ccc/fff&text=No+Image';">
+                        <img src="${item.frontImg || item.img || 'bookimg.jpeg'}" alt="${item.title}" class="cart-item-img" onerror="this.onerror=null;this.src='bookimg.jpeg';">
                         <div class="cart-item-info">
                             <h4>${item.title}</h4>
                             <p class="cart-item-price">₹${item.price}</p>
