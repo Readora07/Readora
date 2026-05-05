@@ -612,6 +612,38 @@
             font-size: 14px;
         }
 
+        .btn-share.loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .btn-share.loading i {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .share-modal.loading {
+            pointer-events: none;
+        }
+
+        .share-modal.loading .share-modal-content {
+            opacity: 0.8;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 0.8s linear infinite;
+        }
+
         /* Share Modal Styles */
         .share-modal {
             display: none;
@@ -2554,8 +2586,13 @@
                 <button class="close-share-modal">&times;</button>
             </div>
             <div class="share-link-box">
-                <input type="text" class="share-link-input" id="share-link-input" readonly>
-                <button class="btn-copy-link" id="btn-copy-link">Copy</button>
+                <input type="text" class="share-link-input" id="share-link-input" readonly placeholder="Generating link...">
+                <button class="btn-copy-link" id="btn-copy-link">
+                    <span class="btn-text">Copy</span>
+                    <span class="btn-loading" style="display: none;">
+                        <div class="loading-spinner"></div>
+                    </span>
+                </button>
             </div>
             <div class="share-buttons">
                 <button class="share-btn-social share-btn-whatsapp" id="share-whatsapp" title="Share on WhatsApp">
@@ -3320,9 +3357,6 @@
                     <button class="btn-add-cart add-to-cart-btn" data-id="${book.id}">
                         Add to cart
                     </button>
-                    <button class="btn-share share-btn" data-id="${book.id}" data-title="${book.title}" data-author="${book.author}">
-                        <i class="fas fa-share"></i> Share
-                    </button>
                 </div>
             </div>
             <div class="book-description-wrapper">
@@ -3330,7 +3364,7 @@
             </div>
         `; 
         card.addEventListener('click', (e) => {
-            if (!e.target.closest('.add-to-cart-btn') && !e.target.closest('.share-btn')) {
+            if (!e.target.closest('.add-to-cart-btn')) {
                  showBookDetails(book.id);
             }
         });
@@ -3338,18 +3372,6 @@
             e.stopPropagation();
             toggleCartItem(book.id);
         });
-        
-        // Add event listener for share button
-        const shareBtn = card.querySelector('.share-btn');
-        if (shareBtn) {
-            shareBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const bookId = shareBtn.getAttribute('data-id');
-                const title = shareBtn.getAttribute('data-title');
-                const author = shareBtn.getAttribute('data-author');
-                openShareModal(bookId, title, author);
-            });
-        }
         
         return card;
     }
@@ -3369,9 +3391,6 @@
                     <button class="btn-add-cart add-to-cart-btn" data-id="${copy.id}">
                         Add to cart
                     </button>
-                    <button class="btn-share share-btn" data-id="${copy.id}" data-title="${copy.title}" data-author="${copy.author || 'Readora'}">
-                        <i class="fas fa-share"></i> Share
-                    </button>
                 </div>
             </div>
             <div class="book-description-wrapper">
@@ -3380,7 +3399,7 @@
         `;
         // Card click listener to open details modal
         card.addEventListener('click', (e) => {
-            if (!e.target.closest('.add-to-cart-btn') && !e.target.closest('.share-btn')) {
+            if (!e.target.closest('.add-to-cart-btn')) {
                  showExerciseDetails(copy.id); // Call the correct details function
             }
         });
@@ -3389,18 +3408,6 @@
             e.stopPropagation();
             toggleCartItem(copy.id); 
         });
-        
-        // Add event listener for share button
-        const shareBtn = card.querySelector('.share-btn');
-        if (shareBtn) {
-            shareBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const copyId = shareBtn.getAttribute('data-id');
-                const title = shareBtn.getAttribute('data-title');
-                const author = shareBtn.getAttribute('data-author');
-                openShareModal(copyId, title, author);
-            });
-        }
         
         return card;
     }
@@ -4044,20 +4051,31 @@
     let currentShareAuthor = '';
 
     function openShareModal(bookId, title, author) {
+        // Set current book data
         currentShareBookId = bookId;
         currentShareTitle = title;
         currentShareAuthor = author;
         
-        // Generate unique book link
-        const baseUrl = window.location.origin + window.location.pathname;
-        const bookLink = `${baseUrl}?book=${bookId}`;
-        
-        shareLinkInput.value = bookLink;
+        // Show modal immediately for instant feedback
         shareModal.style.display = 'flex';
+        shareModal.classList.add('loading');
         
-        // Reset copy button text
-        btnCopyLink.textContent = 'Copy';
-        btnCopyLink.classList.remove('copied');
+        // Generate and set link asynchronously
+        requestAnimationFrame(() => {
+            const baseUrl = window.location.origin + window.location.pathname;
+            const bookLink = `${baseUrl}?book=${bookId}`;
+            
+            shareLinkInput.value = bookLink;
+            
+            // Reset copy button text
+            if (btnCopyLink) {
+                btnCopyLink.textContent = 'Copy';
+                btnCopyLink.classList.remove('copied');
+            }
+            
+            // Remove loading state
+            shareModal.classList.remove('loading');
+        });
     }
 
     function closeShareModal() {
@@ -4176,3 +4194,5 @@
 </script>
 </body>
 </html>
+
+					
