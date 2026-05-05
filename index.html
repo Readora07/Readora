@@ -3320,6 +3320,9 @@
                     <button class="btn-add-cart add-to-cart-btn" data-id="${book.id}">
                         Add to cart
                     </button>
+                    <button class="btn-share share-btn" data-id="${book.id}" data-title="${book.title}" data-author="${book.author}">
+                        <i class="fas fa-share"></i> Share
+                    </button>
                 </div>
             </div>
             <div class="book-description-wrapper">
@@ -3327,7 +3330,7 @@
             </div>
         `; 
         card.addEventListener('click', (e) => {
-            if (!e.target.closest('.add-to-cart-btn')) {
+            if (!e.target.closest('.add-to-cart-btn') && !e.target.closest('.share-btn')) {
                  showBookDetails(book.id);
             }
         });
@@ -3335,6 +3338,19 @@
             e.stopPropagation();
             toggleCartItem(book.id);
         });
+        
+        // Add event listener for share button
+        const shareBtn = card.querySelector('.share-btn');
+        if (shareBtn) {
+            shareBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const bookId = shareBtn.getAttribute('data-id');
+                const title = shareBtn.getAttribute('data-title');
+                const author = shareBtn.getAttribute('data-author');
+                openShareModal(bookId, title, author);
+            });
+        }
+        
         return card;
     }
 
@@ -3353,6 +3369,9 @@
                     <button class="btn-add-cart add-to-cart-btn" data-id="${copy.id}">
                         Add to cart
                     </button>
+                    <button class="btn-share share-btn" data-id="${copy.id}" data-title="${copy.title}" data-author="${copy.author || 'Readora'}">
+                        <i class="fas fa-share"></i> Share
+                    </button>
                 </div>
             </div>
             <div class="book-description-wrapper">
@@ -3361,7 +3380,7 @@
         `;
         // Card click listener to open details modal
         card.addEventListener('click', (e) => {
-            if (!e.target.closest('.add-to-cart-btn')) {
+            if (!e.target.closest('.add-to-cart-btn') && !e.target.closest('.share-btn')) {
                  showExerciseDetails(copy.id); // Call the correct details function
             }
         });
@@ -3370,6 +3389,19 @@
             e.stopPropagation();
             toggleCartItem(copy.id); 
         });
+        
+        // Add event listener for share button
+        const shareBtn = card.querySelector('.share-btn');
+        if (shareBtn) {
+            shareBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const copyId = shareBtn.getAttribute('data-id');
+                const title = shareBtn.getAttribute('data-title');
+                const author = shareBtn.getAttribute('data-author');
+                openShareModal(copyId, title, author);
+            });
+        }
+        
         return card;
     }
 
