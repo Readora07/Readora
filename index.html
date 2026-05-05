@@ -997,6 +997,30 @@
             color: var(--dark);
         }
 
+        .modal-share-icon {
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--gray);
+            transition: all 0.3s;
+            position: absolute;
+            top: 18px;
+            right: 50px;
+            z-index: 10;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: transparent;
+            border: none;
+        }
+
+        .modal-share-icon:hover {
+            color: var(--primary);
+            background: rgba(139, 69, 19, 0.1);
+        }
+
         .modal-body {
             padding: 30px;
             overflow-y: auto;
@@ -1695,6 +1719,14 @@
             
             .modal-header h2 {
                 font-size: 18px;
+            }
+
+            .modal-share-icon {
+                font-size: 18px;
+                top: 13px;
+                right: 45px;
+                width: 28px;
+                height: 28px;
             }
             
             .modal-body {
@@ -2449,6 +2481,9 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h2> Details</h2>
+                <button class="modal-share-icon" id="modal-share-btn" title="Share this book">
+                    <i class="fas fa-share"></i>
+                </button>
                 <span class="close-modal">&times;</span>
             </div>
             <div class="modal-body">
@@ -2662,11 +2697,18 @@
         // 1. Try to load from cache first for instant UI
         try {
             const cachedBooks = JSON.parse(localStorage.getItem('readoraBooks'));
-            if (cachedBooks && cachedBooks.length > 0) {
+            const cacheVersion = localStorage.getItem('readoraBooksVersion');
+            // Check if cache has unique IDs (new format)
+            const hasValidIds = cachedBooks && cachedBooks.length > 0 && cachedBooks.every(b => b.id && b.id.length > 5);
+
+            if (cachedBooks && cachedBooks.length > 0 && hasValidIds && cacheVersion === '2') {
                 console.log("Loaded", cachedBooks.length, "books from cache for initial display.");
                 books = cachedBooks;
                 init(); // Initialize event listeners and render the page with cached data
                 isInitiallyRendered = true;
+            } else if (cachedBooks && !hasValidIds) {
+                console.log("Cache has invalid IDs, clearing cache...");
+                localStorage.removeItem('readoraBooks');
             }
         } catch(e) {
             console.error("Could not parse cached books:", e);
@@ -2699,8 +2741,20 @@
                 throw new Error(data.error);
             }
 
-            const processedData = data.map(book => {
-                return { ...book, frontImg: book.frontImg || book['Front Img'] || book.img };
+            const processedData = data.map((book, index) => {
+                // Generate a unique ID if not present or invalid
+                let uniqueId = book.id || book.ID || book['Book ID'];
+                if (!uniqueId) {
+                    // Create unique ID from title and author if available, otherwise use index
+                    const titlePart = (book.title || book.Title || 'book').toString().toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 20);
+                    const authorPart = (book.author || book.Author || 'unknown').toString().toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 10);
+                    uniqueId = `${titlePart}-${authorPart}-${index}`;
+                }
+                return {
+                    ...book,
+                    id: uniqueId.toString(),
+                    frontImg: book.frontImg || book['Front Img'] || book.img
+                };
             });
             
             // 4. Compare and update if necessary
@@ -2711,6 +2765,7 @@
                 console.log("Fresh data received. Updating books and cache.");
                 books = processedData;
                 localStorage.setItem('readoraBooks', newDataJSON);
+                localStorage.setItem('readoraBooksVersion', '2'); // Version 2 = with unique IDs
                 
                 if (isInitiallyRendered) {
                     // Re-render with new data
@@ -3265,9 +3320,6 @@
                     <button class="btn-add-cart add-to-cart-btn" data-id="${book.id}">
                         Add to cart
                     </button>
-                    <button class="btn-share share-btn" data-id="${book.id}" data-title="${encodeURIComponent(book.title)}" data-author="${encodeURIComponent(book.author)}">
-                        <i class="fas fa-share-alt"></i> Share
-                    </button>
                 </div>
             </div>
             <div class="book-description-wrapper">
@@ -3275,17 +3327,13 @@
             </div>
         `; 
         card.addEventListener('click', (e) => {
-            if (!e.target.closest('.add-to-cart-btn') && !e.target.closest('.share-btn')) {
+            if (!e.target.closest('.add-to-cart-btn')) {
                  showBookDetails(book.id);
             }
         });
         card.querySelector('.add-to-cart-btn').addEventListener('click', (e) => {
             e.stopPropagation();
             toggleCartItem(book.id);
-        });
-        card.querySelector('.share-btn').addEventListener('click', (e) => {
-            e.stopPropagation();
-            openShareModal(book.id, book.title, book.author);
         });
         return card;
     }
@@ -3305,9 +3353,6 @@
                     <button class="btn-add-cart add-to-cart-btn" data-id="${copy.id}">
                         Add to cart
                     </button>
-                    <button class="btn-share share-btn" data-id="${copy.id}" data-title="${encodeURIComponent(copy.title)}" data-author="${encodeURIComponent(copy.author || '')}">
-                        <i class="fas fa-share-alt"></i> Share
-                    </button>
                 </div>
             </div>
             <div class="book-description-wrapper">
@@ -3316,7 +3361,7 @@
         `;
         // Card click listener to open details modal
         card.addEventListener('click', (e) => {
-            if (!e.target.closest('.add-to-cart-btn') && !e.target.closest('.share-btn')) {
+            if (!e.target.closest('.add-to-cart-btn')) {
                  showExerciseDetails(copy.id); // Call the correct details function
             }
         });
@@ -3325,16 +3370,15 @@
             e.stopPropagation();
             toggleCartItem(copy.id); 
         });
-        card.querySelector('.share-btn').addEventListener('click', (e) => {
-            e.stopPropagation();
-            openShareModal(copy.id, copy.title, copy.author || 'Readora');
-        });
         return card;
     }
 
     function showExerciseDetails(copyId) {
-        const copy = exerciseCopies.find(c => c.id === copyId);
-        if (!copy) return;
+        const copy = exerciseCopies.find(c => String(c.id) === String(copyId));
+        if (!copy) {
+            console.log('Exercise copy not found with ID:', copyId);
+            return;
+        }
         bookDetailsContent.innerHTML = `
             <div class="book-details-img"><img src="${copy.img}" alt="${copy.title}"></div>
             <div class="book-details-info">
@@ -3344,7 +3388,16 @@
                 <p class="book-details-desc">${copy.description}</p>
                 </div>`;
         bookDetailsModal.style.display = 'block';
-         document.body.style.overflow = 'hidden';
+        document.body.style.overflow = 'hidden';
+
+        // Set up share button for current exercise copy
+        const shareBtn = document.getElementById('modal-share-btn');
+        if (shareBtn) {
+            shareBtn.onclick = (e) => {
+                e.stopPropagation();
+                openShareModal(copy.id, copy.title, copy.author || 'Readora');
+            };
+        }
     }
 
     // --- Search Related Books Functions ---
@@ -3374,25 +3427,18 @@
                     <button class="btn-add-cart add-to-cart-btn" data-id="${book.id}">
                         Add to cart
                     </button>
-                    <button class="btn-share share-btn" data-id="${book.id}" data-title="${encodeURIComponent(book.title)}" data-author="${encodeURIComponent(book.author)}">
-                        <i class="fas fa-share-alt"></i> Share
-                    </button>
                 </div>
             </div>
         `;
 
         card.addEventListener('click', (e) => {
-            if (!e.target.closest('.add-to-cart-btn') && !e.target.closest('.share-btn')) {
+            if (!e.target.closest('.add-to-cart-btn')) {
                 showBookDetails(book.id);
             }
         });
         card.querySelector('.add-to-cart-btn').addEventListener('click', (e) => {
             e.stopPropagation();
             toggleCartItem(book.id);
-        });
-        card.querySelector('.share-btn').addEventListener('click', (e) => {
-            e.stopPropagation();
-            openShareModal(book.id, book.title, book.author);
         });
         return card;
     }
@@ -3668,8 +3714,11 @@
     // --- END UPDATED performSearch FUNCTION ---
 
     function showBookDetails(bookId) {
-        const book = books.find(b => b.id === bookId);
-        if (!book) return;
+        const book = books.find(b => String(b.id) === String(bookId));
+        if (!book) {
+            console.log('Book not found with ID:', bookId);
+            return;
+        }
 
         const discount = book.originalPrice > 0 ? Math.round(((book.originalPrice - book.price) / book.originalPrice) * 100) : 0;
         
@@ -3722,6 +3771,15 @@
         const closeBtn = bookDetailsModal.querySelector('.close-modal');
         if (closeBtn) {
             closeBtn.onclick = closeModal;
+        }
+        
+        // Set up share button for current book
+        const shareBtn = document.getElementById('modal-share-btn');
+        if (shareBtn) {
+            shareBtn.onclick = (e) => {
+                e.stopPropagation();
+                openShareModal(book.id, book.title, book.author);
+            };
         }
         
         updateAddToCartButtonsUI();
@@ -4057,14 +4115,16 @@
             const checkBooksAndShow = setInterval(() => {
                 if (books && books.length > 0) {
                     clearInterval(checkBooksAndShow);
-                    const book = books.find(b => b.id === bookId);
+                    const book = books.find(b => String(b.id) === String(bookId));
                     if (book) {
                         showBookDetails(bookId);
                     } else {
                         // Check exercise copies
-                        const copy = exerciseCopies.find(c => c.id === bookId);
+                        const copy = exerciseCopies.find(c => String(c.id) === String(bookId));
                         if (copy) {
                             showExerciseDetails(bookId);
+                        } else {
+                            console.log('Book not found for ID:', bookId);
                         }
                     }
                 }
