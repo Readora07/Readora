@@ -585,6 +585,176 @@
              padding-top: 0; 
         }
 
+        .btn-share {
+            background: linear-gradient(135deg, var(--primary), #8B4513);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 36px;
+            flex-shrink: 0;
+        }
+
+        .btn-share:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(139, 69, 19, 0.3);
+        }
+
+        .btn-share i {
+            margin-right: 6px;
+            font-size: 14px;
+        }
+
+        /* Share Modal Styles */
+        .share-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .share-modal-content {
+            background: white;
+            border-radius: 12px;
+            max-width: 400px;
+            width: 90%;
+            padding: 25px;
+            position: relative;
+            animation: modalFade 0.3s;
+        }
+
+        .share-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .share-modal-header h3 {
+            margin: 0;
+            color: var(--dark);
+            font-size: 20px;
+        }
+
+        .close-share-modal {
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--gray);
+            background: none;
+            border: none;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+
+        .close-share-modal:hover {
+            background: var(--light-gray);
+            color: var(--dark);
+        }
+
+        .share-link-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .share-link-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid var(--light-gray);
+            border-radius: 6px;
+            font-size: 14px;
+            background: #f8f9fa;
+            color: var(--dark);
+        }
+
+        .btn-copy-link {
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .btn-copy-link:hover {
+            background: #45a049;
+        }
+
+        .btn-copy-link.copied {
+            background: var(--primary);
+        }
+
+        .share-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .share-btn-social {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            color: white;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .share-btn-social:hover {
+            transform: translateY(-3px) scale(1.1);
+        }
+
+        .share-btn-whatsapp {
+            background: #25D366;
+        }
+
+        .share-btn-whatsapp:hover {
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
+        }
+
+        .share-btn-instagram {
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+        }
+
+        .share-btn-instagram:hover {
+            box-shadow: 0 4px 12px rgba(220, 39, 67, 0.4);
+        }
+
+        .share-btn-facebook {
+            background: #1877F2;
+        }
+
+        .share-btn-facebook:hover {
+            box-shadow: 0 4px 12px rgba(24, 119, 242, 0.4);
+        }
+
         .btn {
             padding: 10px 15px;
             border: none;
@@ -1497,11 +1667,18 @@
                 font-size: 12px;
             }
 
+            .btn-share {
+                width: 100%;
+                padding: 6px 15px;
+                font-size: 12px;
+                min-height: 32px;
+            }
+
             .book-actions {
                 flex-direction: column;
                 gap: 10px;
             }
-            
+
             .book-actions .btn {
                 width: 100%;
             }
@@ -2333,7 +2510,32 @@
             <p id="custom-alert-message"></p>
         </div>
     </div>
-    
+
+    <!-- Share Modal -->
+    <div id="share-modal" class="share-modal">
+        <div class="share-modal-content">
+            <div class="share-modal-header">
+                <h3>Share Book</h3>
+                <button class="close-share-modal">&times;</button>
+            </div>
+            <div class="share-link-box">
+                <input type="text" class="share-link-input" id="share-link-input" readonly>
+                <button class="btn-copy-link" id="btn-copy-link">Copy</button>
+            </div>
+            <div class="share-buttons">
+                <button class="share-btn-social share-btn-whatsapp" id="share-whatsapp" title="Share on WhatsApp">
+                    <i class="fab fa-whatsapp"></i>
+                </button>
+                <button class="share-btn-social share-btn-instagram" id="share-instagram" title="Share on Instagram">
+                    <i class="fab fa-instagram"></i>
+                </button>
+                <button class="share-btn-social share-btn-facebook" id="share-facebook" title="Share on Facebook">
+                    <i class="fab fa-facebook-f"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <footer id="footer" class="section-target">
         <div class="container">
             <div class="footer-content">
@@ -3063,6 +3265,9 @@
                     <button class="btn-add-cart add-to-cart-btn" data-id="${book.id}">
                         Add to cart
                     </button>
+                    <button class="btn-share share-btn" data-id="${book.id}" data-title="${encodeURIComponent(book.title)}" data-author="${encodeURIComponent(book.author)}">
+                        <i class="fas fa-share-alt"></i> Share
+                    </button>
                 </div>
             </div>
             <div class="book-description-wrapper">
@@ -3070,13 +3275,17 @@
             </div>
         `; 
         card.addEventListener('click', (e) => {
-            if (!e.target.closest('.add-to-cart-btn')) {
+            if (!e.target.closest('.add-to-cart-btn') && !e.target.closest('.share-btn')) {
                  showBookDetails(book.id);
             }
         });
         card.querySelector('.add-to-cart-btn').addEventListener('click', (e) => {
             e.stopPropagation();
             toggleCartItem(book.id);
+        });
+        card.querySelector('.share-btn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            openShareModal(book.id, book.title, book.author);
         });
         return card;
     }
@@ -3096,6 +3305,9 @@
                     <button class="btn-add-cart add-to-cart-btn" data-id="${copy.id}">
                         Add to cart
                     </button>
+                    <button class="btn-share share-btn" data-id="${copy.id}" data-title="${encodeURIComponent(copy.title)}" data-author="${encodeURIComponent(copy.author || '')}">
+                        <i class="fas fa-share-alt"></i> Share
+                    </button>
                 </div>
             </div>
             <div class="book-description-wrapper">
@@ -3104,7 +3316,7 @@
         `;
         // Card click listener to open details modal
         card.addEventListener('click', (e) => {
-            if (!e.target.closest('.add-to-cart-btn')) {
+            if (!e.target.closest('.add-to-cart-btn') && !e.target.closest('.share-btn')) {
                  showExerciseDetails(copy.id); // Call the correct details function
             }
         });
@@ -3112,6 +3324,10 @@
         card.querySelector('.btn-add-cart').addEventListener('click', (e) => {
             e.stopPropagation();
             toggleCartItem(copy.id); 
+        });
+        card.querySelector('.share-btn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            openShareModal(copy.id, copy.title, copy.author || 'Readora');
         });
         return card;
     }
@@ -3158,18 +3374,25 @@
                     <button class="btn-add-cart add-to-cart-btn" data-id="${book.id}">
                         Add to cart
                     </button>
+                    <button class="btn-share share-btn" data-id="${book.id}" data-title="${encodeURIComponent(book.title)}" data-author="${encodeURIComponent(book.author)}">
+                        <i class="fas fa-share-alt"></i> Share
+                    </button>
                 </div>
             </div>
         `;
 
         card.addEventListener('click', (e) => {
-            if (!e.target.closest('.add-to-cart-btn')) {
+            if (!e.target.closest('.add-to-cart-btn') && !e.target.closest('.share-btn')) {
                 showBookDetails(book.id);
             }
         });
         card.querySelector('.add-to-cart-btn').addEventListener('click', (e) => {
             e.stopPropagation();
             toggleCartItem(book.id);
+        });
+        card.querySelector('.share-btn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            openShareModal(book.id, book.title, book.author);
         });
         return card;
     }
@@ -3717,10 +3940,146 @@
         }
     }
 
+    // --- SHARE MODAL FUNCTIONS ---
+    const shareModal = document.getElementById('share-modal');
+    const shareLinkInput = document.getElementById('share-link-input');
+    const btnCopyLink = document.getElementById('btn-copy-link');
+    const closeShareModalBtn = document.querySelector('.close-share-modal');
+    const shareWhatsappBtn = document.getElementById('share-whatsapp');
+    const shareInstagramBtn = document.getElementById('share-instagram');
+    const shareFacebookBtn = document.getElementById('share-facebook');
+
+    let currentShareBookId = null;
+    let currentShareTitle = '';
+    let currentShareAuthor = '';
+
+    function openShareModal(bookId, title, author) {
+        currentShareBookId = bookId;
+        currentShareTitle = title;
+        currentShareAuthor = author;
+        
+        // Generate unique book link
+        const baseUrl = window.location.origin + window.location.pathname;
+        const bookLink = `${baseUrl}?book=${bookId}`;
+        
+        shareLinkInput.value = bookLink;
+        shareModal.style.display = 'flex';
+        
+        // Reset copy button text
+        btnCopyLink.textContent = 'Copy';
+        btnCopyLink.classList.remove('copied');
+    }
+
+    function closeShareModal() {
+        shareModal.style.display = 'none';
+        currentShareBookId = null;
+        currentShareTitle = '';
+        currentShareAuthor = '';
+    }
+
+    // Copy link functionality
+    if (btnCopyLink) {
+        btnCopyLink.addEventListener('click', async () => {
+            const linkToCopy = shareLinkInput.value;
+            try {
+                await navigator.clipboard.writeText(linkToCopy);
+                btnCopyLink.textContent = 'Copied!';
+                btnCopyLink.classList.add('copied');
+                setTimeout(() => {
+                    btnCopyLink.textContent = 'Copy';
+                    btnCopyLink.classList.remove('copied');
+                }, 2000);
+            } catch (err) {
+                // Fallback for older browsers
+                fallbackCopyTextToClipboard(linkToCopy);
+                btnCopyLink.textContent = 'Copied!';
+                btnCopyLink.classList.add('copied');
+                setTimeout(() => {
+                    btnCopyLink.textContent = 'Copy';
+                    btnCopyLink.classList.remove('copied');
+                }, 2000);
+            }
+        });
+    }
+
+    // Close modal handlers
+    if (closeShareModalBtn) {
+        closeShareModalBtn.addEventListener('click', closeShareModal);
+    }
+
+    if (shareModal) {
+        shareModal.addEventListener('click', (e) => {
+            if (e.target === shareModal) {
+                closeShareModal();
+            }
+        });
+    }
+
+    // Social share handlers
+    if (shareWhatsappBtn) {
+        shareWhatsappBtn.addEventListener('click', () => {
+            const bookLink = shareLinkInput.value;
+            const shareText = `Check out this book: "${currentShareTitle}" by ${currentShareAuthor}\n\n${bookLink}`;
+            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
+            window.open(whatsappUrl, '_blank');
+        });
+    }
+
+    if (shareInstagramBtn) {
+        shareInstagramBtn.addEventListener('click', () => {
+            const bookLink = shareLinkInput.value;
+            const shareText = `Check out this book: "${currentShareTitle}" by ${currentShareAuthor}\n\n${bookLink}`;
+            
+            // Copy to clipboard for Instagram sharing
+            navigator.clipboard.writeText(shareText).then(() => {
+                showCustomAlert('Book details copied! Open Instagram and paste to share.');
+            }).catch(() => {
+                fallbackCopyTextToClipboard(shareText);
+                showCustomAlert('Book details copied! Open Instagram and paste to share.');
+            });
+        });
+    }
+
+    if (shareFacebookBtn) {
+        shareFacebookBtn.addEventListener('click', () => {
+            const bookLink = shareLinkInput.value;
+            const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(bookLink)}&quote=${encodeURIComponent(`Check out this book: "${currentShareTitle}" by ${currentShareAuthor}`)}`;
+            window.open(facebookShareUrl, '_blank', 'width=600,height=400');
+        });
+    }
+
+    // Handle URL parameters to open book details on page load
+    function handleBookUrlParam() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const bookId = urlParams.get('book');
+        if (bookId) {
+            // Wait for books to load then show details
+            const checkBooksAndShow = setInterval(() => {
+                if (books && books.length > 0) {
+                    clearInterval(checkBooksAndShow);
+                    const book = books.find(b => b.id === bookId);
+                    if (book) {
+                        showBookDetails(bookId);
+                    } else {
+                        // Check exercise copies
+                        const copy = exerciseCopies.find(c => c.id === bookId);
+                        if (copy) {
+                            showExerciseDetails(bookId);
+                        }
+                    }
+                }
+            }, 500);
+            // Stop checking after 10 seconds
+            setTimeout(() => clearInterval(checkBooksAndShow), 10000);
+        }
+    }
+    // --- END SHARE MODAL FUNCTIONS ---
+
     // Initialize the app by fetching data first.
     document.addEventListener('DOMContentLoaded', function() {
         checkWelcomePopup(); // Check and show welcome popup
         fetchBooksAndInitialize(); // Initialize the main app
+        handleBookUrlParam(); // Check for book URL parameter
     });
 </script>
 </body>
