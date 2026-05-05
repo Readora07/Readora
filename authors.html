@@ -388,8 +388,8 @@ nav ul li.dropdown .dropdown-menu li a {
             .book-actions { flex-direction: column; gap: 8px; margin-top: 8px; }
             .book-actions .btn { width: 100%; }
             .book-description-wrapper { display: none; }
-            .book-price { flex-direction: column; align-items: flex-start; gap: 2px !important; }
-            .discount { margin-left: 0 !important; display: block; margin-top: 2px; }
+            .book-price { flex-direction: row; align-items: center; flex-wrap: wrap; gap: 8px !important; }
+            .discount { width: 100%; margin-left: 0 !important; margin-top: 0; }
             
             /* --- START: MOBILE MODAL FIXES --- */
             .book-details { grid-template-columns: 1fr; gap: 15px; }
@@ -753,12 +753,12 @@ nav ul li.dropdown .dropdown-menu li a {
             const card = document.createElement('div');
             card.className = 'book-card';
             const discount = book.originalPrice > 0 ? Math.round(((book.originalPrice - book.price) / book.originalPrice) * 100) : 0;
-            const imageUrl = book.frontImg ? book.frontImg : 'https://dummyimage.com/130x180/5c5c5c/ffffff&text=No+Image';
+            const imageUrl = book.frontImg ? book.frontImg : 'bookimg.jpeg';
             const descriptionSnippet = book.description || '';
 
             card.innerHTML = `
                 <div class="book-img">
-                    <img src="${imageUrl}" alt="${book.title}" onerror="this.onerror=null; this.src='https://dummyimage.com/130x180/5c5c5c/ffffff&text=No+Image';">
+                    <img src="${imageUrl}" alt="${book.title}" onerror="this.onerror=null; this.src='bookimg.jpeg';">
                     <div class="book-hover-badge">${book.category || 'Book'}</div>
                 </div>
                 <div class="book-info">
@@ -821,11 +821,11 @@ nav ul li.dropdown .dropdown-menu li a {
                     </div>`;
             }
 
-            const imageUrl = book.frontImg ? book.frontImg : 'https://dummyimage.com/250x375/5c5c5c/ffffff&text=No+Image';
+            const imageUrl = book.frontImg ? book.frontImg : 'bookimg.jpeg';
 
             bookDetailsContent.innerHTML = `
                 <div class="book-details-img">
-                    <img src="${imageUrl}" alt="${book.title}" onerror="this.onerror=null; this.src='https://dummyimage.com/250x375/5c5c5c/ffffff&text=No+Image';">
+                    <img src="${imageUrl}" alt="${book.title}" onerror="this.onerror=null; this.src='bookimg.jpeg';">
                 </div>
                 <div class="book-details-info">
                     <h2>${book.title}</h2>
@@ -891,7 +891,7 @@ nav ul li.dropdown .dropdown-menu li a {
                     const cartItemEl = document.createElement('div');
                     cartItemEl.className = 'cart-item';
                     cartItemEl.innerHTML = `
-                        <img src="${item.frontImg}" alt="${item.title}" class="cart-item-img">
+                        <img src="${item.frontImg || 'bookimg.jpeg'}" alt="${item.title}" class="cart-item-img" onerror="this.onerror=null;this.src='bookimg.jpeg';">
                         <div class="cart-item-info"><h4>${item.title}</h4><p class="cart-item-price">₹${item.price}</p></div>
                         <div class="cart-item-quantity">
                             <button class="quantity-btn" data-id="${item.id}" data-change="-1">-</button>
