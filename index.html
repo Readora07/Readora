@@ -644,37 +644,7 @@
             animation: spin 0.8s linear infinite;
         }
 
-        /* Book Loading Overlay */
-        .book-loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 3000;
-        }
-
-        .book-loading-content {
-            text-align: center;
-            color: white;
-        }
-
         
-        .book-loading-text {
-            font-size: 18px;
-            font-weight: 500;
-            margin-bottom: 10px;
-        }
-
-        .book-loading-subtitle {
-            font-size: 14px;
-            opacity: 0.8;
-        }
-
         /* Share Modal Styles */
         .share-modal {
             display: none;
@@ -2609,14 +2579,7 @@
         </div>
     </div>
 
-    <!-- Book Loading Overlay -->
-    <div id="book-loading-overlay" class="book-loading-overlay">
-        <div class="book-loading-content">
-            <div class="book-loading-text">Loading Book...</div>
-            <div class="book-loading-subtitle">Please wait while we fetch the book details</div>
-        </div>
-    </div>
-
+    
     <!-- Share Modal -->
     <div id="share-modal" class="share-modal">
         <div class="share-modal-content">
@@ -4279,12 +4242,6 @@
         const urlParams = new URLSearchParams(window.location.search);
         const bookId = urlParams.get('book');
         if (bookId) {
-            // Show loader immediately when shared link is detected
-            const loadingOverlay = document.getElementById('book-loading-overlay');
-            loadingOverlay.style.display = 'flex';
-            loadingOverlay.querySelector('.book-loading-text').textContent = 'Loading Book';
-            loadingOverlay.querySelector('.book-loading-subtitle').textContent = 'Opening your shared book...';
-            
             try {
                 console.log('Looking for book with ID:', bookId);
                 console.log('Available books count:', books?.length || 0);
@@ -4294,33 +4251,16 @@
                 
                 if (book) {
                     console.log('Found book:', book.title);
-                    // Hide loader first
-                    loadingOverlay.style.display = 'none';
-                    // Then show book details after a short delay
-                    setTimeout(() => {
-                        showBookDetails(bookId);
-                    }, 200);
+                    showBookDetails(bookId);
                 } else if (copy) {
                     console.log('Found exercise copy:', copy.title);
-                    // Hide loader first
-                    loadingOverlay.style.display = 'none';
-                    // Then show exercise details after a short delay
-                    setTimeout(() => {
-                        showExerciseDetails(bookId);
-                    }, 200);
+                    showExerciseDetails(bookId);
                 } else {
                     console.log('Book not found for ID:', bookId);
                     console.log('Available book IDs:', books?.slice(0, 5).map(b => b.id) || 'No books');
-                    // Show user-friendly message
-                    loadingOverlay.querySelector('.book-loading-text').textContent = 'Book Not Found';
-                    loadingOverlay.querySelector('.book-loading-subtitle').textContent = 'The requested book could not be found';
-                    setTimeout(() => {
-                        loadingOverlay.style.display = 'none';
-                    }, 2000);
                 }
             } catch (error) {
                 console.error('Error loading book:', error);
-                loadingOverlay.style.display = 'none';
             }
         }
     }
