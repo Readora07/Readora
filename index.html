@@ -52,44 +52,76 @@
         header {
             background: linear-gradient(to right, var(--darker), var(--dark));
             color: white;
-            padding: 1rem 0;
+            padding: clamp(0.5rem, 2vw, 1rem) 0;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             position: sticky;
             top: 0;
             z-index: 100;
+            min-height: clamp(50px, 8vh, 70px);
         }
 
         .header-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 0 clamp(10px, 3vw, 20px);
+            gap: clamp(10px, 2vw, 20px);
         }
 
-       .logo { font-size: 1.8rem; font-weight: 700; display: flex; align-items: center; text-decoration: none; color: white;}
-        .logo i { margin-right: 10px; color: var(--accent); font-size: 2.2rem; }
+       .logo { 
+            font-size: clamp(1.2rem, 4vw, 1.8rem); 
+            font-weight: 700; 
+            display: flex; 
+            align-items: center; 
+            text-decoration: none; 
+            color: white;
+            gap: clamp(5px, 1.5vw, 10px);
+            flex-shrink: 0;
+        }
+        .logo i { 
+            margin-right: clamp(5px, 1.5vw, 10px); 
+            color: var(--accent); 
+            font-size: clamp(1.8rem, 5vw, 2.2rem); 
+        }
+        .logo img {
+            width: clamp(40px, 8vw, 90px) !important;
+            height: clamp(40px, 8vw, 90px) !important;
+            object-fit: contain;
+            border-radius: 50%;
+        }
+        .logo span {
+            font-size: clamp(14px, 3.5vw, 30px) !important;
+        }
 
 
         nav {
             display: flex;
             align-items: center;
+            flex: 1;
+            justify-content: center;
         }
 
         nav ul {
             display: flex;
             list-style: none;
+            gap: clamp(5px, 1.5vw, 20px);
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         nav ul li {
-            margin-left: 20px;
+            margin: 0;
         }
 
         nav ul li a {
             color: white;
             text-decoration: none;
             font-weight: 500;
-            padding: 8px 15px;
+            padding: clamp(6px, 1.5vw, 12px) clamp(8px, 2vw, 20px);
             border-radius: 4px;
             transition: all 0.3s;
+            font-size: clamp(0.8rem, 2vw, 1rem);
+            white-space: nowrap;
         }
 
         nav ul li a:hover,
@@ -101,28 +133,30 @@
         .header-right-icons {
             display: flex;
             align-items: center;
-            gap: 25px;
+            gap: clamp(10px, 2vw, 25px);
+            flex-shrink: 0;
         }
 
         .cart-icon {
             position: relative;
             cursor: pointer;
-            font-size: 1.5rem;
+            font-size: clamp(1rem, 3vw, 1.5rem);
+            padding: clamp(5px, 1.5vw, 10px);
         }
 
         .cart-badge {
             position: absolute;
-            top: -8px;
-            right: -12px;
+            top: clamp(-5px, -1.5vw, -8px);
+            right: clamp(-8px, -2vw, -12px);
             background: var(--danger);
             color: white;
-            width: 22px;
-            height: 22px;
+            width: clamp(16px, 4vw, 22px);
+            height: clamp(16px, 4vw, 22px);
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 12px;
+            font-size: clamp(8px, 2vw, 12px);
             font-weight: 600;
         }
 
@@ -132,8 +166,8 @@
             display: none;
             flex-direction: column;
             justify-content: space-around;
-            width: 30px;
-            height: 25px;
+            width: clamp(20px, 5vw, 30px);
+            height: clamp(18px, 4vw, 25px);
             background: transparent;
             border: none;
             cursor: pointer;
@@ -143,7 +177,7 @@
 
         .menu-toggle span {
             width: 100%;
-            height: 3px;
+            height: clamp(2px, 0.5vw, 3px);
             background-color: white;
             border-radius: 5px;
             transition: all 0.3s linear;
