@@ -4278,9 +4278,12 @@
     async function handleBookUrlParam() {
         const urlParams = new URLSearchParams(window.location.search);
         const bookId = urlParams.get('book');
-        
         if (bookId) {
+            // Show loader immediately when shared link is detected
             const loadingOverlay = document.getElementById('book-loading-overlay');
+            loadingOverlay.style.display = 'flex';
+            loadingOverlay.querySelector('.book-loading-text').textContent = 'Loading Book';
+            loadingOverlay.querySelector('.book-loading-subtitle').textContent = 'Opening your shared book...';
             
             try {
                 console.log('Looking for book with ID:', bookId);
@@ -4291,18 +4294,20 @@
                 
                 if (book) {
                     console.log('Found book:', book.title);
-                    showBookDetails(bookId);
-                    // Hide loader after book details are shown
+                    // Hide loader first
+                    loadingOverlay.style.display = 'none';
+                    // Then show book details after a short delay
                     setTimeout(() => {
-                        loadingOverlay.style.display = 'none';
-                    }, 500);
+                        showBookDetails(bookId);
+                    }, 200);
                 } else if (copy) {
                     console.log('Found exercise copy:', copy.title);
-                    showExerciseDetails(bookId);
-                    // Hide loader after exercise details are shown
+                    // Hide loader first
+                    loadingOverlay.style.display = 'none';
+                    // Then show exercise details after a short delay
                     setTimeout(() => {
-                        loadingOverlay.style.display = 'none';
-                    }, 500);
+                        showExerciseDetails(bookId);
+                    }, 200);
                 } else {
                     console.log('Book not found for ID:', bookId);
                     console.log('Available book IDs:', books?.slice(0, 5).map(b => b.id) || 'No books');
@@ -4323,20 +4328,6 @@
 
     // Initialize the app by fetching data first.
     document.addEventListener('DOMContentLoaded', function() {
-        // Check for URL parameter immediately and show loader
-        const urlParams = new URLSearchParams(window.location.search);
-        const bookId = urlParams.get('book');
-        
-        if (bookId) {
-            // Show loader immediately without waiting
-            const loadingOverlay = document.getElementById('book-loading-overlay');
-            if (loadingOverlay) {
-                loadingOverlay.style.display = 'flex';
-                loadingOverlay.querySelector('.book-loading-text').textContent = 'Loading Book';
-                loadingOverlay.querySelector('.book-loading-subtitle').textContent = 'Opening your shared book...';
-            }
-        }
-        
         checkWelcomePopup(); // Check and show welcome popup
         fetchBooksAndInitialize().then(() => {
             // Call handleBookUrlParam after books are loaded
