@@ -664,13 +664,48 @@
         }
 
         .book-loading-spinner {
-            width: 60px;
-            height: 60px;
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: var(--accent);
-            animation: spin 1s linear infinite;
+            width: 80px;
+            height: 80px;
+            position: relative;
             margin: 0 auto 20px;
+        }
+
+        .book-loading-spinner::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(
+                from 0deg,
+                transparent 0deg,
+                #4fc3a1 45deg,
+                #4a6fa5 90deg,
+                #166088 135deg,
+                #3a9378 180deg,
+                #4fc3a1 225deg,
+                #4a6fa5 270deg,
+                #166088 315deg,
+                #4fc3a1 360deg
+            );
+            animation: rotate 2s linear infinite;
+        }
+
+        .book-loading-spinner::after {
+            content: '';
+            position: absolute;
+            width: 70%;
+            height: 70%;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         .book-loading-text {
@@ -4251,12 +4286,8 @@
         return -1;
     }
 
-    // Optimized book finding with loading indicator
+    // Optimized book finding function
     function findBookOptimized(bookId) {
-        // Show loading overlay
-        const loadingOverlay = document.getElementById('book-loading-overlay');
-        loadingOverlay.style.display = 'flex';
-        
         return new Promise((resolve) => {
             // Use requestAnimationFrame for non-blocking search
             requestAnimationFrame(() => {
@@ -4283,9 +4314,6 @@
                     }
                 }
                 
-                // Hide loading overlay
-                loadingOverlay.style.display = 'none';
-                
                 resolve({ book, copy });
             });
         });
@@ -4296,6 +4324,12 @@
         const urlParams = new URLSearchParams(window.location.search);
         const bookId = urlParams.get('book');
         if (bookId) {
+            // Show loader immediately when shared link is detected
+            const loadingOverlay = document.getElementById('book-loading-overlay');
+            loadingOverlay.style.display = 'flex';
+            loadingOverlay.querySelector('.book-loading-text').textContent = 'Loading Book';
+            loadingOverlay.querySelector('.book-loading-subtitle').textContent = 'Opening your shared book...';
+            
             try {
                 console.log('Looking for book with ID:', bookId);
                 console.log('Available books count:', books?.length || 0);
@@ -4306,14 +4340,21 @@
                 if (book) {
                     console.log('Found book:', book.title);
                     showBookDetails(bookId);
+                    // Hide loader after book details are shown
+                    setTimeout(() => {
+                        loadingOverlay.style.display = 'none';
+                    }, 500);
                 } else if (copy) {
                     console.log('Found exercise copy:', copy.title);
                     showExerciseDetails(bookId);
+                    // Hide loader after exercise details are shown
+                    setTimeout(() => {
+                        loadingOverlay.style.display = 'none';
+                    }, 500);
                 } else {
                     console.log('Book not found for ID:', bookId);
                     console.log('Available book IDs:', books?.slice(0, 5).map(b => b.id) || 'No books');
                     // Show user-friendly message
-                    const loadingOverlay = document.getElementById('book-loading-overlay');
                     loadingOverlay.querySelector('.book-loading-text').textContent = 'Book Not Found';
                     loadingOverlay.querySelector('.book-loading-subtitle').textContent = 'The requested book could not be found';
                     setTimeout(() => {
@@ -4322,7 +4363,6 @@
                 }
             } catch (error) {
                 console.error('Error loading book:', error);
-                const loadingOverlay = document.getElementById('book-loading-overlay');
                 loadingOverlay.style.display = 'none';
             }
         }
