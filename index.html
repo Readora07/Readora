@@ -4214,7 +4214,13 @@
         
         // Convert target to number for comparison
         const target = parseInt(targetId);
-        if (isNaN(target)) return -1;
+        if (isNaN(target)) {
+            console.log('Invalid target ID:', targetId);
+            return -1;
+        }
+        
+        console.log('Searching for target:', target, 'in array of size:', arr.length);
+        console.log('First ID:', parseInt(arr[0].id), 'Last ID:', parseInt(arr[arr.length - 1].id));
         
         while (left <= right && target >= parseInt(arr[left].id) && target <= parseInt(arr[right].id)) {
             if (left === right) {
@@ -4229,8 +4235,10 @@
             if (pos < 0 || pos >= arr.length) break;
             
             const currentId = parseInt(arr[pos].id);
+            console.log('Checking position:', pos, 'ID:', currentId);
             
             if (currentId === target) {
+                console.log('Found target at position:', pos);
                 return pos;
             } else if (currentId < target) {
                 left = pos + 1;
@@ -4239,6 +4247,7 @@
             }
         }
         
+        console.log('Target not found in interpolation search');
         return -1;
     }
 
@@ -4288,29 +4297,21 @@
         const bookId = urlParams.get('book');
         if (bookId) {
             try {
-                // Wait for books to load
-                if (!books || books.length === 0) {
-                    await new Promise(resolve => {
-                        const checkBooks = setInterval(() => {
-                            if (books && books.length > 0) {
-                                clearInterval(checkBooks);
-                                resolve();
-                            }
-                        }, 100);
-                        // Timeout after 3 seconds
-                        setTimeout(() => clearInterval(checkBooks), 3000);
-                    });
-                }
+                console.log('Looking for book with ID:', bookId);
+                console.log('Available books count:', books?.length || 0);
                 
                 // Use optimized search
                 const { book, copy } = await findBookOptimized(bookId);
                 
                 if (book) {
+                    console.log('Found book:', book.title);
                     showBookDetails(bookId);
                 } else if (copy) {
+                    console.log('Found exercise copy:', copy.title);
                     showExerciseDetails(bookId);
                 } else {
                     console.log('Book not found for ID:', bookId);
+                    console.log('Available book IDs:', books?.slice(0, 5).map(b => b.id) || 'No books');
                     // Show user-friendly message
                     const loadingOverlay = document.getElementById('book-loading-overlay');
                     loadingOverlay.querySelector('.book-loading-text').textContent = 'Book Not Found';
@@ -4331,8 +4332,14 @@
     // Initialize the app by fetching data first.
     document.addEventListener('DOMContentLoaded', function() {
         checkWelcomePopup(); // Check and show welcome popup
-        fetchBooksAndInitialize(); // Initialize the main app
-        handleBookUrlParam(); // Check for book URL parameter
+        fetchBooksAndInitialize().then(() => {
+            // Call handleBookUrlParam after books are loaded
+            handleBookUrlParam();
+        }).catch(error => {
+            console.error('Error initializing app:', error);
+            // Still try to handle URL parameter even if there's an error
+            handleBookUrlParam();
+        });
     });
 </script>
 </body>
