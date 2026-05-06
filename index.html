@@ -4278,12 +4278,9 @@
     async function handleBookUrlParam() {
         const urlParams = new URLSearchParams(window.location.search);
         const bookId = urlParams.get('book');
+        
         if (bookId) {
-            // Show loader immediately when shared link is detected
             const loadingOverlay = document.getElementById('book-loading-overlay');
-            loadingOverlay.style.display = 'flex';
-            loadingOverlay.querySelector('.book-loading-text').textContent = 'Loading Book';
-            loadingOverlay.querySelector('.book-loading-subtitle').textContent = 'Opening your shared book...';
             
             try {
                 console.log('Looking for book with ID:', bookId);
@@ -4326,6 +4323,20 @@
 
     // Initialize the app by fetching data first.
     document.addEventListener('DOMContentLoaded', function() {
+        // Check for URL parameter immediately and show loader
+        const urlParams = new URLSearchParams(window.location.search);
+        const bookId = urlParams.get('book');
+        
+        if (bookId) {
+            // Show loader immediately without waiting
+            const loadingOverlay = document.getElementById('book-loading-overlay');
+            if (loadingOverlay) {
+                loadingOverlay.style.display = 'flex';
+                loadingOverlay.querySelector('.book-loading-text').textContent = 'Loading Book';
+                loadingOverlay.querySelector('.book-loading-subtitle').textContent = 'Opening your shared book...';
+            }
+        }
+        
         checkWelcomePopup(); // Check and show welcome popup
         fetchBooksAndInitialize().then(() => {
             // Call handleBookUrlParam after books are loaded
