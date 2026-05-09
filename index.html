@@ -208,38 +208,135 @@
             font-size: 0.8em;
         }
 
-        /* Hero Section */
+        /* Hero Section - Auto-Swappable Carousel */
         .hero {
             height: 100vh;
-            background: linear-gradient(rgba(45, 52, 54, 0.7), rgba(45, 52, 54, 0.7)), url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%D%D&auto=format&fit=crop&w=1350&q=80');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            color: white;
+            position: relative;
+            overflow: hidden;
             display: flex;
             align-items: center;
-            text-align: center;
+            color: white;
+        }
+
+        .hero-carousel {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            transition: transform 0.8s ease-in-out;
+        }
+
+        .hero-slide {
+            min-width: 100%;
+            height: 100%;
+            display: flex;
             position: relative;
         }
 
-        .hero-content {
+        .hero-slide-full {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .hero-slide-full::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8));
+            z-index: 1;
+            backdrop-filter: blur(3px);
+            -webkit-backdrop-filter: blur(3px);
+        }
+
+        .hero-slide-content {
             max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
             z-index: 2;
-            margin-top: 60px;
+            text-align: center;
+            color: white;
+            padding: 20px;
         }
 
-        .hero h1 {
+        .hero-slide-content h1 {
             font-size: 3.5rem;
-            margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
         }
 
-        .hero p {
+        .hero-slide-content p {
             font-size: 1.3rem;
-            margin-bottom: 2rem;
-            opacity: 0.9;
+            margin-bottom: 1.5rem;
+            opacity: 0.95;
+            line-height: 1.6;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+        }
+
+        .hero-slide-content h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            font-family: 'Merriweather', serif;
+        }
+
+        .hero-slide-content .highlight {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .hero-indicators {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+            z-index: 10;
+        }
+
+        .hero-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .hero-indicator.active {
+            background: var(--accent);
+            border-color: white;
+            transform: scale(1.2);
+        }
+
+        .hero-indicator:hover {
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Slide-specific background images */
+        .slide-1 .hero-slide-full {
+            background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHiZJXKX7DDsIrif75mx8R7t-reojQxhSr1g&s');
+        }
+
+        .slide-2 .hero-slide-full {
+            background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJ0mmx3E5QGW7M2AVKWZ9DrwhVpU8dM1bhhw&s');
+        }
+
+        .slide-3 .hero-slide-full {
+            background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSF4IkkqauH1Yl1C8UOwYKLKO60XV5-_BfnaQ&s');
         }
 
         /* Back to top button */
@@ -568,6 +665,38 @@
             font-size: 13px;
             cursor: pointer;
             transition: all 0.3s ease;
+        }
+
+        .btn-add-cart-icon {
+            background: #FFD814;
+            color: #0F1111;
+            border: none;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-add-cart-icon:hover {
+            background: #F7CA00;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-add-cart-icon.added {
+            background: #90EE90;
+            color: #0F1111;
+        }
+
+        .btn-add-cart-icon.added:hover {
+            background: #7FD87F;
         }
 
         .btn-add-cart:hover {
@@ -1611,11 +1740,11 @@
                 margin: 0 auto;
             }
             
-            .hero h1 {
+            .hero-slide-content h1 {
                 font-size: 2.8rem;
             }
             
-            .hero p {
+            .hero-slide-content p {
                 font-size: 1.2rem;
             }
             
@@ -1770,15 +1899,32 @@
             .hero {
                 height: 80vh;
                 min-height: 500px;
-                background-attachment: scroll;
             }
             
-            .hero h1 {
+            .hero-slide-full {
+                width: 100%;
+                height: 100%;
+            }
+            
+            .hero-slide {
+                flex-direction: column;
+            }
+            
+            .hero-slide-content {
+                text-align: center;
+                padding: 20px;
+            }
+            
+            .hero-slide-content h1 {
                 font-size: 2.2rem;
             }
             
-            .hero p {
+            .hero-slide-content p {
                 font-size: 1.1rem;
+            }
+
+            .hero-slide-content h2 {
+                font-size: 1.8rem;
             }
             
             .section-title {
@@ -2093,11 +2239,11 @@
                 padding: 0 20px;
             }
             
-            .hero h1 {
+            .hero-slide-content h1 {
                 font-size: 3rem;
             }
             
-            .hero p {
+            .hero-slide-content p {
                 font-size: 1.2rem;
             }
             
@@ -2144,7 +2290,7 @@
                 max-width: 1140px;
             }
             
-            .hero h1 {
+            .hero-slide-content h1 {
                 font-size: 3.2rem;
             }
             
@@ -2212,16 +2358,34 @@
                 min-height: 450px;
             }
             
-            .hero h1 {
+            .hero-slide-full {
+                width: 100%;
+                height: 100%;
+            }
+            
+            .hero-slide {
+                flex-direction: column;
+            }
+            
+            .hero-slide-content {
+                text-align: center;
+                padding: 15px;
+            }
+            
+            .hero-slide-content h1 {
                 font-size: 1.8rem;
                 margin-bottom: 0.8rem;
                 line-height: 1.2;
             }
             
-            .hero p {
+            .hero-slide-content p {
                 font-size: 1rem;
                 margin-bottom: 1.2rem;
                 line-height: 1.5;
+            }
+
+            .hero-slide-content h2 {
+                font-size: 1.5rem;
             }
             
             .section-title {
@@ -2762,11 +2926,11 @@
                 min-height: 400px;
             }
             
-            .hero h1 {
+            .hero-slide-content h1 {
                 font-size: 1.6rem;
             }
             
-            .hero p {
+            .hero-slide-content p {
                 font-size: 0.9rem;
             }
             
@@ -3474,9 +3638,49 @@
     </header>
 
     <section class="hero" id="home">
-        <div class="container hero-content">
-            <h1>Discover Your Next Favorite Book</h1>
-            <p>Explore our curated collection of bestsellers, classics, and hidden gems for every reader</p>
+        <div class="hero-carousel" id="heroCarousel">
+            <!-- Slide 1 -->
+            <div class="hero-slide slide-1">
+                <div class="hero-slide-full">
+                    <div class="hero-slide-content">
+                        <h1>Discover Your Next <span class="highlight">Favorite Book</span></h1>
+                        <p>Explore our curated collection of bestsellers, classics, and hidden gems for every reader. From timeless literature to modern thrillers, find your perfect escape.</p>
+                        <h2>Endless Stories</h2>
+                        <p>Every book is a new adventure waiting to be discovered</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Slide 2 -->
+            <div class="hero-slide slide-2">
+                <div class="hero-slide-full">
+                    <div class="hero-slide-content">
+                        <h1>Transform Your <span class="highlight">Reading Journey</span></h1>
+                        <p>Join thousands of book lovers who trust Readora for their literary adventures. Experience the magic of storytelling with our handpicked selection across all genres.</p>
+                        <h2>Book Lovers</h2>
+                        <p>Find your perfect reading companion in our collection</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Slide 3 -->
+            <div class="hero-slide slide-3">
+                <div class="hero-slide-full">
+                    <div class="hero-slide-content">
+                        <h1>Connect Through <span class="highlight">Great Stories</span></h1>
+                        <p>Books have the power to transport us, teach us, and bring us together. Discover your next adventure and share the joy of reading with our vibrant community.</p>
+                        <h2>Literary World</h2>
+                        <p>Explore diverse worlds through the pages of great books</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Carousel Indicators -->
+        <div class="hero-indicators">
+            <span class="hero-indicator active" data-slide="0"></span>
+            <span class="hero-indicator" data-slide="1"></span>
+            <span class="hero-indicator" data-slide="2"></span>
         </div>
     </section>
 
@@ -3742,6 +3946,92 @@
             const popup = document.getElementById('welcomePopup');
             if (popup) popup.style.display = 'none';
         }
+    }
+
+    // Hero Carousel Functionality
+    // --- AUTO-SWAPPABLE CAROUSEL WITH 3-SECOND INTERVALS ---
+
+    let currentSlide = 0;
+    let slideInterval;
+    const totalSlides = 3;
+
+    function initHeroCarousel() {
+        const carousel = document.getElementById('heroCarousel');
+        const indicators = document.querySelectorAll('.hero-indicator');
+        
+        if (!carousel) return;
+
+        function goToSlide(slideIndex) {
+            if (slideIndex < 0) slideIndex = totalSlides - 1;
+            if (slideIndex >= totalSlides) slideIndex = 0;
+            
+            currentSlide = slideIndex;
+            carousel.style.transform = `translateX(-${currentSlide * 100}%)`;
+            
+            // Update indicators
+            indicators.forEach((indicator, index) => {
+                indicator.classList.toggle('active', index === currentSlide);
+            });
+        }
+
+        function nextSlide() {
+            goToSlide(currentSlide + 1);
+        }
+
+        function startAutoSlide() {
+            slideInterval = setInterval(nextSlide, 3000); // 3-second interval
+        }
+
+        function stopAutoSlide() {
+            clearInterval(slideInterval);
+        }
+
+        // Add click events to indicators
+        indicators.forEach((indicator, index) => {
+            indicator.addEventListener('click', () => {
+                goToSlide(index);
+                stopAutoSlide();
+                startAutoSlide(); // Restart auto-slide after manual interaction
+            });
+        });
+
+        // Add touch/swipe support for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        carousel.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+            stopAutoSlide();
+        });
+
+        carousel.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+            startAutoSlide();
+        });
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const diff = touchStartX - touchEndX;
+            
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0) {
+                    // Swipe left - next slide
+                    nextSlide();
+                } else {
+                    // Swipe right - previous slide
+                    goToSlide(currentSlide - 1);
+                }
+            }
+        }
+
+        // Pause on hover for desktop
+        carousel.addEventListener('mouseenter', stopAutoSlide);
+        carousel.addEventListener('mouseleave', startAutoSlide);
+
+        // Initialize
+        goToSlide(0);
+        startAutoSlide();
     }
 
     // Global variable to hold book data fetched from Google Sheets.
@@ -4841,7 +5131,12 @@
                 <img src="${imageUrl}" alt="${book.title}" onerror="this.onerror=null; this.src='bookimg.jpeg';">
             </div>
             <div class="book-details-info">
-                <h2>${book.title}</h2>
+                <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 10px; gap: 15px;">
+                    <h2 style="margin: 0; text-align: center;">${book.title}</h2>
+                    <button class="btn-add-cart-icon" id="details-add-to-cart-btn" data-id="${book.id}">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
                 <p class="book-details-author">by ${book.author}</p>
                 <div style="margin: 15px 0; padding: 15px; background: #f9f9f9; border-radius: 6px;">
                     <p style="font-size: 14px; color: var(--dark); margin-bottom: 8px;"><strong>Publisher:</strong> ${book.publication || 'N/A'}</p>
@@ -4880,7 +5175,34 @@
             };
         }
         
+        // Set up add to cart button for book details modal
+        const detailsAddToCartBtn = document.getElementById('details-add-to-cart-btn');
+        if (detailsAddToCartBtn) {
+            detailsAddToCartBtn.onclick = (e) => {
+                e.stopPropagation();
+                toggleCartItem(book.id);
+                updateDetailsAddButton();
+            };
+        }
+        
         updateAddToCartButtonsUI();
+        updateDetailsAddButton();
+    }
+
+    function updateDetailsAddButton() {
+        const detailsAddToCartBtn = document.getElementById('details-add-to-cart-btn');
+        if (!detailsAddToCartBtn) return;
+        
+        const bookId = detailsAddToCartBtn.dataset.id;
+        const inCart = cart.some(item => String(item.id) === String(bookId));
+        
+        if (inCart) {
+            detailsAddToCartBtn.classList.add('added');
+            detailsAddToCartBtn.innerHTML = '<i class="fas fa-check"></i>';
+        } else {
+            detailsAddToCartBtn.classList.remove('added');
+            detailsAddToCartBtn.innerHTML = '<i class="fas fa-plus"></i>';
+        }
     }
 
     // --- CART FUNCTIONS ---
@@ -5326,6 +5648,7 @@
     // Initialize the app by fetching data first.
     document.addEventListener('DOMContentLoaded', function() {
         checkWelcomePopup(); // Check and show welcome popup
+        initHeroCarousel(); // Initialize the auto-swappable hero carousel
         fetchBooksAndInitialize().then(() => {
             // Call handleBookUrlParam after books are loaded
             handleBookUrlParam();
