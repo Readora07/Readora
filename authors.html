@@ -2347,8 +2347,25 @@ nav ul li.dropdown .dropdown-menu li a {
             return navigator.clipboard.writeText(text);
         }
 
+        // Handle URL parameters to open book details on page load
+        function handleBookUrlParam() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const bookId = urlParams.get('book');
+            if (bookId) {
+                const book = allBooks.find(b => String(b.id) === String(bookId));
+                if (book) {
+                    showBookDetails(bookId);
+                } else {
+                    console.log('Book not found for ID:', bookId);
+                }
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             init();
+            
+            // Handle URL parameter to open book details
+            handleBookUrlParam();
             
             // Add click event to cart icon to redirect to payment.html
             const cartIcon = document.getElementById('cart-icon');
