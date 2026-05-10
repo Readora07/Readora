@@ -799,147 +799,151 @@
             }
         }
 
-        /* Swipeable Card Styles for Mobile */
+        /* Optimized Swipeable Card Styles */
         .swipeable-review-container {
             display: none;
             position: relative;
             width: 100%;
-            height: 500px;
-            max-width: 320px;
+            height: 520px;
+            max-width: 350px;
             margin: 0 auto;
             padding: 20px 0;
+            overflow: hidden;
+            perspective: 1000px;
         }
 
         .swipeable-cards-stack {
             position: relative;
             width: 100%;
             height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .swipeable-review-card {
             position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
+            width: 90%;
             height: 100%;
             background: white;
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             cursor: grab;
-            transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1), opacity 0.3s ease;
-            overflow: hidden;
+            user-select: none;
+            touch-action: none;
             display: flex;
             flex-direction: column;
-            will-change: transform;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.05);
+            /* Important for performance */
+            will-change: transform, opacity;
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
         }
 
         .swipeable-review-card.dragging {
             cursor: grabbing;
-            transition: none;
+            transition: none !important;
             z-index: 100;
-        }
-
-        .swipeable-review-card.to-left {
-            transform: translateX(-150%) rotate(-25deg) scale(0.8);
-            opacity: 0;
-            transition: transform 0.4s cubic-bezier(0.4, 0.0, 0.2, 1), opacity 0.4s ease;
-        }
-
-        .swipeable-review-card.to-right {
-            transform: translateX(150%) rotate(25deg) scale(0.8);
-            opacity: 0;
-            transition: transform 0.4s cubic-bezier(0.4, 0.0, 0.2, 1), opacity 0.4s ease;
         }
 
         .swipeable-review-card.below {
             z-index: 1;
-            transform: scale(0.95) translateY(5px);
-            opacity: 0.8;
+            transform: scale(0.9) translateY(20px);
+            opacity: 0.6;
+        }
+
+        .swipeable-review-card.below-more {
+            z-index: 0;
+            transform: scale(0.8) translateY(40px);
+            opacity: 0.3;
         }
 
         .swipeable-review-card.active {
             z-index: 10;
+            transform: scale(1) translateY(0);
+            opacity: 1;
         }
 
         .swipeable-card-header {
-            padding: 20px;
+            padding: 25px 20px;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
             text-align: center;
         }
 
         .swipeable-avatar {
-            width: 80px;
-            height: 80px;
+            width: 70px;
+            height: 70px;
             border-radius: 50%;
             background: white;
             color: var(--primary);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: bold;
-            margin: 0 auto 15px;
+            margin: 0 auto 12px;
             font-family: 'Merriweather', serif;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
         .swipeable-author {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: bold;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             font-family: 'Merriweather', serif;
         }
 
         .swipeable-rating {
             color: var(--warning);
-            font-size: 1rem;
+            font-size: 0.9rem;
         }
 
         .swipeable-card-body {
-            padding: 20px;
+            padding: 25px 20px;
             flex: 1;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            background-color: #fff;
         }
 
         .swipeable-message {
-            font-size: 1rem;
-            line-height: 1.6;
+            font-size: 1.05rem;
+            line-height: 1.7;
             color: var(--dark);
             font-style: italic;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            flex-grow: 1;
             overflow-y: auto;
-            max-height: 200px;
             text-align: center;
         }
 
         .swipeable-date {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: var(--gray);
             text-align: right;
             border-top: 1px solid var(--light-gray);
-            padding-top: 10px;
+            padding-top: 15px;
         }
 
-        
         .swipeable-indicator {
             text-align: center;
-            margin-top: 20px;
-            font-size: 0.9rem;
+            margin-top: 15px;
+            font-size: 0.85rem;
             color: var(--gray);
+            font-weight: 500;
         }
 
         .swipeable-progress {
             display: flex;
             justify-content: center;
-            gap: 8px;
+            gap: 6px;
             margin-bottom: 15px;
         }
 
         .swipeable-dot {
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
             border-radius: 50%;
             background: var(--light-gray);
             transition: all 0.3s ease;
@@ -947,7 +951,9 @@
 
         .swipeable-dot.active {
             background: var(--accent);
-            transform: scale(1.2);
+            transform: scale(1.4);
+            width: 12px;
+            border-radius: 10px;
         }
 
         @media (max-width: 480px) {
@@ -988,6 +994,15 @@
                 font-size: 10px;
                 top: -6px;
                 right: -10px;
+            }
+            
+            .menu-toggle {
+                width: 24px;
+                height: 18px;
+            }
+            
+            .menu-toggle span {
+                height: 2px;
             }
             
             .section-title {
@@ -1479,10 +1494,8 @@
             <div class="container">
                 <h2 class="section-title" style="margin-bottom: 3rem;">Reader Reviews</h2>
                 
-                <!-- Regular Desktop Grid View -->
                 <div class="reviews-grid" id="reviews-grid-container"></div>
                 
-                <!-- Mobile Swipeable Card View -->
                 <div class="swipeable-review-container" id="swipeable-container">
                     <div class="swipeable-progress" id="swipeable-progress"></div>
                     <div class="swipeable-cards-stack" id="swipeable-cards-stack"></div>
@@ -1569,20 +1582,16 @@
     </footer>
 
     <script>
-        // --- THIS IS THE FIX ---
-        // Added https:// to the URL
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyWJluQ1k7lvp45pSkPAjPVRsERLl3h_QyFeR-MKC24jMz8IywRmnMN-sN4Nzmoc0Xm/exec';
-        // --- END FIX ---
         
         let cart = JSON.parse(localStorage.getItem('readoraCart')) || [];
-        let allBooks = JSON.parse(localStorage.getItem('readoraBooks')) || []; // Need this for cart images/details
+        let allBooks = JSON.parse(localStorage.getItem('readoraBooks')) || [];
 
         document.addEventListener('DOMContentLoaded', () => {
             fetchReviews();
             setupEventListeners();
             updateCartBadge();
             
-            // Add window resize listener to handle view switching
             let resizeTimeout;
             window.addEventListener('resize', () => {
                 clearTimeout(resizeTimeout);
@@ -1623,7 +1632,6 @@
                 });
             }
 
-            // Add click event to cart icon to redirect to payment.html
             const cartIcon = document.getElementById('cart-icon');
             if (cartIcon) {
                 cartIcon.addEventListener('click', function(e) {
@@ -1632,7 +1640,6 @@
                 });
             }
             
-            // Keep these event listeners as they might be used elsewhere
             document.querySelector('.close-cart-modal')?.addEventListener('click', () => document.getElementById('cart-modal').style.display = 'none');
             document.getElementById('checkout-btn')?.addEventListener('click', () => handleCheckoutWithPlatform('facebook'));
             document.getElementById('checkout-insta-btn')?.addEventListener('click', () => handleCheckoutWithPlatform('instagram'));
@@ -1643,7 +1650,6 @@
                 }
             });
 
-            // --- Mobile Menu & Dropdown Listeners ---
             const menuToggle = document.getElementById('menu-toggle');
             const mainNav = document.getElementById('main-nav');
             
@@ -1684,7 +1690,6 @@
             document.addEventListener('click', function() {
                 document.querySelectorAll('.dropdown').forEach(dropdown => dropdown.classList.remove('open'));
             });
-            // --- End Mobile Menu & Dropdown Listeners ---
         }
 
         function updateStars(rating) {
@@ -1701,7 +1706,8 @@
             const form = document.getElementById('comment-form');
             const submitButton = form.querySelector('button[type="submit"]');
             const { name, email, message } = form.elements;
-            const rating = document.getElementById('rating-input').value;
+            const ratingInput = document.getElementById('rating-input');
+            const rating = ratingInput.value;
 
             if (!name.value.trim() || !email.value.trim() || !message.value.trim() || rating === "0") {
                 showCustomAlert('Please fill in all fields and provide a rating.');
@@ -1724,7 +1730,7 @@
                 await fetchReviews(); 
 
             } catch (error) {
-                console.error('Error submitting review (Likely Expected No-CORS Rejection):', error);
+                console.error('Error submitting review:', error);
             } finally {
                 submitButton.textContent = 'Send Comment';
                 submitButton.disabled = false;
@@ -1758,18 +1764,13 @@
                     displayRatingChart(ratingCounts, reviews.length);
                     if(summaryContainer) summaryContainer.style.display = 'block';
 
-                    // --- THIS IS THE SORTING LOGIC ---
                     reviews.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-                    // --- END SORTING LOGIC ---
                     
-                    // Display reviews based on screen size
                     if (window.innerWidth <= 768) {
-                        // Mobile: Show swipeable cards
                         reviewsContainer.style.display = 'none';
                         swipeableContainer.style.display = 'block';
                         initializeSwipeableCards(reviews);
                     } else {
-                        // Desktop: Show regular grid
                         reviewsContainer.style.display = 'grid';
                         swipeableContainer.style.display = 'none';
                         reviews.forEach(review => reviewsContainer.appendChild(createReviewCard(review)));
@@ -1810,7 +1811,6 @@
             }, 100); 
         }
 
-        // --- UPDATED createReviewCard Function ---
         function createReviewCard(review) {
             const wrapper = document.createElement('div');
             wrapper.className = 'review-card-wrapper';
@@ -1826,18 +1826,10 @@
             let formattedDate = '';
             if (review.timestamp) {
                 try {
-                    // --- THIS IS THE MODIFIED BLOCK ---
-                    // This creates the format "3 Nov 2025, 10:09 PM"
                     formattedDate = new Date(review.timestamp).toLocaleString('en-IN', {
-                        year: 'numeric',
-                        month: 'short', // 'short' gives "Nov"
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        hour12: true
+                        year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true
                     });
-                    // --- END OF MODIFICATION ---
-                } catch(e) { console.warn("Could not parse date:", review.timestamp); }
+                } catch(e) { console.warn("Date error", review.timestamp); }
             }
             
             const message = review.message || 'No comment provided.';
@@ -1845,9 +1837,7 @@
             messageEl.className = 'review-message';
             messageEl.textContent = `"${message}"`;
 
-            if (message.split(' ').length > 15) {
-                messageEl.classList.add('truncated');
-            }
+            if (message.split(' ').length > 15) { messageEl.classList.add('truncated'); }
 
             card.innerHTML = `
                 <div class="review-header">
@@ -1863,9 +1853,8 @@
             wrapper.appendChild(card);
             return wrapper;
         }
-        // --- END UPDATED Function ---
 
-        // Swipeable Card Functions
+        // --- SMOOTH SWIPEABLE CARD ENGINE ---
         function initializeSwipeableCards(reviews) {
             const stack = document.getElementById('swipeable-cards-stack');
             const progress = document.getElementById('swipeable-progress');
@@ -1875,23 +1864,18 @@
             
             if (reviews.length === 0) return;
             
-            // Create progress dots
             reviews.forEach((review, index) => {
                 const dot = document.createElement('div');
                 dot.className = 'swipeable-dot';
                 if (index === 0) dot.classList.add('active');
                 progress.appendChild(dot);
-            });
-            
-            // Create swipeable cards
-            reviews.forEach((review, index) => {
+                
                 const card = createSwipeableCard(review, index);
                 stack.appendChild(card);
             });
             
-            // Initialize swipe functionality
+            updateStackVisibility(0);
             initializeSwipeGestures();
-            updateSwipeableProgress(0);
         }
 
         function createSwipeableCard(review, index) {
@@ -1899,36 +1883,19 @@
             card.className = 'swipeable-review-card';
             card.dataset.index = index;
             
-            if (index === 0) {
-                card.classList.add('active');
-            } else {
-                card.classList.add('below');
-            }
-            
             const authorInitial = review.name ? review.name.charAt(0).toUpperCase() : '?';
             const rating = parseInt(review.rating) || 0;
             let starsHTML = '';
-            for (let i = 1; i <= 5; i++) {
-                starsHTML += `<i class="${i <= rating ? 'fas' : 'far'} fa-star"></i>`;
-            }
+            for (let i = 1; i <= 5; i++) { starsHTML += `<i class="${i <= rating ? 'fas' : 'far'} fa-star"></i>`; }
             
             let formattedDate = '';
             if (review.timestamp) {
                 try {
                     formattedDate = new Date(review.timestamp).toLocaleString('en-IN', {
-                        year: 'numeric',
-                        month: 'short',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        hour12: true
+                        year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true
                     });
-                } catch(e) {
-                    console.warn("Could not parse date:", review.timestamp);
-                }
+                } catch(e) {}
             }
-            
-            const message = review.message || 'No comment provided.';
             
             card.innerHTML = `
                 <div class="swipeable-card-header">
@@ -1937,308 +1904,156 @@
                     <div class="swipeable-rating">${starsHTML}</div>
                 </div>
                 <div class="swipeable-card-body">
-                    <div class="swipeable-message">"${message}"</div>
+                    <div class="swipeable-message">"${review.message || 'No comment.'}"</div>
                     <div class="swipeable-date"><i class="far fa-clock"></i> ${formattedDate}</div>
-                </div>
-            `;
-            
+                </div>`;
             return card;
         }
 
-        function initializeSwipeGestures() {
+        function updateStackVisibility(activeIndex) {
             const cards = document.querySelectorAll('.swipeable-review-card');
-            let currentCard = document.querySelector('.swipeable-review-card.active');
-            if (!currentCard) return;
-            
-            let startX = 0;
-            let currentX = 0;
-            let cardBeingDragged = null;
+            cards.forEach((card, index) => {
+                card.classList.remove('active', 'below', 'below-more');
+                card.style.display = (index >= activeIndex && index < activeIndex + 3) ? 'flex' : 'none';
+                
+                if (index === activeIndex) card.classList.add('active');
+                else if (index === activeIndex + 1) card.classList.add('below');
+                else if (index === activeIndex + 2) card.classList.add('below-more');
+            });
+        }
+
+        function initializeSwipeGestures() {
+            const stack = document.getElementById('swipeable-cards-stack');
+            let activeCard = stack.querySelector('.swipeable-review-card.active');
+            if (!activeCard) return;
+
+            let startX, startY, currentX, currentY, startTime;
             let isDragging = false;
-            
-            function handleStart(e) {
-                if (!currentCard || currentCard.classList.contains('to-left') || currentCard.classList.contains('to-right')) return;
-                
-                cardBeingDragged = currentCard;
+
+            const onStart = (e) => {
+                if (isDragging) return;
+                const touch = e.type === 'touchstart' ? e.touches[0] : e;
+                startX = touch.clientX;
+                startY = touch.clientY;
+                startTime = Date.now();
                 isDragging = true;
-                cardBeingDragged.classList.add('dragging');
-                
-                startX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
-                currentX = startX;
-                
-                // Prevent default to avoid scrolling while swiping
-                e.preventDefault();
-            }
-            
-            function handleMove(e) {
-                if (!isDragging || !cardBeingDragged) return;
-                
-                currentX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+                activeCard.classList.add('dragging');
+            };
+
+            const onMove = (e) => {
+                if (!isDragging) return;
+                const touch = e.type === 'touchmove' ? e.touches[0] : e;
+                currentX = touch.clientX;
+                currentY = touch.clientY;
+
                 const deltaX = currentX - startX;
-                const rotation = deltaX * 0.05; // Reduced rotation for smoother animation
-                const scale = Math.max(0.95, 1 - Math.abs(deltaX) * 0.0005); // Slight scale effect
-                
-                cardBeingDragged.style.transform = `translateX(${deltaX}px) rotate(${rotation}deg) scale(${scale})`;
-                
-                // Add visual feedback based on swipe direction
-                if (Math.abs(deltaX) > 50) {
-                    cardBeingDragged.style.opacity = Math.max(0.7, 1 - Math.abs(deltaX) * 0.002);
-                }
-                                
-                e.preventDefault();
-            }
-            
-            function handleEnd(e) {
-                if (!isDragging || !cardBeingDragged) return;
-                
-                const deltaX = currentX - startX;
-                const threshold = window.innerWidth * 0.25; // 25% of screen width
-                
-                cardBeingDragged.classList.remove('dragging');
-                
-                if (Math.abs(deltaX) > threshold) {
-                    // Swipe completed
-                    if (deltaX > 0) {
-                        cardBeingDragged.classList.add('to-right');
-                    } else {
-                        cardBeingDragged.classList.add('to-left');
-                    }
-                    
-                    // Move to next card after animation
-                    setTimeout(() => {
-                        moveToNextCard();
-                    }, 400); // Match CSS transition duration
-                } else {
-                    // Swipe not completed, reset position with animation
-                    cardBeingDragged.style.transform = '';
-                    cardBeingDragged.style.opacity = '';
-                }
-                
+                const deltaY = currentY - startY;
+                const rotation = deltaX * 0.1;
+
+                // Move with RequestAnimationFrame for smoothness
+                requestAnimationFrame(() => {
+                    activeCard.style.transform = `translate(${deltaX}px, ${deltaY * 0.2}px) rotate(${rotation}deg)`;
+                });
+            };
+
+            const onEnd = () => {
+                if (!isDragging) return;
                 isDragging = false;
-                cardBeingDragged = null;
-            }
-            
-            // Remove existing event listeners to prevent duplicates
-            currentCard.removeEventListener('mousedown', handleStart);
-            currentCard.removeEventListener('touchstart', handleStart);
-            
-            // Add event listeners
-            currentCard.addEventListener('mousedown', handleStart, { passive: false });
-            currentCard.addEventListener('touchstart', handleStart, { passive: false });
-            
-            document.addEventListener('mousemove', handleMove, { passive: false });
-            document.addEventListener('touchmove', handleMove, { passive: false });
-            
-            document.addEventListener('mouseup', handleEnd);
-            document.addEventListener('touchend', handleEnd);
-            
-            // Prevent text selection during swipe
-            currentCard.addEventListener('selectstart', (e) => {
-                if (isDragging) e.preventDefault();
-            });
+                activeCard.classList.remove('dragging');
+
+                const deltaX = currentX - startX;
+                const duration = Date.now() - startTime;
+                const velocity = Math.abs(deltaX) / duration;
+
+                if (Math.abs(deltaX) > 120 || (velocity > 0.5 && Math.abs(deltaX) > 30)) {
+                    // Success Swipe
+                    const outX = deltaX > 0 ? window.innerWidth * 1.5 : -window.innerWidth * 1.5;
+                    activeCard.style.transform = `translate(${outX}px, 0) rotate(${deltaX * 0.2}deg)`;
+                    activeCard.style.opacity = '0';
+                    
+                    setTimeout(() => {
+                        const nextIndex = parseInt(activeCard.dataset.index) + 1;
+                        const allCards = document.querySelectorAll('.swipeable-review-card');
+                        
+                        if (nextIndex < allCards.length) {
+                            updateStackVisibility(nextIndex);
+                            updateSwipeableProgress(nextIndex);
+                            initializeSwipeGestures();
+                        } else {
+                            document.querySelector('.swipeable-indicator').textContent = "All caught up!";
+                            setTimeout(resetSwipeableCards, 1500);
+                        }
+                    }, 300);
+                } else {
+                    // Reset
+                    activeCard.style.transform = '';
+                }
+            };
+
+            activeCard.addEventListener('touchstart', onStart, {passive: true});
+            activeCard.addEventListener('mousedown', onStart);
+            window.addEventListener('touchmove', onMove, {passive: true});
+            window.addEventListener('mousemove', onMove);
+            window.addEventListener('touchend', onEnd);
+            window.addEventListener('mouseup', onEnd);
         }
 
-        function moveToNextCard() {
-            const currentCard = document.querySelector('.swipeable-review-card.active');
-            const allCards = document.querySelectorAll('.swipeable-review-card');
-            const currentIndex = parseInt(currentCard.dataset.index);
-            const nextIndex = currentIndex + 1;
-            
-            if (nextIndex < allCards.length) {
-                // Hide current card with animation
-                currentCard.classList.remove('active');
-                currentCard.classList.add('below');
-                currentCard.style.transform = '';
-                currentCard.style.opacity = '';
-                
-                // Show next card with animation
-                const nextCard = allCards[nextIndex];
-                nextCard.classList.remove('below');
-                nextCard.classList.add('active');
-                
-                // Animate next card entrance
-                setTimeout(() => {
-                    nextCard.style.transform = 'scale(1) translateY(0)';
-                    nextCard.style.opacity = '1';
-                }, 50);
-                
-                // Update progress
-                updateSwipeableProgress(nextIndex);
-                
-                // Reinitialize swipe gestures for new card after a short delay
-                setTimeout(() => {
-                    initializeSwipeGestures();
-                }, 100);
-            } else {
-                // All cards swiped, show restart message
-                const indicator = document.querySelector('.swipeable-indicator');
-                indicator.textContent = 'All reviews viewed! Refresh to see again.';
-                
-                // Reset after a delay
-                setTimeout(() => {
-                    resetSwipeableCards();
-                }, 2000);
-            }
-        }
-
-        function updateSwipeableProgress(activeIndex) {
+        function updateSwipeableProgress(index) {
             const dots = document.querySelectorAll('.swipeable-dot');
-            dots.forEach((dot, index) => {
-                dot.classList.toggle('active', index === activeIndex);
-            });
+            dots.forEach((dot, i) => dot.classList.toggle('active', i === index));
         }
 
         function resetSwipeableCards() {
             const allCards = document.querySelectorAll('.swipeable-review-card');
-            
-            allCards.forEach((card, index) => {
-                card.classList.remove('to-left', 'to-right', 'active', 'below');
-                card.style.transform = '';
-                card.style.opacity = '';
-                
-                if (index === 0) {
-                    card.classList.add('active');
-                    card.style.transform = 'scale(1) translateY(0)';
-                    card.style.opacity = '1';
-                } else {
-                    card.classList.add('below');
-                }
+            allCards.forEach(c => {
+                c.style.transform = '';
+                c.style.opacity = '1';
             });
-            
+            updateStackVisibility(0);
             updateSwipeableProgress(0);
-            
-            // Reinitialize swipe gestures after a short delay
-            setTimeout(() => {
-                initializeSwipeGestures();
-            }, 100);
-            
-            const indicator = document.querySelector('.swipeable-indicator');
-            indicator.textContent = 'Swipe left or right to see next review';
+            initializeSwipeGestures();
+            document.querySelector('.swipeable-indicator').textContent = "Swipe left or right to see next review";
         }
 
         function handleViewChange() {
             const reviewsContainer = document.getElementById('reviews-grid-container');
             const swipeableContainer = document.getElementById('swipeable-container');
-            
-            if (window.innerWidth <= 768) {
-                // Switch to mobile view
-                if (reviewsContainer.style.display !== 'none' && reviewsContainer.children.length > 0) {
-                    reviewsContainer.style.display = 'none';
-                    swipeableContainer.style.display = 'block';
-                    // Reinitialize swipeable cards if we have reviews
-                    fetchReviews();
-                }
-            } else {
-                // Switch to desktop view
-                if (swipeableContainer.style.display !== 'none') {
-                    swipeableContainer.style.display = 'none';
-                    reviewsContainer.style.display = 'grid';
-                    // Reinitialize desktop grid if we have reviews
-                    fetchReviews();
-                }
+            if (window.innerWidth <= 768) { fetchReviews(); } 
+            else {
+                swipeableContainer.style.display = 'none';
+                reviewsContainer.style.display = 'grid';
+                fetchReviews();
             }
         }
 
-        function updateCartBadge() {
-            document.getElementById('cart-badge').textContent = cart.length;
-        }
+        function updateCartBadge() { document.getElementById('cart-badge').textContent = cart.length; }
 
-        function displayCart() {
-            const currentAllBooks = JSON.parse(localStorage.getItem('readoraBooks')) || [];
-            const cartItemsContainer = document.getElementById('cart-items-container');
-            const checkoutButtons = document.querySelector('.cart-checkout-buttons');
-            cartItemsContainer.innerHTML = '';
-            if (cart.length === 0) {
-                cartItemsContainer.innerHTML = `<p style="text-align: center; color: var(--gray); padding: 2rem 0;">Your cart is empty.</p>`;
-                if(checkoutButtons) checkoutButtons.style.display = 'none';
-            } else {
-                cart.forEach(item => {
-                    const bookDetails = currentAllBooks.find(b => String(b.id) === String(item.id)) || item;
-                    const cartItemEl = document.createElement('div');
-                    cartItemEl.className = 'cart-item';
-                    const imageUrl = bookDetails.frontImg || bookDetails.img || 'bookimg.jpeg';
-                    cartItemEl.innerHTML = `
-                        <img src="${imageUrl}" alt="${bookDetails.title}" class="cart-item-img" onerror="this.onerror=null;this.src='bookimg.jpeg';">
-                        <div class="cart-item-info"><h4>${bookDetails.title}</h4><p class="cart-item-price">₹${bookDetails.price}</p></div>
-                        <div class="cart-item-quantity">
-                            <button class="quantity-btn" data-id="${bookDetails.id}" data-change="-1">-</button>
-                            <span>${item.quantity}</span>
-                            <button class="quantity-btn" data-id="${bookDetails.id}" data-change="1">+</button>
-                        </div>
-                        <i class="fas fa-trash cart-item-remove" data-id="${bookDetails.id}"></i>`;
-                    cartItemsContainer.appendChild(cartItemEl);
-                });
-                if(checkoutButtons) checkoutButtons.style.display = 'flex';
-            }
-            updateCartTotal();
-            addCartEventListeners();
-            document.getElementById('cart-modal').style.display = 'flex';
-        }
-        
-        function addCartEventListeners() {
-            document.querySelectorAll('.quantity-btn').forEach(btn => btn.addEventListener('click', e => updateQuantity(e.target.dataset.id, parseInt(e.target.dataset.change))));
-            document.querySelectorAll('.cart-item-remove').forEach(btn => btn.addEventListener('click', e => removeFromCart(e.target.dataset.id)));
-        }
-
-        function updateQuantity(bookId, change) {
-            const itemInCart = cart.find(item => String(item.id) === String(bookId));
-            if (itemInCart) {
-                itemInCart.quantity += change;
-                if (itemInCart.quantity <= 0) removeFromCart(bookId);
-                else { localStorage.setItem('readoraCart', JSON.stringify(cart)); displayCart(); }
-            }
-        }
-
-        function removeFromCart(bookId) {
-            cart = cart.filter(item => String(item.id) !== String(bookId));
-            localStorage.setItem('readoraCart', JSON.stringify(cart));
-            displayCart(); 
-            updateCartBadge();
-        }
-
-        function updateCartTotal() {
-            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            document.getElementById('cart-total-price').textContent = `₹${total}`;
-        }
-        
         function handleCheckoutWithPlatform(platform) {
-            const currentAllBooks = JSON.parse(localStorage.getItem('readoraBooks')) || [];
             const dateTime = new Date().toLocaleString('en-IN', { dateStyle: 'short', timeStyle: 'short' });
             let orderDetails = "I would like to order the following books:\n\n";
             cart.forEach(item => {
-                const bookDetails = currentAllBooks.find(b => String(b.id) === String(item.id)) || item;
-                orderDetails += `📖 ${bookDetails.title}\n✍️ by ${bookDetails.author || 'N/A'}\n🏢 Publisher: ${bookDetails.publication || 'N/A'}\n- Qty: ${item.quantity}, Price: ₹${bookDetails.price * item.quantity}\n\n`;
+                const bookDetails = allBooks.find(b => String(b.id) === String(item.id)) || item;
+                orderDetails += `📖 ${bookDetails.title}\n- Qty: ${item.quantity}, Price: ₹${bookDetails.price * item.quantity}\n\n`;
             });
             const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            orderDetails += `--------------------\n💰 Total Bill: ₹${total}\n📅 Order Time: ${dateTime}\n\nPlease confirm availability and delivery details.`;
+            orderDetails += `--------------------\n💰 Total Bill: ₹${total}\n📅 Order Time: ${dateTime}`;
             showOrderConfirmModal(orderDetails, platform);
-            document.getElementById('cart-modal').style.display = 'none';
         }
 
         function showOrderConfirmModal(orderText, platform) {
             const modal = document.getElementById('order-confirm-modal');
             modal.querySelector('#order-message-text').innerText = orderText;
             const copyBtn = modal.querySelector('#copy-and-redirect-btn');
-            const platformDetails = {
-                facebook: { url: 'https://www.messenger.com/t/718957201308613', name: 'Messenger', icon: 'fa-facebook-messenger', style: '' },
-                instagram: { url: 'https://www.instagram.com/direct/t/17847140604595484/', name: 'Instagram', icon: 'fa-instagram', style: 'linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)' }
-            };
-            const details = platformDetails[platform];
-            copyBtn.innerHTML = `<i class="fab ${details.icon}"></i> Copy & Go to ${details.name}`;
-            copyBtn.style.background = details.style;
+            const urls = { facebook: 'https://www.messenger.com/t/718957201308613', instagram: 'https://www.instagram.com/direct/t/17847140604595484/' };
+            
             modal.style.display = 'flex';
-            const closeModalHandler = () => { modal.style.display = 'none'; copyBtn.style.background = ''; };
-            modal.querySelector('.close-confirm-modal').onclick = closeModalHandler;
-            copyBtn.onclick = async function() {
-                this.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Copying...`;
-                this.disabled = true;
-                try { await navigator.clipboard.writeText(orderText); window.open(details.url, '_blank'); } 
-                catch (err) { console.error('Failed to copy or open:', err); } 
-                finally { setTimeout(() => { this.disabled = false; closeModalHandler(); }, 1000); }
+            copyBtn.onclick = async () => {
+                await navigator.clipboard.writeText(orderText);
+                window.open(urls[platform], '_blank');
+                modal.style.display = 'none';
             };
+            modal.querySelector('.close-confirm-modal').onclick = () => modal.style.display = 'none';
         }
-
     </script>
-
 </body>
 </html>
-
