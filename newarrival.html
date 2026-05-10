@@ -2027,6 +2027,20 @@
             });
         }
         
+        // Handle URL parameters to open book details on page load
+        function handleBookUrlParam() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const bookId = urlParams.get('book');
+            if (bookId) {
+                const book = allBooks.find(b => String(b.id) === String(bookId));
+                if (book) {
+                    showBookDetails(bookId);
+                } else {
+                    console.log('Book not found for ID:', bookId);
+                }
+            }
+        }
+        
         // --- START: EXACT showBookDetails function from index.html ---
         function showBookDetails(bookId) {
             const book = allBooks.find(b => b.id === bookId);
@@ -2260,6 +2274,9 @@
                 });
             }
             allBooks = JSON.parse(localStorage.getItem('readoraBooks')) || [];
+            
+            // Handle URL parameter to open book details
+            handleBookUrlParam();
             
            const newArrivalsGrid = document.getElementById('new-arrivals-grid');
 const newArrivalsBooks = allBooks.filter(book => {
