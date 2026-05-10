@@ -799,6 +799,151 @@
             }
         }
 
+        /* Swipeable Card Styles for Mobile */
+        .swipeable-review-container {
+            display: none;
+            position: relative;
+            width: 100%;
+            height: 500px;
+            max-width: 320px;
+            margin: 0 auto;
+            padding: 20px 0;
+        }
+
+        .swipeable-cards-stack {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .swipeable-review-card {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+            cursor: grab;
+            transition: transform 0.2s ease-out;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .swipeable-review-card.dragging {
+            cursor: grabbing;
+            transition: none;
+        }
+
+        .swipeable-review-card.to-left {
+            transform: translateX(-120%) rotate(-30deg);
+            opacity: 0;
+        }
+
+        .swipeable-review-card.to-right {
+            transform: translateX(120%) rotate(30deg);
+            opacity: 0;
+        }
+
+        .swipeable-review-card.below {
+            z-index: 1;
+        }
+
+        .swipeable-review-card.active {
+            z-index: 10;
+        }
+
+        .swipeable-card-header {
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            text-align: center;
+        }
+
+        .swipeable-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: white;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 0 auto 15px;
+            font-family: 'Merriweather', serif;
+        }
+
+        .swipeable-author {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-family: 'Merriweather', serif;
+        }
+
+        .swipeable-rating {
+            color: var(--warning);
+            font-size: 1rem;
+        }
+
+        .swipeable-card-body {
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .swipeable-message {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--dark);
+            font-style: italic;
+            margin-bottom: 15px;
+            overflow-y: auto;
+            max-height: 200px;
+            text-align: center;
+        }
+
+        .swipeable-date {
+            font-size: 0.85rem;
+            color: var(--gray);
+            text-align: right;
+            border-top: 1px solid var(--light-gray);
+            padding-top: 10px;
+        }
+
+        
+        .swipeable-indicator {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        .swipeable-progress {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .swipeable-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--light-gray);
+            transition: all 0.3s ease;
+        }
+
+        .swipeable-dot.active {
+            background: var(--accent);
+            transform: scale(1.2);
+        }
+
         @media (max-width: 480px) {
             .container {
                 padding: 0 8px;
@@ -1327,7 +1472,16 @@
         <section id="reviews">
             <div class="container">
                 <h2 class="section-title" style="margin-bottom: 3rem;">Reader Reviews</h2>
+                
+                <!-- Regular Desktop Grid View -->
                 <div class="reviews-grid" id="reviews-grid-container"></div>
+                
+                <!-- Mobile Swipeable Card View -->
+                <div class="swipeable-review-container" id="swipeable-container">
+                    <div class="swipeable-progress" id="swipeable-progress"></div>
+                    <div class="swipeable-cards-stack" id="swipeable-cards-stack"></div>
+                    <div class="swipeable-indicator">Swipe left or right to see next review</div>
+                </div>
             </div>
         </section>
     </main>
@@ -1421,6 +1575,15 @@
             fetchReviews();
             setupEventListeners();
             updateCartBadge();
+            
+            // Add window resize listener to handle view switching
+            let resizeTimeout;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(() => {
+                    handleViewChange();
+                }, 250);
+            });
         });
 
         function setupEventListeners() {
@@ -1564,6 +1727,7 @@
 
         async function fetchReviews() {
             const reviewsContainer = document.getElementById('reviews-grid-container');
+            const swipeableContainer = document.getElementById('swipeable-container');
             const summaryContainer = document.getElementById('review-summary');
             
             reviewsContainer.innerHTML = `<div style="text-align: center; color: var(--gray); padding: 2rem; grid-column: 1 / -1;"><div class="loader"></div>Loading reviews...</div>`;
@@ -1592,10 +1756,22 @@
                     reviews.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
                     // --- END SORTING LOGIC ---
                     
-                    reviews.forEach(review => reviewsContainer.appendChild(createReviewCard(review)));
+                    // Display reviews based on screen size
+                    if (window.innerWidth <= 768) {
+                        // Mobile: Show swipeable cards
+                        reviewsContainer.style.display = 'none';
+                        swipeableContainer.style.display = 'block';
+                        initializeSwipeableCards(reviews);
+                    } else {
+                        // Desktop: Show regular grid
+                        reviewsContainer.style.display = 'grid';
+                        swipeableContainer.style.display = 'none';
+                        reviews.forEach(review => reviewsContainer.appendChild(createReviewCard(review)));
+                    }
                 } else {
                     if(summaryContainer) summaryContainer.style.display = 'none';
                     reviewsContainer.innerHTML = '<p style="text-align: center; color: var(--gray); grid-column: 1 / -1;">No reviews yet.</p>';
+                    swipeableContainer.style.display = 'none';
                 }
             } catch (error) {
                 console.error('Error fetching reviews:', error);
@@ -1682,6 +1858,248 @@
             return wrapper;
         }
         // --- END UPDATED Function ---
+
+        // Swipeable Card Functions
+        function initializeSwipeableCards(reviews) {
+            const stack = document.getElementById('swipeable-cards-stack');
+            const progress = document.getElementById('swipeable-progress');
+            
+            stack.innerHTML = '';
+            progress.innerHTML = '';
+            
+            if (reviews.length === 0) return;
+            
+            // Create progress dots
+            reviews.forEach((review, index) => {
+                const dot = document.createElement('div');
+                dot.className = 'swipeable-dot';
+                if (index === 0) dot.classList.add('active');
+                progress.appendChild(dot);
+            });
+            
+            // Create swipeable cards
+            reviews.forEach((review, index) => {
+                const card = createSwipeableCard(review, index);
+                stack.appendChild(card);
+            });
+            
+            // Initialize swipe functionality
+            initializeSwipeGestures();
+            updateSwipeableProgress(0);
+        }
+
+        function createSwipeableCard(review, index) {
+            const card = document.createElement('div');
+            card.className = 'swipeable-review-card';
+            card.dataset.index = index;
+            
+            if (index === 0) {
+                card.classList.add('active');
+            } else {
+                card.classList.add('below');
+            }
+            
+            const authorInitial = review.name ? review.name.charAt(0).toUpperCase() : '?';
+            const rating = parseInt(review.rating) || 0;
+            let starsHTML = '';
+            for (let i = 1; i <= 5; i++) {
+                starsHTML += `<i class="${i <= rating ? 'fas' : 'far'} fa-star"></i>`;
+            }
+            
+            let formattedDate = '';
+            if (review.timestamp) {
+                try {
+                    formattedDate = new Date(review.timestamp).toLocaleString('en-IN', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: true
+                    });
+                } catch(e) {
+                    console.warn("Could not parse date:", review.timestamp);
+                }
+            }
+            
+            const message = review.message || 'No comment provided.';
+            
+            card.innerHTML = `
+                <div class="swipeable-card-header">
+                    <div class="swipeable-avatar">${authorInitial}</div>
+                    <div class="swipeable-author">${review.name || 'Anonymous'}</div>
+                    <div class="swipeable-rating">${starsHTML}</div>
+                </div>
+                <div class="swipeable-card-body">
+                    <div class="swipeable-message">"${message}"</div>
+                    <div class="swipeable-date"><i class="far fa-clock"></i> ${formattedDate}</div>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        function initializeSwipeGestures() {
+            const cards = document.querySelectorAll('.swipeable-review-card');
+            let currentCard = document.querySelector('.swipeable-review-card.active');
+            if (!currentCard) return;
+            
+            let startX = 0;
+            let currentX = 0;
+            let cardBeingDragged = null;
+            let isDragging = false;
+            
+            function handleStart(e) {
+                if (!currentCard || currentCard.classList.contains('to-left') || currentCard.classList.contains('to-right')) return;
+                
+                cardBeingDragged = currentCard;
+                isDragging = true;
+                cardBeingDragged.classList.add('dragging');
+                
+                startX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+                currentX = startX;
+                
+                // Prevent default to avoid scrolling while swiping
+                e.preventDefault();
+            }
+            
+            function handleMove(e) {
+                if (!isDragging || !cardBeingDragged) return;
+                
+                currentX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+                const deltaX = currentX - startX;
+                const rotation = deltaX * 0.1;
+                
+                cardBeingDragged.style.transform = `translateX(${deltaX}px) rotate(${rotation}deg)`;
+                
+                                
+                e.preventDefault();
+            }
+            
+            function handleEnd(e) {
+                if (!isDragging || !cardBeingDragged) return;
+                
+                const deltaX = currentX - startX;
+                const threshold = 100;
+                
+                cardBeingDragged.classList.remove('dragging');
+                
+                if (Math.abs(deltaX) > threshold) {
+                    // Swipe completed
+                    if (deltaX > 0) {
+                        cardBeingDragged.classList.add('to-right');
+                    } else {
+                        cardBeingDragged.classList.add('to-left');
+                    }
+                    
+                    // Move to next card after animation
+                    setTimeout(() => {
+                        moveToNextCard();
+                    }, 300);
+                } else {
+                    // Swipe not completed, reset position
+                    cardBeingDragged.style.transform = '';
+                }
+                
+                isDragging = false;
+                cardBeingDragged = null;
+            }
+            
+            // Add event listeners
+            currentCard.addEventListener('mousedown', handleStart);
+            currentCard.addEventListener('touchstart', handleStart);
+            
+            document.addEventListener('mousemove', handleMove);
+            document.addEventListener('touchmove', handleMove);
+            
+            document.addEventListener('mouseup', handleEnd);
+            document.addEventListener('touchend', handleEnd);
+        }
+
+        function moveToNextCard() {
+            const currentCard = document.querySelector('.swipeable-review-card.active');
+            const allCards = document.querySelectorAll('.swipeable-review-card');
+            const currentIndex = parseInt(currentCard.dataset.index);
+            const nextIndex = currentIndex + 1;
+            
+            if (nextIndex < allCards.length) {
+                // Hide current card
+                currentCard.classList.remove('active');
+                currentCard.classList.add('below');
+                currentCard.style.transform = '';
+                
+                // Show next card
+                const nextCard = allCards[nextIndex];
+                nextCard.classList.remove('below');
+                nextCard.classList.add('active');
+                
+                // Update progress
+                updateSwipeableProgress(nextIndex);
+                
+                // Reinitialize swipe gestures for new card
+                initializeSwipeGestures();
+            } else {
+                // All cards swiped, show restart message
+                const indicator = document.querySelector('.swipeable-indicator');
+                indicator.textContent = 'All reviews viewed! Refresh to see again.';
+                
+                // Reset after a delay
+                setTimeout(() => {
+                    resetSwipeableCards();
+                }, 2000);
+            }
+        }
+
+        function updateSwipeableProgress(activeIndex) {
+            const dots = document.querySelectorAll('.swipeable-dot');
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === activeIndex);
+            });
+        }
+
+        function resetSwipeableCards() {
+            const allCards = document.querySelectorAll('.swipeable-review-card');
+            
+            allCards.forEach((card, index) => {
+                card.classList.remove('to-left', 'to-right', 'active', 'below');
+                card.style.transform = '';
+                
+                if (index === 0) {
+                    card.classList.add('active');
+                } else {
+                    card.classList.add('below');
+                }
+            });
+            
+            updateSwipeableProgress(0);
+            initializeSwipeGestures();
+            
+            const indicator = document.querySelector('.swipeable-indicator');
+            indicator.textContent = 'Swipe left to see next review or right to see next review';
+        }
+
+        function handleViewChange() {
+            const reviewsContainer = document.getElementById('reviews-grid-container');
+            const swipeableContainer = document.getElementById('swipeable-container');
+            
+            if (window.innerWidth <= 768) {
+                // Switch to mobile view
+                if (reviewsContainer.style.display !== 'none' && reviewsContainer.children.length > 0) {
+                    reviewsContainer.style.display = 'none';
+                    swipeableContainer.style.display = 'block';
+                    // Reinitialize swipeable cards if we have reviews
+                    fetchReviews();
+                }
+            } else {
+                // Switch to desktop view
+                if (swipeableContainer.style.display !== 'none') {
+                    swipeableContainer.style.display = 'none';
+                    reviewsContainer.style.display = 'grid';
+                    // Reinitialize desktop grid if we have reviews
+                    fetchReviews();
+                }
+            }
+        }
 
         function updateCartBadge() {
             document.getElementById('cart-badge').textContent = cart.length;
