@@ -13,7 +13,7 @@
             --light: #f8f9fa; --dark: #2d3436; --darker: #1e2224; --danger: #dc3545;
             --success: #28a745; --warning: #ffc107; --gray: #8a8a8a; --light-gray: #e0e0e0;
         }
-        body { background-color: #f5f7f9; color: var(--dark); line-height: 1.6; font-family: 'Montserrat', sans-serif; }
+        body { background-color: #f5f7f9; color: var(--dark); line-height: 1.6; font-family: 'Montserrat', sans-serif; padding-top: 70px; }
         
         .main-content { padding: 4rem 0; }
         .section-title { text-align: center; margin-bottom: 3rem; position: relative; font-size: 2.5rem; color: var(--darker); }
@@ -27,8 +27,11 @@
             color: white;
             padding: 0.7rem 0;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            position: sticky;
+            position: fixed;
             top: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
             z-index: 100;
         }
 
@@ -79,6 +82,50 @@
             background: rgba(255, 255, 255, 0.15);
             color: var(--accent);
         }
+        
+        nav ul li.dropdown {
+            position: relative;
+        }
+
+        nav ul li.dropdown .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: var(--darker);
+            list-style: none;
+            padding: 10px 0;
+            margin: 0;
+            border-radius: 4px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            min-width: 160px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            z-index: 1001;
+        }
+
+        nav ul li.dropdown:hover .dropdown-menu {
+            display: block;
+            opacity: 1;
+            visibility: visible;
+        }
+
+        nav ul li.dropdown .dropdown-menu li {
+            margin: 0;
+        }
+
+        nav ul li.dropdown .dropdown-menu li a {
+            padding: 10px 20px;
+            display: block;
+            width: 100%;
+            text-align: left;
+            white-space: nowrap;
+        }
+        nav ul li a .fa-caret-down {
+            margin-left: 5px;
+            font-size: 0.8em;
+        }
 
         .header-right-icons {
             display: flex;
@@ -127,6 +174,19 @@
             background-color: white;
             border-radius: 5px;
             transition: all 0.3s linear;
+        }
+
+        .menu-toggle.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .menu-toggle.active span:nth-child(2) {
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+
+        .menu-toggle.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
         }
 
         /* Dropdown Styles */
@@ -1461,10 +1521,10 @@
                             <li><a href="authors.html">Authors</a></li>
                         </ul>
                     </li>
-                    <li class="dropdown">
-                        <a class="nav-link active">Contact <i class="fas fa-caret-down"></i></a>
+                     <li class="dropdown">
+                        <a href="#" class="nav-link" onclick="event.preventDefault()">Contact <i class="fas fa-caret-down"></i></a>
                         <ul class="dropdown-menu">
-                            <li><a href="index.html#footer">Contact Us</a></li>
+                            <li><a href="#footer" class="smooth-scroll">Contact Us</a></li>
                             <li><a href="Review.html">Reviews</a></li>
                         </ul>
                     </li>
@@ -1743,6 +1803,8 @@
             const summaryContainer = document.getElementById('review-summary');
             
             reviewsContainer.innerHTML = `<div style="text-align: center; color: var(--gray); padding: 2rem; grid-column: 1 / -1;"><div class="loader"></div>Loading reviews...</div>`;
+            reviewsContainer.style.display = 'grid';
+            swipeableContainer.style.display = 'none';
             if(summaryContainer) summaryContainer.style.display = 'none';
             
             const fetchUrl = `${SCRIPT_URL}?timestamp=${new Date().getTime()}`;
@@ -1811,6 +1873,44 @@
             }, 100); 
         }
 
+        // Handle smooth scrolling for navigation links
+            document.querySelectorAll('a.smooth-scroll, .dropdown-menu a').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    const targetId = this.getAttribute('href');
+                    
+                    // Skip if it's just a # or points to an external page
+                    if (!targetId || targetId === '#' || targetId.includes('.html')) return;
+                    
+                    e.preventDefault();
+                    try {
+                        const targetElement = document.querySelector(targetId);
+                        if (targetElement) {
+                            // Close mobile menu if open
+                            const mainNav = document.getElementById('main-nav');
+                            const menuToggle = document.getElementById('menu-toggle');
+                            
+                            if (mainNav && mainNav.classList.contains('active')) {
+                                menuToggle.classList.remove('active');
+                                mainNav.classList.remove('active');
+                            }
+                            
+                            // Close all dropdowns
+                            document.querySelectorAll('.dropdown').forEach(dropdown => {
+                                dropdown.classList.remove('open');
+                            });
+                            
+                            // Smooth scroll to target
+                            window.scrollTo({
+                                top: targetElement.offsetTop - 100,
+                                behavior: 'smooth'
+                            });
+                        }
+                    } catch (error) {
+                        console.error("Error finding or scrolling to target element:", targetId, error);
+                    }
+                });
+            });
+        
         function createReviewCard(review) {
             const wrapper = document.createElement('div');
             wrapper.className = 'review-card-wrapper';
@@ -1922,21 +2022,38 @@
             });
         }
 
+        // Store global swipe handler refs so we can remove them on re-init
+        let _swipeHandlers = null;
+
         function initializeSwipeGestures() {
             const stack = document.getElementById('swipeable-cards-stack');
-            let activeCard = stack.querySelector('.swipeable-review-card.active');
+            if (!stack) return;
+            const activeCard = stack.querySelector('.swipeable-review-card.active');
             if (!activeCard) return;
 
-            let startX, startY, currentX, currentY, startTime;
+            // Remove previous window-level listeners to prevent stacking
+            if (_swipeHandlers) {
+                window.removeEventListener('touchmove', _swipeHandlers.onMove);
+                window.removeEventListener('mousemove', _swipeHandlers.onMove);
+                window.removeEventListener('touchend', _swipeHandlers.onEnd);
+                window.removeEventListener('mouseup', _swipeHandlers.onEnd);
+                _swipeHandlers = null;
+            }
+
+            let startX = 0, startY = 0, currentX = 0, currentY = 0, startTime = 0;
             let isDragging = false;
+            let hasMoved = false;
 
             const onStart = (e) => {
                 if (isDragging) return;
                 const touch = e.type === 'touchstart' ? e.touches[0] : e;
                 startX = touch.clientX;
                 startY = touch.clientY;
+                currentX = startX;
+                currentY = startY;
                 startTime = Date.now();
                 isDragging = true;
+                hasMoved = false;
                 activeCard.classList.add('dragging');
             };
 
@@ -1945,12 +2062,10 @@
                 const touch = e.type === 'touchmove' ? e.touches[0] : e;
                 currentX = touch.clientX;
                 currentY = touch.clientY;
-
+                hasMoved = true;
                 const deltaX = currentX - startX;
                 const deltaY = currentY - startY;
                 const rotation = deltaX * 0.1;
-
-                // Move with RequestAnimationFrame for smoothness
                 requestAnimationFrame(() => {
                     activeCard.style.transform = `translate(${deltaX}px, ${deltaY * 0.2}px) rotate(${rotation}deg)`;
                 });
@@ -1961,41 +2076,49 @@
                 isDragging = false;
                 activeCard.classList.remove('dragging');
 
+                if (!hasMoved) {
+                    activeCard.style.transform = '';
+                    return;
+                }
+
                 const deltaX = currentX - startX;
-                const duration = Date.now() - startTime;
+                const duration = Math.max(Date.now() - startTime, 1);
                 const velocity = Math.abs(deltaX) / duration;
 
-                if (Math.abs(deltaX) > 120 || (velocity > 0.5 && Math.abs(deltaX) > 30)) {
-                    // Success Swipe
+                if (Math.abs(deltaX) > 100 || (velocity > 0.4 && Math.abs(deltaX) > 30)) {
                     const outX = deltaX > 0 ? window.innerWidth * 1.5 : -window.innerWidth * 1.5;
+                    activeCard.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
                     activeCard.style.transform = `translate(${outX}px, 0) rotate(${deltaX * 0.2}deg)`;
                     activeCard.style.opacity = '0';
-                    
+
                     setTimeout(() => {
                         const nextIndex = parseInt(activeCard.dataset.index) + 1;
                         const allCards = document.querySelectorAll('.swipeable-review-card');
-                        
                         if (nextIndex < allCards.length) {
                             updateStackVisibility(nextIndex);
                             updateSwipeableProgress(nextIndex);
                             initializeSwipeGestures();
                         } else {
-                            document.querySelector('.swipeable-indicator').textContent = "All caught up!";
+                            const indicator = document.querySelector('.swipeable-indicator');
+                            if (indicator) indicator.textContent = 'All caught up!';
                             setTimeout(resetSwipeableCards, 1500);
                         }
-                    }, 300);
+                    }, 320);
                 } else {
-                    // Reset
+                    activeCard.style.transition = 'transform 0.3s ease';
                     activeCard.style.transform = '';
+                    setTimeout(() => { activeCard.style.transition = ''; }, 300);
                 }
             };
 
-            activeCard.addEventListener('touchstart', onStart, {passive: true});
+            activeCard.addEventListener('touchstart', onStart, { passive: true });
             activeCard.addEventListener('mousedown', onStart);
-            window.addEventListener('touchmove', onMove, {passive: true});
+            window.addEventListener('touchmove', onMove, { passive: true });
             window.addEventListener('mousemove', onMove);
             window.addEventListener('touchend', onEnd);
             window.addEventListener('mouseup', onEnd);
+
+            _swipeHandlers = { onMove, onEnd };
         }
 
         function updateSwipeableProgress(index) {
@@ -2007,22 +2130,39 @@
             const allCards = document.querySelectorAll('.swipeable-review-card');
             allCards.forEach(c => {
                 c.style.transform = '';
-                c.style.opacity = '1';
+                c.style.opacity = '';
+                c.style.transition = '';
             });
             updateStackVisibility(0);
             updateSwipeableProgress(0);
             initializeSwipeGestures();
-            document.querySelector('.swipeable-indicator').textContent = "Swipe left or right to see next review";
+            const indicator = document.querySelector('.swipeable-indicator');
+            if (indicator) indicator.textContent = 'Swipe left or right to see next review';
         }
 
         function handleViewChange() {
             const reviewsContainer = document.getElementById('reviews-grid-container');
             const swipeableContainer = document.getElementById('swipeable-container');
-            if (window.innerWidth <= 768) { fetchReviews(); } 
-            else {
+            const hasGridCards = reviewsContainer.querySelectorAll('.review-card-wrapper').length > 0;
+            const hasSwipeCards = swipeableContainer.querySelectorAll('.swipeable-review-card').length > 0;
+
+            // If no data loaded yet, do a full fetch
+            if (!hasGridCards && !hasSwipeCards) {
+                fetchReviews();
+                return;
+            }
+
+            // Data already loaded — just toggle visibility without re-fetching
+            if (window.innerWidth <= 768) {
+                reviewsContainer.style.display = 'none';
+                swipeableContainer.style.display = 'block';
+                // Re-initialize swipe gestures only if needed
+                if (!swipeableContainer.querySelector('.swipeable-review-card.active')) {
+                    initializeSwipeGestures();
+                }
+            } else {
                 swipeableContainer.style.display = 'none';
                 reviewsContainer.style.display = 'grid';
-                fetchReviews();
             }
         }
 
