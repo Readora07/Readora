@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Secure Auth System</title>
+    <meta name="description" content="Readora - Your premium online bookstore for Bengali and English literature.">
+    <meta property="og:title" content="Readora - Online Book Store">
+    <meta property="og:image" content="https://readora.example/logo2.png">
+    <meta property="og:description" content="Discover your next favorite book at Readora.">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #57B894;
+            --secondary-color: #4EA685;
+            --white: #ffffff;
+            --gray: #f0f0f0;
+        }
+
+        * { font-family: 'Poppins', sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
+        body { height: 100vh; overflow: hidden; background-color: #f0f2f5; }
+
+        .back-button {
+            position: fixed;
+            top: 22px;
+            left: 22px;
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.96);
+            color: var(--secondary-color);
+            font-size: 1rem;
+            text-decoration: none;
+            box-shadow: 0 4px 14px rgba(31, 98, 73, 0.18);
+            transition: background-color 0.2s, color 0.2s, transform 0.2s;
+        }
+        .back-button:hover { background: var(--secondary-color); color: var(--white); transform: translateX(-2px); }
+
+        .container { position: relative; width: 100%; height: 100vh; background-color: var(--white); overflow: hidden; }
+
+        .container::before {
+            content: "";
+            position: absolute;
+            height: 2000px;
+            width: 2000px;
+            top: -10%;
+            right: 48%;
+            transform: translateY(-50%);
+            background-image: linear-gradient(-45deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            z-index: 10;
+            transition: 1.8s ease-in-out;
+            border-radius: 50%;
+        }
+
+        .container.sign-up::before { transform: translate(100%, -50%); right: 52%; }
+
+        .forms-container { position: absolute; width: 100%; height: 100%; top: 0; left: 0; }
+        .signin-signup { position: absolute; top: 50%; transform: translate(-50%, -50%); left: 75%; width: 50%; transition: 1s 0.7s ease-in-out; display: grid; grid-template-columns: 1fr; z-index: 5; }
+        .container.sign-up .signin-signup { left: 25%; }
+
+        .form { display: flex; align-items: center; justify-content: center; flex-direction: column; padding: 0 5rem; transition: all 0.2s 0.7s; overflow: hidden; grid-column: 1 / 2; grid-row: 1 / 2; }
+        .form.sign-up-form { opacity: 0; z-index: 1; pointer-events: none; }
+        .form.sign-in-form { z-index: 2; }
+        .container.sign-up .form.sign-in-form { opacity: 0; z-index: 1; pointer-events: none; }
+        .container.sign-up .form.sign-up-form { opacity: 1; z-index: 2; pointer-events: all; }
+
+        .form-card { background: var(--white); padding: 40px; border-radius: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); width: 100%; max-width: 380px; text-align: center; }
+        .form-card h3 { margin-bottom: 8px; color: #333; }
+
+        /* Registration card is taller (seller details): scroll inside the card */
+        .form-card.tall { padding: 28px 32px; max-height: 88vh; overflow-y: auto; }
+        .form-card.tall .input-field { height: 48px; margin: 6px 0; }
+        .form-card.tall .input-field i { line-height: 48px; }
+        .form-card.tall::-webkit-scrollbar { width: 6px; }
+        .form-card.tall::-webkit-scrollbar-thumb { background: #cfd8d4; border-radius: 6px; }
+        .section-label { font-size: .8rem; font-weight: 600; text-align: left; margin: 10px 4px 2px; color: var(--secondary-color); }
+
+        .input-field { width: 100%; background-color: var(--gray); margin: 10px 0; height: 55px; border-radius: 12px; display: grid; grid-template-columns: 15% 85%; padding: 0 0.4rem; position: relative; }
+        .input-field.has-eye { grid-template-columns: 15% 70% 15%; }
+        .input-field i { text-align: center; line-height: 55px; color: #acacac; font-size: 1.1rem; }
+        .input-field i.eye { cursor: pointer; }
+        .input-field input { background: none; outline: none; border: none; font-weight: 600; font-size: 1rem; color: #333; min-width: 0; }
+
+        .btn { width: 100%; background-color: var(--primary-color); border: none; height: 49px; border-radius: 12px; color: #fff; text-transform: uppercase; font-weight: 600; margin: 10px 0; cursor: pointer; transition: 0.5s; }
+        .btn:hover { background-color: var(--secondary-color); }
+        .btn:disabled { opacity: .7; cursor: not-allowed; }
+        .link { cursor: pointer; font-size: 0.8rem; margin: 10px 0; color: #555; }
+        .link:hover { color: var(--primary-color); }
+        .switch { font-size: 0.9rem; }
+        .switch b { color: var(--primary-color); cursor: pointer; }
+
+        .panels-container { position: absolute; height: 100%; width: 100%; top: 0; left: 0; display: grid; grid-template-columns: repeat(2, 1fr); }
+        .panel { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; z-index: 12; transition: transform 0.9s ease-in-out; transition-delay: 0.6s; }
+        .left-panel { pointer-events: all; padding: 3rem 17% 2rem 12%; }
+        .right-panel { pointer-events: none; padding: 3rem 12% 2rem 17%; transform: translateX(800px); }
+        .panel h2 { color: #fff; font-weight: 800; font-size: 3.5rem; }
+        .container.sign-up .left-panel { transform: translateX(-800px); pointer-events: none; }
+        .container.sign-up .right-panel { transform: translateX(0); pointer-events: all; }
+
+        @media (max-width: 870px) {
+            /* Mobile / tablet: stacked layout. Green curved header on top, card below, the page scrolls. */
+            html, body { height: auto; min-height: 100%; overflow-x: hidden; overflow-y: auto; }
+            body { min-height: 100vh; min-height: 100dvh; }
+            .container { height: auto; min-height: 100vh; min-height: 100dvh; overflow: visible; background-color: #f0f2f5; }
+
+            .container::before,
+            .container.sign-up::before {
+                top: 0; left: 0; right: auto; bottom: auto;
+                width: 100%; height: 230px;
+                transform: none;
+                border-radius: 0 0 50% 50% / 0 0 60px 60px;
+                transition: none;
+                z-index: 0; /* green header sits behind the card */
+            }
+
+            .forms-container { position: relative; height: auto; min-height: inherit; }
+            .signin-signup,
+            .container.sign-up .signin-signup {
+                position: relative; top: auto; left: auto; transform: none;
+                width: 100%; transition: none;
+                padding: 100px 16px calc(28px + env(safe-area-inset-bottom, 0px));
+            }
+
+            .form { padding: 0; overflow: visible; opacity: 1; transition: none; pointer-events: auto; }
+            .form.sign-up-form,
+            .container.sign-up .form.sign-in-form { display: none; }
+            .container.sign-up .form.sign-up-form { display: flex; opacity: 1; pointer-events: auto; }
+
+            .form-card,
+            .form-card.tall { max-width: 440px; margin: 0 auto; padding: 26px 20px; max-height: none; overflow: visible; }
+            .form-card.tall .input-field { height: 50px; }
+            .form-card.tall .input-field i { line-height: 50px; }
+            .input-field input { font-size: 16px; } /* 16px stops iOS zooming into the field */
+
+            .panels-container {
+                position: absolute; top: 0; left: 0; width: 100%; height: 100px;
+                display: flex; pointer-events: none;
+            }
+            .panel,
+            .left-panel,
+            .right-panel,
+            .container.sign-up .left-panel,
+            .container.sign-up .right-panel {
+                width: 100%; height: 100%; padding: env(safe-area-inset-top, 0px) 16px 0;
+                transform: none; transition: none; pointer-events: none;
+            }
+            .right-panel,
+            .container.sign-up .left-panel { display: none; }
+            .container.sign-up .right-panel { display: flex; }
+            .panel h2 { font-size: 2rem; }
+        }
+
+        @media (max-width: 380px) {
+            .signin-signup,
+            .container.sign-up .signin-signup { padding-left: 10px; padding-right: 10px; }
+            .form-card,
+            .form-card.tall { padding: 22px 14px; }
+        }
+
+        .hidden { display: none !important; }
+        .loader { border: 2px solid #f3f3f3; border-top: 2px solid var(--white); border-radius: 50%; width: 16px; height: 16px; animation: spin 1s linear infinite; display: inline-block; margin-right: 8px; vertical-align: middle; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="container sign-in" id="container">
+    <a class="back-button" href="index.html" aria-label="Back to home" title="Back to home"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i></a>
+    <div class="forms-container">
+        <div class="signin-signup">
+
+            <!-- SIGN IN  (also used for "Forgot password") -->
+            <div class="form sign-in-form">
+                <div class="form-card">
+                    <h3 id="loginTitle">Sign in</h3>
+                    <div class="input-field">
+                        <i class="fa-solid fa-envelope"></i>
+                        <input type="email" id="loginEmail" placeholder="example@gmail.com" autocomplete="username">
+                    </div>
+                    <div class="input-field has-eye" id="loginPassBox">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" id="loginPass" placeholder="Password" autocomplete="current-password">
+                        <i class="fa-solid fa-eye eye" onclick="togglePass('loginPass', this)"></i>
+                    </div>
+                    <div class="input-field hidden" id="loginOtpBox">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        <input type="text" id="loginOTP" placeholder="Enter 6-Digit OTP" maxlength="6" inputmode="numeric" autocomplete="one-time-code">
+                    </div>
+                    <button id="loginBtn" class="btn" onclick="processAction()">Sign in</button>
+                    <p class="link" id="forgotLink" onclick="setMode('forgot')">Forgot password?</p>
+                    <p class="link hidden" id="loginResend" onclick="resendOtp()">Didn't get it? Resend OTP</p>
+                    <p class="switch" id="loginSwitch">Want to sell on Readora? <b onclick="goSignup()">Become a seller</b></p>
+                </div>
+            </div>
+
+            <!-- SELLER REGISTRATION -->
+            <div class="form sign-up-form">
+                <div class="form-card tall">
+                    <h3>Seller registration</h3>
+
+                    <div id="signupFields">
+                        <div class="input-field">
+                            <i class="fa-solid fa-user"></i>
+                            <input type="text" id="regName" placeholder="Full Name" autocomplete="name">
+                        </div>
+                        <div class="input-field">
+                            <i class="fa-solid fa-envelope"></i>
+                            <input type="email" id="regEmail" placeholder="example@gmail.com" autocomplete="email">
+                        </div>
+                        <div class="input-field">
+                            <i class="fa-brands fa-whatsapp"></i>
+                            <input type="tel" id="regPhone" placeholder="WhatsApp number (10 digits)" maxlength="14" inputmode="tel" autocomplete="tel">
+                        </div>
+
+                        <p class="section-label">Seller details</p>
+                        <div class="input-field">
+                            <i class="fa-solid fa-store"></i>
+                            <input type="text" id="shopName" placeholder="Shop / Store Name">
+                        </div>
+                        <div class="input-field">
+                            <i class="fa-solid fa-location-dot"></i>
+                            <input type="text" id="shopAddress" placeholder="Address (house, street, area)" autocomplete="street-address">
+                        </div>
+                        <div class="input-field">
+                            <i class="fa-solid fa-city"></i>
+                            <input type="text" id="shopCity" placeholder="City" autocomplete="address-level2">
+                        </div>
+                        <div class="input-field">
+                            <i class="fa-solid fa-map-pin"></i>
+                            <input type="text" id="shopPin" placeholder="PIN Code (6 digits)" maxlength="6" inputmode="numeric" autocomplete="postal-code">
+                        </div>
+
+                        <div class="input-field has-eye">
+                            <i class="fa-solid fa-lock"></i>
+                            <input type="password" id="regPass" placeholder="Password (Min 6 chars)" autocomplete="new-password">
+                            <i class="fa-solid fa-eye eye" onclick="togglePass('regPass', this)"></i>
+                        </div>
+                    </div>
+
+                    <div class="input-field hidden" id="regOtpBox">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        <input type="text" id="regOTP" placeholder="Enter 6-Digit OTP" maxlength="6" inputmode="numeric" autocomplete="one-time-code">
+                    </div>
+
+                    <button id="regBtn" class="btn" onclick="processAction()">Send OTP</button>
+                    <p class="link hidden" id="regResend" onclick="resendOtp()">Didn't get it? Resend OTP</p>
+                    <p class="link hidden" id="regBack" onclick="backToDetails()">&larr; Edit my details</p>
+                    <p class="switch">Already have an account? <b onclick="goLogin()">Sign in here</b></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panels-container">
+        <div class="panel left-panel"><h2>Welcome</h2></div>
+        <div class="panel right-panel"><h2>Join with us</h2></div>
+    </div>
+
+<script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxT5uPEA59Adu6u7fk19RQ950kLVYIb69HzRhSpQJ71Z4SKcO0-rzWLi-JrlTqNVVD_/exec";
+    let currentMode = 'login';   // 'login' | 'forgot' | 'signup'
+    let isOtpSent = false;
+
+    const container = document.getElementById('container');
+    const $ = id => document.getElementById(id);
+    const isPhone = p => /^(?:\+?91|0)?[6-9]\d{9}$/.test(String(p).replace(/[\s-]/g, ''));
+
+    function togglePass(id, icon) {
+        const p = $(id);
+        p.type = p.type === 'password' ? 'text' : 'password';
+        icon.classList.toggle('fa-eye');
+        icon.classList.toggle('fa-eye-slash');
+    }
+
+    function goSignup() {
+        container.classList.remove('sign-in');
+        container.classList.add('sign-up');
+        setMode('signup');
+    }
+    function goLogin() {
+        container.classList.remove('sign-up');
+        container.classList.add('sign-in');
+        setMode('login');
+    }
+
+    function setMode(mode) {
+        currentMode = mode;
+        isOtpSent = false;
+
+        // sign-in card
+        $('loginOtpBox').classList.add('hidden');
+        $('loginOTP').value = '';
+        $('loginResend').classList.add('hidden');
+        $('loginPassBox').classList.toggle('hidden', mode === 'forgot');
+        $('forgotLink').classList.toggle('hidden', mode !== 'login');
+        $('loginTitle').innerText = mode === 'forgot' ? 'Recover password' : 'Sign in';
+        $('loginSwitch').innerHTML = mode === 'forgot'
+            ? 'Remembered? <b onclick="setMode(\'login\')">Sign in</b>'
+            : 'Want to sell on Readora? <b onclick="goSignup()">Become a seller</b>';
+
+        // sign-up card
+        $('signupFields').classList.remove('hidden');
+        $('regOtpBox').classList.add('hidden');
+        $('regOTP').value = '';
+        $('regResend').classList.add('hidden');
+        $('regBack').classList.add('hidden');
+
+        refreshButtons();
+    }
+
+    function refreshButtons() {
+        $('loginBtn').innerText = currentMode === 'forgot' ? (isOtpSent ? 'Verify OTP' : 'Send recovery OTP') : 'Sign in';
+        $('regBtn').innerText = isOtpSent && currentMode === 'signup' ? 'Verify OTP' : 'Send OTP';
+    }
+
+    // After the OTP is sent: show only the OTP box (typed values are kept)
+    function showOtpStep() {
+        isOtpSent = true;
+        if (currentMode === 'signup') {
+            $('signupFields').classList.add('hidden');
+            $('regOtpBox').classList.remove('hidden');
+            $('regResend').classList.remove('hidden');
+            $('regBack').classList.remove('hidden');
+        } else {
+            $('loginPassBox').classList.add('hidden');
+            $('loginOtpBox').classList.remove('hidden');
+            $('loginResend').classList.remove('hidden');
+        }
+        refreshButtons();
+    }
+
+    function backToDetails() {
+        isOtpSent = false;
+        $('signupFields').classList.remove('hidden');
+        $('regOtpBox').classList.add('hidden');
+        $('regResend').classList.add('hidden');
+        $('regBack').classList.add('hidden');
+        refreshButtons();
+    }
+
+    function readFields() {
+        const signup = currentMode === 'signup';
+        return {
+            email: (signup ? $('regEmail') : $('loginEmail')).value.trim().toLowerCase(),
+            pass: (signup ? $('regPass') : $('loginPass')).value,
+            otp: (signup ? $('regOTP') : $('loginOTP')).value.trim(),
+            name: $('regName').value.trim(),
+            phone: $('regPhone').value.trim(),
+            shopName: $('shopName').value.trim(),
+            address: $('shopAddress').value.trim(),
+            city: $('shopCity').value.trim(),
+            pincode: $('shopPin').value.trim()
+        };
+    }
+
+    async function sendOtp(f) {
+        const res = await apiCall({ action: 'checkAndSendOTP', email: f.email, mode: currentMode, phone: f.phone });
+        if (res.success) {
+            Swal.fire('OTP Sent', 'Check your email (also the spam folder). It is valid for 10 minutes.', 'success');
+            showOtpStep();
+        } else {
+            Swal.fire('Error', res.message, 'error');
+        }
+    }
+
+    function resendOtp() {
+        sendOtp(readFields());
+    }
+
+    async function processAction() {
+        const f = readFields();
+
+        // Validation
+        if (!f.email.endsWith("@gmail.com")) return Swal.fire('Error', 'Only @gmail.com is allowed', 'error');
+        if (currentMode !== 'forgot' && !isOtpSent && f.pass.length < 6) return Swal.fire('Security', 'Password must be at least 6 characters', 'warning');
+
+        if (currentMode === 'signup' && !isOtpSent) {
+            if (f.name.length < 2) return Swal.fire('Missing details', 'Please enter your full name', 'warning');
+            if (!isPhone(f.phone)) return Swal.fire('Invalid number', 'Enter a valid 10-digit mobile number', 'warning');
+            if (f.shopName.length < 2) return Swal.fire('Missing details', 'Please enter your shop / store name', 'warning');
+            if (f.address.length < 5) return Swal.fire('Missing details', 'Please enter your address', 'warning');
+            if (f.city.length < 2) return Swal.fire('Missing details', 'Please enter your city', 'warning');
+            if (!/^\d{6}$/.test(f.pincode)) return Swal.fire('Invalid PIN', 'PIN code must be 6 digits', 'warning');
+        }
+
+        if (currentMode === 'login') {
+            const res = await apiCall({ action: 'login', email: f.email, password: f.pass });
+            if (res.success) {
+                if (!res.token && (res.isAdmin || res.role === 'seller')) {
+                    return Swal.fire('Server not updated', 'Login worked, but the server sent no session token. In Apps Script: Deploy > Manage deployments > pencil > New version > Deploy (with the latest Auth.gs and WebApp.gs).', 'error');
+                }
+                // Identity for the next page (convenience only - not tamper-proof)
+                try {
+                    sessionStorage.setItem('readora_user', JSON.stringify({
+                        email: f.email, token: res.token, name: res.user && res.user.name, shopName: res.user && res.user.shopName, role: res.isAdmin ? 'admin' : res.role
+                    }));
+                } catch (e) { /* storage unavailable */ }
+
+                // Routing decided by the server response
+                if (res.isAdmin) window.location.href = "admin.html";
+                else if (res.role === 'seller') window.location.href = "form.html";
+                else window.location.href = "index.html";
+            } else {
+                Swal.fire('Login Failed', 'Invalid Email or Password', 'error');
+            }
+        }
+        else if ((currentMode === 'signup' || currentMode === 'forgot') && !isOtpSent) {
+            await sendOtp(f);
+        }
+        else if (isOtpSent) {
+            if (!/^\d{6}$/.test(f.otp)) return Swal.fire('Invalid OTP', 'Enter the 6-digit code sent to your email', 'warning');
+
+            const verifyRes = await apiCall({
+                action: currentMode === 'signup' ? 'register' : 'resetPassword',
+                name: f.name, email: f.email, password: f.pass, otp: f.otp,
+                phone: f.phone, shopName: f.shopName, address: f.address, city: f.city, pincode: f.pincode
+            });
+
+            if (verifyRes.success) {
+                if (currentMode === 'forgot') {
+                    await Swal.fire('Password Sent', 'Your password has been emailed to you.', 'success');
+                    setMode('login');
+                } else {
+                    await Swal.fire('Success', 'Seller account created! Please login.', 'success');
+                    ['regName','regEmail','regPhone','shopName','shopAddress','shopCity','shopPin','regPass'].forEach(id => $(id).value = '');
+                    goLogin();
+                }
+            } else {
+                Swal.fire('Failed', verifyRes.message, 'error');
+            }
+        }
+    }
+
+    async function apiCall(data) {
+        setLoading(true);
+        try {
+            const response = await fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify(data)
+            });
+            return await response.json();
+        } catch (e) {
+            Swal.fire('Error', 'Connection Failed', 'error');
+            return { success: false };
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    function setLoading(isLoading) {
+        const btn = currentMode === 'signup' ? $('regBtn') : $('loginBtn');
+        $('loginBtn').disabled = isLoading;
+        $('regBtn').disabled = isLoading;
+        if (isLoading) btn.innerHTML = '<span class="loader"></span> Processing...';
+        else refreshButtons();
+    }
+</script>
+</body>
+</html>

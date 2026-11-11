@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Readora - Book Management (Add / Edit / Delete)</title>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{--primary:#4a6fa5;--accent:#4fc3a1;--danger:#e74c3c;--darker:#1e2224;--light-bg:#f8f9fa;--white:#fff;--shadow:0 10px 30px rgba(0,0,0,.08)}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Montserrat',sans-serif}
+body{background:var(--light-bg);color:var(--darker);padding:40px 20px}
+.form-container{max-width:800px;margin:0 auto;background:var(--white);padding:40px;border-radius:20px;box-shadow:var(--shadow);border-top:5px solid var(--accent)}
+.form-header{text-align:center;margin-bottom:25px}
+.form-header h1{font-family:'Merriweather',serif;font-size:2rem;margin-bottom:10px}
+.mode-selector{display:flex;justify-content:center;flex-wrap:wrap;gap:15px;margin-bottom:25px}
+.mode-btn{padding:8px 20px;border:2px solid var(--primary);background:transparent;color:var(--primary);font-weight:600;border-radius:20px;cursor:pointer;transition:all .3s}
+.mode-btn.active,.mode-btn:hover{background:var(--primary);color:#fff}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px}
+.form-group{display:flex;flex-direction:column;margin-bottom:15px;position:relative}
+.full-width{grid-column:1/-1}
+.hidden{display:none!important}
+label{font-weight:600;font-size:.9rem;margin-bottom:8px;color:#2c3e50}
+label i{color:var(--primary);margin-right:5px}
+input,select,textarea{padding:12px 15px;border:1px solid #dcdde1;border-radius:8px;font-size:.95rem;background:#fdfdfd;transition:all .3s}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(79,195,161,.15);background:#fff}
+textarea{resize:vertical;min-height:100px}
+input:read-only{background:#f1f2f6;cursor:not-allowed}
+input:disabled{background:#f1f2f6;cursor:not-allowed}
+.dropdown-list{position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid #dcdde1;border-radius:0 0 8px 8px;max-height:180px;overflow-y:auto;z-index:10;display:none;box-shadow:0 4px 10px rgba(0,0,0,.1)}
+.dropdown-item{padding:10px 15px;cursor:pointer;font-size:.9rem}
+.dropdown-item:hover{background:#f1f2f6;color:var(--primary)}
+.btn-submit{grid-column:1/-1;background:linear-gradient(135deg,var(--primary),#3a5985);color:#fff;padding:14px;border:none;border-radius:8px;font-size:1.1rem;font-weight:600;cursor:pointer;margin-top:10px;box-shadow:0 4px 15px rgba(74,111,165,.3);transition:transform .16s ease,filter .16s ease,box-shadow .16s ease}.btn-submit:active,.btn-sm:active,.mode-btn:active{transform:scale(.97);filter:brightness(.94)}
+.btn-sm{padding:8px 14px;border:none;border-radius:8px;font-weight:600;font-size:.85rem;cursor:pointer;background:var(--primary);color:#fff}
+.btn-sm.alt{background:var(--accent)}.btn-sm.red{background:var(--danger)}.btn-sm.gray{background:#8395a7}
+#response-message{display:none;padding:15px;border-radius:8px;text-align:center;margin-bottom:20px;font-weight:600}
+.success-bg{background:#d4edda;color:#155724}.error-bg{background:#f8d7da;color:#721c24}
+.word-count{font-size:.75rem;color:#718093;text-align:right;margin-top:4px}
+.hint{font-size:.78rem;color:var(--danger);margin-top:4px;min-height:0}
+.seller-bar{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#f1f6ff;padding:10px 16px;border-radius:10px;margin-bottom:20px;font-size:.9rem}
+.or-divider{text-align:center;color:#718093;font-size:.85rem;margin:10px 0;display:flex;align-items:center;gap:10px}
+.or-divider:before,.or-divider:after{content:"";flex:1;height:1px;background:#dcdde1}
+.img-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+#imgPreview{max-width:120px;max-height:120px;border-radius:8px;border:1px solid #dcdde1}
+.book-row{display:flex;align-items:center;gap:12px;padding:10px;border:1px solid #eee;border-radius:10px;margin-bottom:10px}
+.book-row img{width:44px;height:56px;object-fit:cover;border-radius:4px;background:#eee}
+.book-row .info{flex:1;min-width:0}
+.book-row .info b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.book-row .info small{color:#718093}
+</style>
+</head>
+<body>
+<div class="form-container">
+  <div class="form-header">
+    <h1><i class="fa-solid fa-book-open"></i> Readora Seller Panel</h1>
+    <p>Add new books or securely modify/delete your existing listings.</p>
+  </div>
+
+  <!-- APP (seller is already signed in via the login page) -->
+  <p id="bootMsg" class="hint" style="text-align:center;margin:24px 0">Loading your account...</p>
+
+  <div id="app" class="hidden">
+    <div class="seller-bar">
+      <span><i class="fa-solid fa-user"></i> Logged in as <b id="sellerLabel"></b></span>
+      <button type="button" class="btn-sm gray" onclick="logout()">Logout</button>
+    </div>
+
+    <div class="mode-selector">
+      <button type="button" class="mode-btn active" onclick="switchMode('add',this)">Add New Book</button>
+      <button type="button" class="mode-btn" onclick="switchMode('edit',this)">Edit / Modify</button>
+      <button type="button" class="mode-btn" onclick="switchMode('delete',this)">Delete Book</button>
+      <button type="button" class="mode-btn" onclick="switchMode('profile',this)"><i class="fa-solid fa-user-pen"></i> Edit Profile</button>
+    </div>
+
+    <div id="response-message"></div>
+
+    <!-- My books (edit / delete) -->
+    <div id="listSection" class="hidden">
+      <div style="display:flex;gap:10px;margin-bottom:12px">
+        <input type="text" id="bookSearch" placeholder="Search my books..." oninput="renderBooks()" style="flex:1">
+        <button type="button" class="btn-sm" onclick="loadBooks()"><i class="fa-solid fa-rotate"></i> Refresh</button>
+      </div>
+      <div id="bookList"></div>
+    </div>
+
+    <!-- Edit profile (details come from the Users sheet) -->
+    <form id="profileSection" class="hidden" onsubmit="saveProfile(event)">
+      <div class="form-grid">
+        <div class="form-group"><label><i class="fa-solid fa-envelope"></i> Email Address (cannot be changed)</label><input type="email" id="pfEmail" readonly></div>
+        <div class="form-group"><label><i class="fa-solid fa-user"></i> Full Name</label><input type="text" id="pfName" required></div>
+        <div class="form-group"><label><i class="fa-brands fa-whatsapp"></i> WhatsApp number</label><input type="tel" id="pfPhone" maxlength="14" required></div>
+        <div class="form-group"><label><i class="fa-solid fa-store"></i> Shop / Store Name</label><input type="text" id="pfShop" required></div>
+        <div class="form-group full-width"><label><i class="fa-solid fa-location-dot"></i> Address</label><input type="text" id="pfAddress" required></div>
+        <div class="form-group"><label><i class="fa-solid fa-city"></i> City</label><input type="text" id="pfCity" required></div>
+        <div class="form-group"><label><i class="fa-solid fa-map-pin"></i> PIN Code</label><input type="text" id="pfPin" maxlength="6" inputmode="numeric" required></div>
+        <button type="submit" id="pfBtn" class="btn-submit"><i class="fa-solid fa-floppy-disk"></i> Save Profile</button>
+      </div>
+    </form>
+
+    <form id="bookForm" onsubmit="handleFormSubmit(event)">
+      <div class="form-grid">
+        <div id="bookIdGroup" class="form-group full-width hidden">
+          <label><i class="fa-solid fa-id-badge"></i> Your Book ID</label>
+          <input type="text" id="BookId" name="BookId" readonly>
+        </div>
+
+        <div class="form-group">
+          <label><i class="fa-solid fa-envelope"></i> Email Address (from your account)</label>
+          <input type="email" id="EmailAddress" name="Email Address" readonly>
+        </div>
+
+        <div class="form-group">
+          <label><i class="fa-solid fa-user"></i> Seller Name (from your account)</label>
+          <input type="text" id="SellerName" name="Seller name" readonly>
+        </div>
+
+        <div class="form-group">
+          <label><i class="fa-solid fa-language"></i> Language</label>
+          <select name="Language" id="languageSelect" onchange="handleLanguageChange()" required>
+            <option value="" hidden disabled selected>Select Language</option>
+            <option value="English">English</option>
+            <option value="Bengali">Bengali</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label><i class="fa-solid fa-layer-group"></i> Category (Genre)</label>
+          <input type="text" id="categorySearch" placeholder="Select genre..." onfocus="renderDropdown('category')" oninput="renderDropdown('category',true)" autocomplete="off">
+          <input type="hidden" name="Category" id="CategoryValue">
+          <div id="categoryDropdown" class="dropdown-list"></div>
+        </div>
+
+        <div class="form-group">
+          <label><i class="fa-solid fa-building"></i> Publishers</label>
+          <input type="text" id="publisherSearch" placeholder="Select publisher..." onfocus="renderDropdown('publisher')" oninput="renderDropdown('publisher',true)" autocomplete="off">
+          <input type="hidden" name="Publishers" id="PublisherValue">
+          <div id="publisherDropdown" class="dropdown-list"></div>
+        </div>
+
+        <div class="form-group">
+          <label><i class="fa-solid fa-book"></i> Book Title</label>
+          <input type="text" id="bookTitle" name="Book Title" class="lang-field" placeholder="Enter book title" oninput="checkLangFields()">
+          <div class="hint" id="bookTitle-err"></div>
+        </div>
+
+        <div class="form-group">
+          <label><i class="fa-solid fa-feather"></i> Author</label>
+          <input type="text" id="authorName" name="Author" class="lang-field" placeholder="Author name" oninput="checkLangFields()">
+          <div class="hint" id="authorName-err"></div>
+        </div>
+
+        <div class="form-group">
+          <label><i class="fa-solid fa-barcode"></i> ISBN</label>
+          <input type="text" name="ISBN" placeholder="9780062315007">
+        </div>
+
+        <div class="form-group">
+          <label><i class="fa-solid fa-dollar-sign"></i> New Price ($)</label>
+          <input type="number" step="0.01" name="New Price" placeholder="150">
+        </div>
+
+        <div class="form-group">
+          <label><i class="fa-solid fa-tags"></i> Old Price ($)</label>
+          <input type="number" step="0.01" name="Old Price" placeholder="150">
+        </div>
+
+        <div class="form-group">
+          <label><i class="fa-solid fa-star-half-stroke"></i> Condition</label>
+          <select name="Condition"><option value="New">New</option><option value="Old">Old</option></select>
+        </div>
+
+        <div class="form-group">
+          <label><i class="fa-solid fa-circle-check"></i> Status</label>
+          <select name="Status"><option value="New Arrival">New Arrival</option><option value="Best Selling">Best Selling</option><option value="Both">Both</option></select>
+        </div>
+
+        <!-- Image: URL or upload -->
+        <div class="form-group full-width">
+          <label><i class="fa-solid fa-image"></i> Image URL</label>
+          <input type="url" id="imageUrl" name="Image" placeholder="https://example.com/book-cover.jpg">
+          <div class="or-divider">OR</div>
+          <div class="img-actions">
+            <button type="button" class="btn-sm" onclick="document.getElementById('camInput').click()"><i class="fa-solid fa-camera"></i> Take Photo</button>
+            <button type="button" class="btn-sm alt" onclick="document.getElementById('galInput').click()"><i class="fa-solid fa-images"></i> Choose from Gallery</button>
+            <img id="imgPreview" class="hidden" alt="Selected image">
+            <button type="button" id="imgRemove" class="btn-sm red hidden" onclick="clearImage()">Remove</button>
+          </div>
+          <input type="file" id="camInput" accept="image/*" capture="environment" class="hidden" onchange="pickImage(this)">
+          <input type="file" id="galInput" accept="image/*" class="hidden" onchange="pickImage(this)">
+        </div>
+
+        <div class="form-group full-width">
+          <label><i class="fa-solid fa-align-left"></i> Description (Max 150 words)</label>
+          <textarea name="Description" id="descriptionField" class="lang-field" placeholder="Write description..." oninput="checkWordCount(this);checkLangFields()"></textarea>
+          <div class="hint" id="descriptionField-err"></div>
+          <div class="word-count"><span id="wordCountDisplay">0</span>/150 words</div>
+        </div>
+
+        <button type="submit" id="submitBtn" class="btn-submit"><i class="fa-solid fa-paper-plane"></i> Add Book to Spreadsheet</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+const scriptURL = 'https://script.google.com/macros/s/AKfycbxT5uPEA59Adu6u7fk19RQ950kLVYIb69HzRhSpQJ71Z4SKcO0-rzWLi-JrlTqNVVD_/exec';
+let mode = 'add', seller = null, profile = null, token = null, books = [], selectedImage = null;
+const $ = id => document.getElementById(id);
+
+const datasets = {
+  English: {
+    category: ["Novel","Fiction","Short Stories","Poetry","Drama","Mystery","History","Biography","Science Fiction","Travel","Children's","Essays"],
+    publisher: ["Penguin Books","HarperCollins","Oxford University Press","Random House","Macmillan","Bloomsbury","Other"]
+  },
+  Bengali: {
+    category: ["উপন্যাস","গল্প","ছোটগল্প","কবিতা","নাটক","রহস্য","ইতিহাস","জীবনী","বিজ্ঞান কল্পকাহিনি","ভ্রমণ","শিশুসাহিত্য","প্রবন্ধ"],
+    publisher: ["আনন্দ পাবলিশার্স","দে'জ পাবলিশিং","পত্রভারতী","সাহিত্য সংসদ","মিত্র ও ঘোষ পাবলিশার্স","দীপ প্রকাশন","অন্যান্য"]
+  }
+};
+const placeholders = {
+  English: {bookTitle:"Enter book title in English", authorName:"Author name in English", descriptionField:"Write description in English..."},
+  Bengali: {bookTitle:"বইয়ের নাম বাংলায় লিখুন", authorName:"লেখকের নাম বাংলায়", descriptionField:"বাংলায় বিবরণ লিখুন..."}
+};
+
+/* ---------- API layer: one web app, every call carries the login token ---------- */
+const api = {
+  post: body => fetch(scriptURL, { method: 'POST', body: JSON.stringify({ ...body, token }) })
+    .then(r => r.json())
+    .then(r => { if (r && r.code === 'auth') logout(); return r; }),          // session expired -> login page
+  getProfile: () => api.post({ action: 'getProfile' }),
+  saveProfile: p => api.post({ action: 'updateProfile', ...p }),
+  getMyBooks: () => api.post({ action: 'getMyBooks' }),                         // read from the seller's own sheet
+  saveBook: (action, data) => api.post({ action, ...data })                     // 'add' | 'edit' | 'delete'
+};
+
+/* ---------- Messages ---------- */
+function showMessage(text, ok) {
+  const m = $('response-message');
+  m.textContent = text; m.className = ok ? 'success-bg' : 'error-bg'; m.style.display = 'block';
+  m.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+/* ---------- Session (created by log.html) ---------- */
+function logout() {
+  if (token) { try { fetch(scriptURL, { method: 'POST', body: JSON.stringify({ action: 'logout', token }), keepalive: true }); } catch (e) {} }
+  try { sessionStorage.removeItem('readora_user'); sessionStorage.removeItem('seller'); } catch (e) {}
+  location.replace('log.html');
+}
+function enterApp() {
+  $('bootMsg').classList.add('hidden');
+  $('app').classList.remove('hidden');
+  $('sellerLabel').textContent = seller.name; fillSeller();
+}
+function fillSeller() { $('SellerName').value = seller.name; $('EmailAddress').value = seller.email; }
+
+function backToLogin(msg) {
+  $('bootMsg').innerHTML = '';
+  $('bootMsg').append(msg + ' ');
+  const a = document.createElement('a'); a.href = 'log.html'; a.textContent = 'Go to login'; $('bootMsg').append(a);
+  setTimeout(() => location.replace('log.html'), 3000);
+}
+
+(function startSession() {
+  let u = null;
+  try { u = JSON.parse(sessionStorage.getItem('readora_user') || 'null'); } catch (e) {}
+  if (!u) return backToLogin('You are not logged in.');
+  if (u.role === 'admin') { location.replace('admin.html'); return; }        // admin has its own page
+  if (u.role !== 'seller') return backToLogin('This panel is only for sellers.');
+  if (!u.token) return backToLogin('Login token missing - the server may still be running old code (deploy a New version). Please login again.');
+  token = u.token;
+  // name + email are fetched from the Users sheet (the server also opens / creates this seller's own sheet)
+  api.getProfile().then(r => {
+    if (r && r.success && r.profile) {
+      profile = r.profile;
+      seller = { email: profile.email, name: profile.name };
+      enterApp();
+    } else {
+      console.error('getProfile failed', r);
+      $('bootMsg').textContent = 'Could not load your account: ' + ((r && r.message) || 'unknown server answer') + ' (reload the page, or login again)';
+    }
+  }).catch(err => {
+    console.error(err);
+    $('bootMsg').textContent = 'Could not reach the server. Check that the web app is deployed (Execute as: Me, Who has access: Anyone) and that this page uses its /exec URL.';
+  });
+})();
+
+/* ---------- Modes ---------- */
+function switchMode(m, btn) {
+  mode = m;
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active');
+  $('response-message').style.display = 'none';
+  resetForm();
+  const isBook = m !== 'profile';
+  $('profileSection').classList.toggle('hidden', isBook);
+  $('listSection').classList.toggle('hidden', m === 'add' || !isBook);
+  $('bookForm').classList.toggle('hidden', !isBook || m === 'delete' || m === 'edit');   // edit: form appears after picking a book
+  $('bookIdGroup').classList.toggle('hidden', m !== 'edit');
+  $('submitBtn').innerHTML = m === 'edit' ? '<i class="fa-solid fa-floppy-disk"></i> Save Changes' : '<i class="fa-solid fa-paper-plane"></i> Add Book to Spreadsheet';
+  if (m === 'profile') fillProfile();
+  else if (m !== 'add') loadBooks();
+}
+
+/* ---------- Edit profile ---------- */
+function fillProfile() {
+  $('pfEmail').value = profile.email; $('pfName').value = profile.name;
+  $('pfPhone').value = String(profile.phone || '').replace(/^91(?=\d{10}$)/, '');
+  $('pfShop').value = profile.shopName; $('pfAddress').value = profile.address;
+  $('pfCity').value = profile.city; $('pfPin').value = profile.pincode;
+}
+function saveProfile(e) {
+  e.preventDefault();
+  const p = { name: $('pfName').value.trim(), phone: $('pfPhone').value.trim(), shopName: $('pfShop').value.trim(),
+              address: $('pfAddress').value.trim(), city: $('pfCity').value.trim(), pincode: $('pfPin').value.trim() };
+  if (!/^(?:\+?91|0)?[6-9]\d{9}$/.test(p.phone.replace(/[\s-]/g, ''))) return showMessage('Enter a valid 10-digit mobile number.', false);
+  if (!/^\d{6}$/.test(p.pincode)) return showMessage('PIN code must be 6 digits.', false);
+  if (!window.confirm('Save these profile changes?')) return;
+  $('pfBtn').disabled = true;
+  api.saveProfile(p).then(r => {
+    showMessage(r.message || (r.success ? 'Profile updated.' : 'Could not save.'), !!r.success);
+    if (r.success && r.profile) {
+      profile = r.profile; seller.name = profile.name;
+      $('sellerLabel').textContent = seller.name; fillSeller(); fillProfile();
+      try { const u = JSON.parse(sessionStorage.getItem('readora_user')); u.name = profile.name; u.shopName = profile.shopName; sessionStorage.setItem('readora_user', JSON.stringify(u)); } catch (err) {}
+    }
+  }).catch(() => showMessage('Could not connect. Try again.', false))
+    .finally(() => { $('pfBtn').disabled = false; });
+}
+function resetForm() { $('bookForm').reset(); clearImage(); handleLanguageChange(); $('wordCountDisplay').innerText = 0; fillSeller(); }
+
+/* ---------- My books (only this seller's sheet) ---------- */
+function loadBooks() {
+  $('bookList').textContent = 'Loading your books...';
+  api.getMyBooks().then(d => {
+    if (d.ok) { books = d.books || []; renderBooks(); }
+    else $('bookList').textContent = d.error || 'Could not load books.';
+  }).catch(() => $('bookList').textContent = 'Could not load books.');
+}
+function renderBooks() {
+  const q = $('bookSearch').value.toLowerCase(), list = $('bookList'); list.innerHTML = '';
+  const shown = books.filter(b => (String(b['Book Title']) + ' ' + b.BookId + ' ' + b.Author).toLowerCase().includes(q));
+  if (!shown.length) { list.textContent = 'No books found.'; return; }
+  shown.forEach(b => {
+    const row = document.createElement('div'); row.className = 'book-row';
+    const img = document.createElement('img'); if (b.Image) img.src = b.Image;
+    const info = document.createElement('div'); info.className = 'info';
+    const t = document.createElement('b'); t.textContent = b['Book Title'] || '(no title)';
+    const s = document.createElement('small'); s.textContent = (b.BookId || '') + ' · ' + (b.Author || '');
+    info.append(t, s);
+    const btn = document.createElement('button'); btn.type = 'button';
+    btn.className = 'btn-sm' + (mode === 'delete' ? ' red' : '');
+    btn.textContent = mode === 'delete' ? 'Delete' : 'Edit';
+    btn.onclick = () => mode === 'delete' ? deleteBook(b) : editBook(b);
+    row.append(img, info, btn); list.appendChild(row);
+  });
+}
+function editBook(b) {
+  $('bookForm').classList.remove('hidden');
+  const f = $('bookForm');
+  [...f.elements].forEach(el => { if (el.name && b[el.name] !== undefined && el.type !== 'file') el.value = b[el.name]; });
+  fillSeller();
+  handleLanguageChange(true);
+  $('categorySearch').value = $('CategoryValue').value = b.Category || '';
+  $('publisherSearch').value = $('PublisherValue').value = b.Publishers || '';
+  checkWordCount($('descriptionField')); checkLangFields();
+  f.scrollIntoView({ behavior: 'smooth' });
+}
+function deleteBook(b) {
+  if (!confirm('Delete "' + (b['Book Title'] || b.BookId) + '"? This cannot be undone.')) return;
+  api.saveBook('delete', { BookId: b.BookId, 'Email Address': seller.email })
+    .then(r => { showMessage(r.message || (r.ok ? 'Deleted.' : 'Delete failed.'), r.ok); if (r.ok) loadBooks(); })
+    .catch(() => showMessage('Error deleting book.', false));
+}
+
+/* ---------- Language + dropdowns ---------- */
+function handleLanguageChange(keep) {
+  const lang = $('languageSelect').value;
+  if (!keep) { ['categorySearch','CategoryValue','publisherSearch','PublisherValue'].forEach(i => $(i).value = ''); }
+  const p = placeholders[lang];
+  if (p) Object.keys(p).forEach(id => $(id).placeholder = p[id]);
+  checkLangFields();
+}
+function renderDropdown(type, typing) {
+  const lang = $('languageSelect').value, dd = $(type + 'Dropdown');
+  if (!lang) { dd.style.display = 'none'; showMessage('Please select a language first.', false); return; }
+  if (typing) $(type[0].toUpperCase() + type.slice(1) + 'Value').value = '';   // must pick from list
+  const q = $(type + 'Search').value.toLowerCase();
+  const items = datasets[lang][type].filter(i => !typing || i.toLowerCase().includes(q));
+  dd.innerHTML = '';
+  items.forEach(item => {
+    const d = document.createElement('div'); d.className = 'dropdown-item'; d.textContent = item;
+    d.onmousedown = () => { $(type + 'Search').value = item; $(type[0].toUpperCase() + type.slice(1) + 'Value').value = item; dd.style.display = 'none'; };
+    dd.appendChild(d);
+  });
+  dd.style.display = items.length ? 'block' : 'none';
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('.form-group')) document.querySelectorAll('.dropdown-list').forEach(d => d.style.display = 'none');
+});
+
+/* ---------- Language validation ---------- */
+const BN = /[\u0980-\u09FF]/, LAT = /[A-Za-z]/;
+function langError(v, lang) {
+  if (!v.trim() || !lang) return '';
+  if (lang === 'Bengali') return (LAT.test(v) || !BN.test(v)) ? 'Language is Bengali: please write this in Bengali only (বাংলায় লিখুন).' : '';
+  return BN.test(v) ? 'Language is English: please write this in English only.' : '';
+}
+function checkLangFields() {
+  const lang = $('languageSelect').value; let ok = true;
+  document.querySelectorAll('.lang-field').forEach(el => {
+    const err = langError(el.value, lang); $(el.id + '-err').textContent = err; if (err) ok = false;
+  });
+  return ok;
+}
+function checkWordCount(t) {
+  const w = t.value.trim().split(/\s+/).filter(Boolean);
+  if (w.length > 150) { alert('Description cannot exceed 150 words!'); t.value = w.slice(0, 150).join(' '); $('wordCountDisplay').innerText = 150; }
+  else $('wordCountDisplay').innerText = w.length;
+}
+
+/* ---------- Image: camera / gallery ---------- */
+function pickImage(input) {
+  const f = input.files[0]; input.value = '';
+  if (!f) return;
+  if (!f.type.startsWith('image/')) { showMessage('Please choose an image file.', false); return; }
+  const url = URL.createObjectURL(f), img = new Image();
+  img.onload = () => {
+    const s = Math.min(1, 1200 / Math.max(img.width, img.height)), c = document.createElement('canvas');
+    c.width = Math.round(img.width * s); c.height = Math.round(img.height * s);
+    c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+    const dataUrl = c.toDataURL('image/jpeg', 0.85);
+    selectedImage = { name: f.name.replace(/\.\w+$/, '') + '.jpg', mime: 'image/jpeg', data: dataUrl.split(',')[1] };
+    $('imgPreview').src = dataUrl; $('imgPreview').classList.remove('hidden'); $('imgRemove').classList.remove('hidden');
+    $('imageUrl').value = ''; $('imageUrl').disabled = true;
+    URL.revokeObjectURL(url);
+  };
+  img.src = url;
+}
+function clearImage() {
+  selectedImage = null;
+  $('imgPreview').classList.add('hidden'); $('imgRemove').classList.add('hidden');
+  $('imageUrl').disabled = false;
+}
+
+/* ---------- Submit (add / edit) ---------- */
+function handleFormSubmit(event) {
+  event.preventDefault();
+  const form = $('bookForm');
+  if (!$('languageSelect').value) return showMessage('Please select a language.', false);
+  if (!$('CategoryValue').value) return showMessage('Please select a category from the dropdown.', false);
+  if (!$('PublisherValue').value) return showMessage('Please select a publisher from the dropdown.', false);
+  if (!$('bookTitle').value.trim() || !$('authorName').value.trim()) return showMessage('Book title and author are required.', false);
+  if (!checkLangFields()) return showMessage('Book title, author and description must be written in ' + $('languageSelect').value + ' only.', false);
+
+  const actionLabel = mode === 'edit' ? 'save these book changes' : 'add this book';
+  if (!window.confirm(`Are you sure you want to ${actionLabel}?`)) return;
+
+  const data = {};
+  new FormData(form).forEach((v, k) => data[k] = v);
+  if (selectedImage) { data.imageBase64 = selectedImage.data; data.imageMime = selectedImage.mime; data.imageName = selectedImage.name; } // provisional names
+  $('submitBtn').disabled = true;
+  const submitButton = $('submitBtn');
+  const originalButtonContent = submitButton.innerHTML;
+  submitButton.classList.add('is-saving');
+  submitButton.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving…';
+  api.saveBook(mode === 'edit' ? 'edit' : 'add', data)
+    .then(r => {
+      showMessage(r.message || (r.ok ? (mode === 'edit' ? 'Book changes saved successfully.' : 'Book added successfully.') : 'Failed.'), r.ok);
+      if (r.ok) { resetForm(); if (mode === 'edit') { $('bookForm').classList.add('hidden'); loadBooks(); } }
+    })
+    .catch(() => showMessage('Error submitting form.', false))
+    .finally(() => { submitButton.disabled = false; submitButton.classList.remove('is-saving'); submitButton.innerHTML = originalButtonContent; });
+}
+</script>
+</body>
+</html>
